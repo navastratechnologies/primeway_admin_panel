@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.primeway_admin_panel">
+    package="com.centurus.primeway_admin_panel">
    <application
         android:label="primeway_admin_panel"
         android:name="${applicationName}"

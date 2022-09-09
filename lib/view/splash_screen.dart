@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:primeway_admin_panel/view/dashboard/dashboard.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => const DashBoard(),
+          builder: (_) => const AdminDashBoard(),
         ),
       );
     });

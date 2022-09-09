@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:primeway_admin_panel/view/dashboard/dashboard.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/splash_screen.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DashBoard(),
+      home: AdminDashBoard(),
     );
   }
 }

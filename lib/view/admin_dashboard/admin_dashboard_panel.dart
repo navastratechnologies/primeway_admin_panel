@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:primeway_admin_panel/view/dashboard/components/body_panels/admin_panel_body.dart';
-import 'package:primeway_admin_panel/view/dashboard/components/body_panels/course_panel_body.dart';
-import 'package:primeway_admin_panel/view/dashboard/components/side_bars/admin_side_bar.dart';
-import 'package:primeway_admin_panel/view/dashboard/components/side_bars/course_side_bar.dart';
-import 'package:primeway_admin_panel/view/dashboard/components/top_bar.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/components/body_panels/admin_panel_body.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/components/side_bars/admin_side_bar.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/components/top_bar.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
-class DashBoard extends StatefulWidget {
-  const DashBoard({super.key});
+class AdminDashBoard extends StatefulWidget {
+  const AdminDashBoard({super.key});
 
   @override
-  State<DashBoard> createState() => _DashBoardState();
+  State<AdminDashBoard> createState() => _AdminDashBoardState();
 }
 
-class _DashBoardState extends State<DashBoard> {
-  bool showAdminPanel = true;
-  bool showCoursePanel = false;
-
+class _AdminDashBoardState extends State<AdminDashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +23,7 @@ class _DashBoardState extends State<DashBoard> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            showAdminPanel ? const AdminSideBar() : const CourseSideBar(),
+            const AdminSideBar(),
             SizedBox(
               width: displayWidth(context) / 1.2,
               height: displayHeight(context),
@@ -55,49 +50,38 @@ class _DashBoardState extends State<DashBoard> {
                           child: Row(
                             children: [
                               MaterialButton(
-                                color: showAdminPanel
-                                    ? greenShadeColor
-                                    : whiteColor,
+                                color: greenShadeColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    showAdminPanel = true;
-                                    showCoursePanel = false;
-                                  });
-                                },
+                                onPressed: () {},
                                 child: Text(
                                   'Admin Panel',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    color: showAdminPanel
-                                        ? whiteColor
-                                        : Colors.black,
+                                    color: whiteColor,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 16),
                               MaterialButton(
-                                color: showCoursePanel
-                                    ? greenShadeColor
-                                    : whiteColor,
+                                color: whiteColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    showAdminPanel = false;
-                                    showCoursePanel = true;
-                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CourseDashboard(),
+                                    ),
+                                  );
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Course Panel',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    color: showCoursePanel
-                                        ? whiteColor
-                                        : Colors.black,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
@@ -108,7 +92,7 @@ class _DashBoardState extends State<DashBoard> {
                       ],
                     ),
                   ),
-                  showAdminPanel ? const AdminPanelBody() : const CoursePanelBody(),
+                  const AdminPanelBody(),
                 ],
               ),
             ),

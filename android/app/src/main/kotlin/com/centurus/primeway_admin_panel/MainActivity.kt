@@ -1,4 +1,4 @@
-package com.example.primeway_admin_panel
+package com.centurus.primeway_admin_panel
 
 import io.flutter.embedding.android.FlutterActivity
 

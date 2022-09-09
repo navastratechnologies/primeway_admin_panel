@@ -39,7 +39,7 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                 ),
                 dashboardTile(
                   '120',
-                  'Pending Courses',
+                  'Un-Approved Courses',
                   FontAwesomeIcons.bookOpenReader,
                 ),
                 dashboardTile(
