@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
 Color whiteColor = Colors.white;
-Color mainColor= const Color(0xffE5283C);
+Color mainColor = const Color(0xffE5283C);
 Color mainShadeColor = const Color(0xffF25C6D);
 Color elevationColor = Colors.black.withOpacity(0.1);
 Color greenShadeColor = Color(0xff17D29C);
 Color greenLightShadeColor = Color(0xff5CE2B9);
 Color greenSelectedColor = Colors.green[900]!;
+
+List<Color> gradientColors = [
+  const Color(0xff23b6e6),
+  const Color(0xff02d39a),
+];
 
 Size displaySize(BuildContext context) {
   debugPrint('Size = ${MediaQuery.of(context).size}');

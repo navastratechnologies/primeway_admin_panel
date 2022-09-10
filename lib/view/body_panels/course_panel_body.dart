@@ -13,11 +13,6 @@ class CoursePanelBody extends StatefulWidget {
 }
 
 class _CoursePanelBodyState extends State<CoursePanelBody> {
-  List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Padding(
