@@ -178,105 +178,108 @@ class _UserScreenState extends State<UserScreen> {
                       padding: const EdgeInsets.all(10),
                       height: displayHeight(context) / 2.3,
                       width: displayWidth(context) / 1.2,
-                      child: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 80,
-                                      child: Center(
-                                        child: Text(
-                                          "${index.toString()}. ",
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(0.4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 120,
-                                      child: Center(
-                                        child: Text(
-                                          "PS1000",
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(0.4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 120,
-                                      child: Center(
-                                        child: Text(
-                                          "1000234",
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(0.4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 120,
-                                      child: Center(
-                                        child: Text(
-                                          "10k",
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(0.4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 120,
-                                      child: Center(
-                                        child: Text(
-                                          "3k",
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(0.4),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 120,
-                                      child: Center(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            color: index.isEven
-                                                ? greenLightShadeColor
-                                                : mainShadeColor,
-                                            borderRadius: BorderRadius.circular(5),
-                                          ),
+                      child: ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                        child: ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: 80,
+                                        child: Center(
                                           child: Text(
-                                            index.isEven ? "Approved" : "Pending",
+                                            "${index.toString()}. ",
                                             style: TextStyle(
-                                              color: whiteColor,
+                                              color: Colors.black.withOpacity(0.4),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                const Divider(),
-                              ],
-                            ),
-                          );
-                        },
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            "PS1000",
+                                            style: TextStyle(
+                                              color: Colors.black.withOpacity(0.4),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            "1000234",
+                                            style: TextStyle(
+                                              color: Colors.black.withOpacity(0.4),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            "10k",
+                                            style: TextStyle(
+                                              color: Colors.black.withOpacity(0.4),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            "3k",
+                                            style: TextStyle(
+                                              color: Colors.black.withOpacity(0.4),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color: index.isEven
+                                                  ? greenLightShadeColor
+                                                  : mainShadeColor,
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                            child: Text(
+                                              index.isEven ? "Approved" : "Pending",
+                                              style: TextStyle(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Divider(),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],

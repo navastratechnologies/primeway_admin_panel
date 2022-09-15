@@ -31,9 +31,12 @@ environment:
 dependencies:
   change_app_package_name: ^1.1.0
   cupertino_icons: ^1.0.2
+  file_picker: ^5.1.0
   flutter:
     sdk: flutter
+  flutter_rating_bar: ^4.0.1
   font_awesome_flutter: ^10.1.0
+  image_picker: ^0.8.5+3
   ionicons: ^0.2.1
   lottie: ^1.4.2
   mrx_charts: ^0.1.3
