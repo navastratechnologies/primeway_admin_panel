@@ -32,6 +32,31 @@
   <title>primeway_admin_panel</title>
   <link rel="manifest" href="manifest.json">
 
+ 
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBptZzJ5pzf26E5iEDGoL2Lr1SZpRXmXcM",
+      authDomain: "primeway-fa5e5.firebaseapp.com",
+      projectId: "primeway-fa5e5",
+      storageBucket: "primeway-fa5e5.appspot.com",
+      messagingSenderId: "782580474549",
+      appId: "1:782580474549:web:5398232848943852b7d4fc",
+      measurementId: "G-TM1G56MF74"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
   <script>
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;

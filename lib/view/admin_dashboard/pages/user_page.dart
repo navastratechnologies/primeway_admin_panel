@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -13,6 +16,72 @@ class _UserScreenState extends State<UserScreen> {
   bool showApprovedUsers = false;
   bool showUnApprovedUsers = false;
   bool showRejectedUsers = false;
+
+  String userCount = '';
+  String approvedUser = '';
+  String unapprovedUser = '';
+  String rejectedUser = '';
+
+  final CollectionReference user =
+      FirebaseFirestore.instance.collection('users');
+
+  Future<void> getUserCount() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('user id is ${snapshot.docs.length}');
+      setState(() {
+        userCount = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> unapprovedUserCount() async {
+    FirebaseFirestore.instance
+        .collection('users').where('field')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('unapproved user id is ${snapshot.docs.length}');
+      setState(() {
+        unapprovedUser = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> approvedUserCount() async {
+    FirebaseFirestore.instance
+        .collection('users').where('field')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('approved user id is ${snapshot.docs.length}');
+      setState(() {
+        approvedUser = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> rejectedUserCount() async {
+    FirebaseFirestore.instance
+        .collection('users').where('field')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('rejected user id is ${snapshot.docs.length}');
+      setState(() {
+        rejectedUser = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    getUserCount();
+    rejectedUserCount();
+    approvedUserCount();
+    unapprovedUserCount();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +93,7 @@ class _UserScreenState extends State<UserScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               dashboardTile(
-                '100K',
+                userCount,
                 'All Users',
                 Icons.groups,
               ),
@@ -51,16 +120,16 @@ class _UserScreenState extends State<UserScreen> {
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: elevationColor,
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: elevationColor,
+                  blurRadius: 10,
+                  spreadRadius: 1,
                 ),
+              ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -126,7 +195,7 @@ class _UserScreenState extends State<UserScreen> {
                               width: 120,
                               child: Center(
                                 child: Text(
-                                  "Transaction Id",
+                                  "Phone Number",
                                   style: TextStyle(
                                     color: Colors.black.withOpacity(0.4),
                                     fontWeight: FontWeight.bold,
@@ -138,7 +207,7 @@ class _UserScreenState extends State<UserScreen> {
                               width: 120,
                               child: Center(
                                 child: Text(
-                                  "Wallet Balance",
+                                  "Address",
                                   style: TextStyle(
                                     color: Colors.black.withOpacity(0.4),
                                     fontWeight: FontWeight.bold,
@@ -150,7 +219,7 @@ class _UserScreenState extends State<UserScreen> {
                               width: 120,
                               child: Center(
                                 child: Text(
-                                  "Requested For",
+                                  "Social Account",
                                   style: TextStyle(
                                     color: Colors.black.withOpacity(0.4),
                                     fontWeight: FontWeight.bold,
@@ -179,107 +248,139 @@ class _UserScreenState extends State<UserScreen> {
                       height: displayHeight(context) / 2.3,
                       width: displayWidth(context) / 1.2,
                       child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                        child: ListView.builder(
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(
-                                        width: 80,
-                                        child: Center(
-                                          child: Text(
-                                            "${index.toString()}. ",
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(0.4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: Text(
-                                            "PS1000",
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(0.4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: Text(
-                                            "1000234",
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(0.4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: Text(
-                                            "10k",
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(0.4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: Text(
-                                            "3k",
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(0.4),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              color: index.isEven
-                                                  ? greenLightShadeColor
-                                                  : mainShadeColor,
-                                              borderRadius: BorderRadius.circular(5),
-                                            ),
-                                            child: Text(
-                                              index.isEven ? "Approved" : "Pending",
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                                fontWeight: FontWeight.bold,
+                        behavior: ScrollConfiguration.of(context)
+                            .copyWith(scrollbars: false),
+                        child: StreamBuilder(
+                            stream: user.snapshots(),
+                            builder: (context,
+                                AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                              if (streamSnapshot.hasData) {
+                                return ListView.builder(
+                                  itemCount: streamSnapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final DocumentSnapshot documentSnapshot =
+                                        streamSnapshot.data!.docs[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: 80,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot['user_Id'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot['name'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot[
+                                                        'phone_number'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot['address'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot[
+                                                        'social_account'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: index.isEven
+                                                          ? greenLightShadeColor
+                                                          : mainShadeColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Text(
+                                                      index.isEven
+                                                          ? "Approved"
+                                                          : "Pending",
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
+                                          const SizedBox(height: 2),
+                                          const Divider(),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  const Divider(),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                                    );
+                                  },
+                                );
+                              }
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }),
                       ),
                     ),
                   ],
@@ -287,7 +388,6 @@ class _UserScreenState extends State<UserScreen> {
               ],
             ),
           ),
-        
         ],
       ),
     );
