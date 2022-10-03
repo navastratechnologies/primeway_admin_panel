@@ -39,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> unapprovedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('field')
+        .collection('users').where('approval_status', isEqualTo: 'unapproved')
         .get()
         .then((QuerySnapshot snapshot) {
       log('unapproved user id is ${snapshot.docs.length}');
@@ -51,7 +51,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> approvedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('field')
+        .collection('users').where('approval_status', isEqualTo: 'approved')
         .get()
         .then((QuerySnapshot snapshot) {
       log('approved user id is ${snapshot.docs.length}');
@@ -63,7 +63,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> rejectedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('field')
+        .collection('users').where('approval_status', isEqualTo: 'rejected')
         .get()
         .then((QuerySnapshot snapshot) {
       log('rejected user id is ${snapshot.docs.length}');
@@ -99,19 +99,19 @@ class _UserScreenState extends State<UserScreen> {
               ),
               const SizedBox(width: 20),
               dashboardTile(
-                '120',
+               approvedUser,
                 'Approved Users',
                 Icons.verified_user_sharp,
               ),
               const SizedBox(width: 20),
               dashboardTile(
-                '20',
+                unapprovedUser,
                 'Un-Approved Users',
                 Icons.no_accounts,
               ),
               const SizedBox(width: 20),
               dashboardTile(
-                '20',
+                rejectedUser,
                 'Rejected Users',
                 Icons.thumb_down,
               ),
@@ -347,7 +347,7 @@ class _UserScreenState extends State<UserScreen> {
                                                     padding:
                                                         const EdgeInsets.all(5),
                                                     decoration: BoxDecoration(
-                                                      color: index.isEven
+                                                      color:documentSnapshot['approval_status'] == "approved"
                                                           ? greenLightShadeColor
                                                           : mainShadeColor,
                                                       borderRadius:
@@ -355,9 +355,9 @@ class _UserScreenState extends State<UserScreen> {
                                                               5),
                                                     ),
                                                     child: Text(
-                                                      index.isEven
+                                                      documentSnapshot['approval_status'] == "approved"
                                                           ? "Approved"
-                                                          : "Pending",
+                                                          : "Unapproved",
                                                       style: TextStyle(
                                                         color: whiteColor,
                                                         fontWeight:

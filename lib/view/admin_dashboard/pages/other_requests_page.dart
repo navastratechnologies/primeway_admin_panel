@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class OtherRequestScreen extends StatefulWidget {

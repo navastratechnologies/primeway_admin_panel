@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -9,6 +12,30 @@ class RejectedCourseScreen extends StatefulWidget {
 }
 
 class _RejectedCourseScreenState extends State<RejectedCourseScreen> {
+  String rejectedCourses = '';
+
+   Query<Map<String, dynamic>> courses =
+      FirebaseFirestore.instance.collection('courses').where('status', isEqualTo: 'rejected');
+
+
+   Future<void> updateCoursesStatus(courseId) async {
+    FirebaseFirestore.instance
+        .collection('courses').doc(courseId).update({
+          'status': 'approved'
+        });
+        
+  }
+
+  Future<void> deleteCoursesStatus(courseId) async {
+    FirebaseFirestore.instance
+        .collection('courses').doc(courseId).update({
+          'status': 'delete'
+        });
+        
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -119,106 +146,130 @@ class _RejectedCourseScreenState extends State<RejectedCourseScreen> {
               padding: const EdgeInsets.all(10),
               height: displayHeight(context) / 1.21,
               width: displayWidth(context) / 1.2,
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Center(
-                                child: Text(
-                                  "${index.toString()}. ",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Web Development Course",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "100k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "10k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Self",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
+              child: StreamBuilder(
+                  stream: courses.snapshots(),
+                  builder:
+                      (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                    if (streamSnapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: streamSnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
                               children: [
-                                MaterialButton(
-                                  color: greenShadeColor,
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Approve This',
-                                    style: TextStyle(
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.bold,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Center(
+                                        child: Text(
+                                          "${index.toString()}. ",
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['name'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['views'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['purchases'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['uploaded_by'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        MaterialButton(
+                                          color: greenShadeColor,
+                                          onPressed: () {
+                                            updateCoursesStatus(documentSnapshot.id);
+                                          },
+                                          child: Text(
+                                            'Approve This',
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        IconButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            deleteCoursesStatus(documentSnapshot.id);
+                                          },
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: mainColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 5),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: (){},
-                                  icon: Icon(Icons.delete, color: mainColor,),
-                                ),
+                                const SizedBox(height: 2),
+                                const Divider(),
                               ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        const Divider(),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          );
+                        },
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }),
             ),
           ],
         ),

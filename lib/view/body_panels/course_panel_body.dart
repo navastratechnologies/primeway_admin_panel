@@ -1,8 +1,8 @@
-import 'dart:math';
+import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mrx_charts/mrx_charts.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class CoursePanelBody extends StatefulWidget {
@@ -13,6 +13,74 @@ class CoursePanelBody extends StatefulWidget {
 }
 
 class _CoursePanelBodyState extends State<CoursePanelBody> {
+  String coursesCount = '';
+  String approvedCourses = '';
+  String unapprovedCourses = '';
+  String rejectedCourses = '';
+
+  final CollectionReference courses =
+      FirebaseFirestore.instance.collection('courses');
+
+  Future<void> getCoursesCount() async {
+    FirebaseFirestore.instance
+        .collection('courses')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('courses id is ${snapshot.docs.length}');
+      setState(() {
+        coursesCount = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> unapprovedCoursesCount() async {
+    FirebaseFirestore.instance
+        .collection('courses')
+        .where('status', isEqualTo: 'unapproved')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('unapproved courses is ${snapshot.docs.length}');
+      setState(() {
+        unapprovedCourses = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> approvedCoursesCount() async {
+    FirebaseFirestore.instance
+        .collection('courses')
+        .where('status', isEqualTo: 'approved')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('approved courses is ${snapshot.docs.length}');
+      setState(() {
+        approvedCourses = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> rejectedCoursesCount() async {
+    FirebaseFirestore.instance
+        .collection('courses')
+        .where('status', isEqualTo: 'rejected')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      log('rejected courses is ${snapshot.docs.length}');
+      setState(() {
+        rejectedCourses = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    getCoursesCount();
+    approvedCoursesCount();
+    unapprovedCoursesCount();
+    rejectedCoursesCount();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,22 +96,22 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 dashboardTile(
-                  '100K',
+                  coursesCount,
                   'Live Courses',
                   FontAwesomeIcons.book,
                 ),
                 dashboardTile(
-                  '120',
+                  unapprovedCourses,
                   'Un-Approved Courses',
                   FontAwesomeIcons.bookOpenReader,
                 ),
                 dashboardTile(
-                  '20',
+                  approvedCourses,
                   'Approved Courses',
                   FontAwesomeIcons.bookJournalWhills,
                 ),
                 dashboardTile(
-                  '20',
+                  rejectedCourses,
                   'Rejected Courses',
                   FontAwesomeIcons.bookSkull,
                 ),
@@ -351,114 +419,143 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                             padding: const EdgeInsets.all(10),
                             height: displayHeight(context) / 2.3,
                             width: displayWidth(context) / 1.9,
-                            child: ListView.builder(
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 80,
-                                            child: Center(
-                                              child: Text(
-                                                "${index.toString()}. ",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "Web Development Course",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "100k",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "10k",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "Self",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  color: index.isEven
-                                                      ? greenLightShadeColor
-                                                      : mainShadeColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Text(
-                                                  index.isEven
-                                                      ? "Approved"
-                                                      : "Pending",
-                                                  style: TextStyle(
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
+                            child: StreamBuilder(
+                                stream: courses.snapshots(),
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot>
+                                        streamSnapshot) {
+                                  if (streamSnapshot.hasData) {
+                                    return ListView.builder(
+                                      itemCount: streamSnapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 80,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "${index.toString()}. ",
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Text(
+                                                        documentSnapshot['name'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Text(
+                                                        documentSnapshot['views'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Text(
+                                                        documentSnapshot['purchases'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Text(
+                                                        documentSnapshot['uploaded_by'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: documentSnapshot['status'] == 'approved'
+                                                              ? greenLightShadeColor
+                                                              : documentSnapshot['status'] == 'rejected'
+                                                              ? yellow
+                                                              : documentSnapshot['status'] == 'delete'
+                                                              ? orange
+                                                              : mainShadeColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                        child: Text(
+                                                          documentSnapshot['status'] == 'approved'
+                                                              ? "Approved"
+                                                              : documentSnapshot['status'] == 'rejected'
+                                                              ? "Rejected" 
+                                                              : documentSnapshot['status'] == 'delete'
+                                                              ? "Panding"
+                                                              : "Delete",
+                                                          style: TextStyle(
+                                                            color: whiteColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
+                                              const SizedBox(height: 2),
+                                              const Divider(),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 2),
-                                      const Divider(),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }),
                           ),
                         ],
                       ),

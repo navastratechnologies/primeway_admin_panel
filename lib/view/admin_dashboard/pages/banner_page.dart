@@ -28,6 +28,8 @@ class _BannerScreenState extends State<BannerScreen> {
   final CollectionReference banner =
       FirebaseFirestore.instance.collection('Banner');
 
+   
+
   Future<void> pickImage() async {
     if (!kIsWeb) {
       ImagePicker picker = ImagePicker();
@@ -80,6 +82,12 @@ class _BannerScreenState extends State<BannerScreen> {
       'Banner_name' : 'Banner',
     });
   }
+
+  Future<void> deleteBannerData(bannerId) async {
+    FirebaseFirestore.instance
+        .collection('Banner').doc(bannerId).delete();
+  
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -203,18 +211,23 @@ class _BannerScreenState extends State<BannerScreen> {
                                       SizedBox(
                                         width: 120,
                                         child: Center(
-                                          child: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              color: mainShadeColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            child: Text(
-                                              "Delete",
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                                fontWeight: FontWeight.bold,
+                                          child: InkWell(
+                                            onTap:() {
+                                              deleteBannerData(documentSnapshot.id);
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: mainShadeColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: Text(
+                                                "Delete",
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),

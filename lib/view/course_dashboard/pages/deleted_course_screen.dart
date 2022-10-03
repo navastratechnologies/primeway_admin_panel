@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -9,6 +10,23 @@ class DeletedCourseScreen extends StatefulWidget {
 }
 
 class _DeletedCourseScreenState extends State<DeletedCourseScreen> {
+  Query<Map<String, dynamic>> courses = FirebaseFirestore.instance
+      .collection('courses')
+      .where('status', isEqualTo: 'delete');
+
+      Future<void> updateCoursesStatus(courseId) async {
+    FirebaseFirestore.instance
+        .collection('courses').doc(courseId).update({
+          'status': 'approved'
+        });
+  }
+
+  Future<void> deleteCoures(courseId) async {
+    FirebaseFirestore.instance
+        .collection('courses').doc(courseId).delete();
+        
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -119,109 +137,127 @@ class _DeletedCourseScreenState extends State<DeletedCourseScreen> {
               padding: const EdgeInsets.all(10),
               height: displayHeight(context) / 1.21,
               width: displayWidth(context) / 1.2,
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Center(
-                                child: Text(
-                                  "${index.toString()}. ",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Web Development Course",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "100k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "10k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Admin",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                MaterialButton(
-                                  color: Colors.yellow,
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Restore',
-                                    style: TextStyle(
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold,
+              child: StreamBuilder(
+                stream: courses.snapshots(),
+                builder:
+                    (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                  if (streamSnapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: streamSnapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final DocumentSnapshot documentSnapshot =
+                            streamSnapshot.data!.docs[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 80,
+                                    child: Center(
+                                      child: Text(
+                                        "${index.toString()}. ",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 5),
-                                MaterialButton(
-                                  color: mainColor,
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Permanent Delete',
-                                    style: TextStyle(
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        documentSnapshot['name'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        const Divider(),
-                      ],
-                    ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        documentSnapshot['views'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        documentSnapshot['purchases'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        documentSnapshot['deleted_by'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      MaterialButton(
+                                        color: Colors.yellow,
+                                        onPressed: () {
+                                          updateCoursesStatus(documentSnapshot.id);
+                                        },
+                                        child: const Text(
+                                          'Restore',
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      MaterialButton(
+                                        color: mainColor,
+                                        onPressed: () {
+                                          deleteCoures(documentSnapshot.id);
+                                        },
+                                        child: Text(
+                                          'Permanent Delete',
+                                          style: TextStyle(
+                                            color: whiteColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              const Divider(),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
                 },
               ),

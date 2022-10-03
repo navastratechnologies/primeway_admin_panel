@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -9,6 +10,17 @@ class LiveCourseScreen extends StatefulWidget {
 }
 
 class _LiveCourseScreenState extends State<LiveCourseScreen> {
+  Query<Map<String, dynamic>> courses = FirebaseFirestore.instance
+      .collection('courses');
+
+      Future<void> updateCoursesStatus(courseId, status) async {
+    FirebaseFirestore.instance
+        .collection('courses').doc(courseId).update({
+          'islive': status
+        });
+        
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -128,121 +140,146 @@ class _LiveCourseScreenState extends State<LiveCourseScreen> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(10),
-              height: displayHeight(context) / 1.21,
-              width: displayWidth(context) / 1.2,
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Center(
-                                child: Text(
-                                  "${index.toString()}. ",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Web Development Course",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "100k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "10k",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Self",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: index.isEven
-                                        ? greenLightShadeColor
-                                        : mainShadeColor,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    index.isEven ? "Live" : "Paused",
-                                    style: TextStyle(
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.all(10),
+                height: displayHeight(context) / 1.21,
+                width: displayWidth(context) / 1.2,
+                child: StreamBuilder(
+                  stream: courses.snapshots(),
+                  builder:
+                      (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                    if (streamSnapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: streamSnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final DocumentSnapshot documentSnapshot =
+                              streamSnapshot.data!.docs[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Center(
+                                        child: Text(
+                                          "${index.toString()}. ",
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['name'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['views'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['purchases'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['uploaded_by'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: documentSnapshot['islive'] == 'true' 
+                                                ? greenLightShadeColor
+                                                : mainShadeColor,
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Text(
+                                            documentSnapshot['islive'] == 'true' 
+                                            ? "Live" 
+                                            : "Paused",
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    MaterialButton(
+                                      color: Colors.yellow,
+                                      onPressed: () {
+                                        documentSnapshot['islive'] == 'true'
+                                        ? updateCoursesStatus(documentSnapshot.id, 'false')
+                                        : updateCoursesStatus(documentSnapshot.id, 'true');
+                                      },
+                                      child: Text(
+                                        documentSnapshot['islive'] == 'true' ? 'Pause Course' : 'Live',
+                                        style: const TextStyle(
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                const SizedBox(height: 2),
+                                const Divider(),
+                              ],
                             ),
-                            MaterialButton(
-                              color: Colors.yellow,
-                              onPressed: () {},
-                              child: const Text(
-                                'Pause Course',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        const Divider(),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+                          );
+                        },
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                )),
           ],
         ),
       ),

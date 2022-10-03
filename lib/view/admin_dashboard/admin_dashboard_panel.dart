@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.dart';
@@ -16,6 +17,10 @@ class AdminDashBoard extends StatefulWidget {
 }
 
 class _AdminDashBoardState extends State<AdminDashBoard> {
+
+  final CollectionReference user =
+      FirebaseFirestore.instance.collection('users');
+
   bool showDashboardPanel = true;
   bool showUsersPanel = false;
   bool showWalletPanel = false;
@@ -552,7 +557,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                       ],
                     ),
                   ),
-                  showOtherRequestPanel ? const OtherRequestScreen() : showFeedbackPanel ? const FeedBackScreen() : showBannerPanel ? const BannerScreen() : showUsersPanel ? const UserScreen() : const AdminPanelBody(),
+                  showOtherRequestPanel ? const OtherRequestScreen() : showFeedbackPanel ? const FeedBackScreen() : showBannerPanel ? const BannerScreen() : showUsersPanel ? const UserScreen() :  const AdminPanelBody(),
                 ],
               ),
             ),
