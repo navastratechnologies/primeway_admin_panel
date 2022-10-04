@@ -39,7 +39,8 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> unapprovedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('approval_status', isEqualTo: 'unapproved')
+        .collection('users')
+        .where('approval_status', isEqualTo: 'unapproved')
         .get()
         .then((QuerySnapshot snapshot) {
       log('unapproved user id is ${snapshot.docs.length}');
@@ -51,7 +52,8 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> approvedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('approval_status', isEqualTo: 'approved')
+        .collection('users')
+        .where('approval_status', isEqualTo: 'approved')
         .get()
         .then((QuerySnapshot snapshot) {
       log('approved user id is ${snapshot.docs.length}');
@@ -63,7 +65,8 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> rejectedUserCount() async {
     FirebaseFirestore.instance
-        .collection('users').where('approval_status', isEqualTo: 'rejected')
+        .collection('users')
+        .where('approval_status', isEqualTo: 'rejected')
         .get()
         .then((QuerySnapshot snapshot) {
       log('rejected user id is ${snapshot.docs.length}');
@@ -99,7 +102,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
               const SizedBox(width: 20),
               dashboardTile(
-               approvedUser,
+                approvedUser,
                 'Approved Users',
                 Icons.verified_user_sharp,
               ),
@@ -347,17 +350,29 @@ class _UserScreenState extends State<UserScreen> {
                                                     padding:
                                                         const EdgeInsets.all(5),
                                                     decoration: BoxDecoration(
-                                                      color:documentSnapshot['approval_status'] == "approved"
+                                                      color: documentSnapshot[
+                                                                  'approval_status'] ==
+                                                              "approved"
                                                           ? greenLightShadeColor
-                                                          : mainShadeColor,
+                                                          : documentSnapshot[
+                                                                      'approval_status'] ==
+                                                                  "rejected"
+                                                              ? mainShadeColor
+                                                              : yellow,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
                                                     child: Text(
-                                                      documentSnapshot['approval_status'] == "approved"
+                                                      documentSnapshot[
+                                                                  'approval_status'] ==
+                                                              "approved"
                                                           ? "Approved"
-                                                          : "Unapproved",
+                                                          : documentSnapshot[
+                                                                      'approval_status'] ==
+                                                                  "rejected"
+                                                              ? "Rejected"
+                                                              : "Unapproved",
                                                       style: TextStyle(
                                                         color: whiteColor,
                                                         fontWeight:

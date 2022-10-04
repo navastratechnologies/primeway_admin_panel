@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -9,6 +10,9 @@ class OtherRequestScreen extends StatefulWidget {
 }
 
 class _OtherRequestScreenState extends State<OtherRequestScreen> {
+  final CollectionReference otherRequested =
+      FirebaseFirestore.instance.collection('other_requests');
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -95,92 +99,110 @@ class _OtherRequestScreenState extends State<OtherRequestScreen> {
               padding: const EdgeInsets.all(10),
               height: displayHeight(context) / 1.25,
               width: displayWidth(context) / 1.2,
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Center(
-                                child: Text(
-                                  "${index.toString()}. ",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Deepak",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 200,
-                              child: Center(
-                                child: Text(
-                                  "Unban My Account",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 200,
-                              child: Center(
-                                child: Text(
-                                  "Please unban my account. I want my id back.",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: mainColor,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    "Contact",
-                                    style: TextStyle(
-                                      color: whiteColor,
-                                      fontWeight: FontWeight.bold,
+              child: StreamBuilder(
+                  stream: otherRequested.snapshots(),
+                  builder:
+                      (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                    if (streamSnapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: streamSnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final DocumentSnapshot documentSnapshot =
+                              streamSnapshot.data!.docs[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Center(
+                                        child: Text(
+                                          "${index.toString()}. ",
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['user_name'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['message'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: Center(
+                                        child: Text(
+                                          documentSnapshot['requested_for'],
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
+                                      child: Center(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: mainColor,
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Text(
+                                            "Contact",
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                const SizedBox(height: 2),
+                                const Divider(),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        const Divider(),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          );
+                        },
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }),
             ),
           ],
         ),
