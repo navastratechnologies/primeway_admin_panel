@@ -6,7 +6,6 @@ import 'package:mrx_charts/mrx_charts.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class AdminPanelBody extends StatefulWidget {
-  
   const AdminPanelBody({super.key});
 
   @override
@@ -14,12 +13,57 @@ class AdminPanelBody extends StatefulWidget {
 }
 
 class _AdminPanelBodyState extends State<AdminPanelBody> {
-
   var data = {};
+  String userCount = '' ;
+  String coursesCount = '' ;
+  String collaborationCount = '' ;
 
   final CollectionReference withDrawal =
       FirebaseFirestore.instance.collection('withdrawal_request');
 
+  Future<void> getUserCount() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      // log('user id is ${snapshot.docs.length}');
+      setState(() {
+        userCount = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> getCoursesCount() async {
+    FirebaseFirestore.instance
+        .collection('courses')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      // log('user id is ${snapshot.docs.length}');
+      setState(() {
+        coursesCount = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  Future<void> getCollaborationCount() async {
+    FirebaseFirestore.instance
+        .collection('collaboration')
+        .get()
+        .then((QuerySnapshot snapshot) {
+      // log('user id is ${snapshot.docs.length}');
+      setState(() {
+        collaborationCount = '${snapshot.docs.length}';
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    getUserCount();
+    getCoursesCount();
+    getCollaborationCount();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,19 +85,19 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       dashboardTile(
-                        '100K',
+                        userCount,
                         'Users',
                         Icons.person_pin,
                       ),
                       const SizedBox(width: 20),
                       dashboardTile(
-                        '120',
+                        coursesCount,
                         'Courses',
                         Icons.menu_book_rounded,
                       ),
                       const SizedBox(width: 20),
                       dashboardTile(
-                        '20',
+                        collaborationCount,
                         'Collaborations',
                         Icons.groups,
                       ),
@@ -182,7 +226,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                   return ListView.builder(
                                     itemCount: streamSnapshot.data!.docs.length,
                                     itemBuilder: (context, index) {
-                                      final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
+                                      final DocumentSnapshot documentSnapshot =
+                                          streamSnapshot.data!.docs[index];
                                       return Padding(
                                         padding: const EdgeInsets.all(10),
                                         child: Column(
@@ -193,7 +238,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                   width: 80,
                                                   child: Center(
                                                     child: Text(
-                                                      documentSnapshot['user_Id'],
+                                                      documentSnapshot[
+                                                          'user_Id'],
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.4),
@@ -207,7 +253,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                   width: 120,
                                                   child: Center(
                                                     child: Text(
-                                                      documentSnapshot['user_name'],
+                                                      documentSnapshot[
+                                                          'user_name'],
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.4),
@@ -221,7 +268,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                   width: 120,
                                                   child: Center(
                                                     child: Text(
-                                                      documentSnapshot['transaction_Id'],
+                                                      documentSnapshot[
+                                                          'transaction_Id'],
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.4),
@@ -235,7 +283,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                   width: 120,
                                                   child: Center(
                                                     child: Text(
-                                                      documentSnapshot['wallet_balance'],
+                                                      documentSnapshot[
+                                                          'wallet_balance'],
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.4),
@@ -249,7 +298,8 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                   width: 120,
                                                   child: Center(
                                                     child: Text(
-                                                      documentSnapshot['requested_for'],
+                                                      documentSnapshot[
+                                                          'requested_for'],
                                                       style: TextStyle(
                                                         color: Colors.black
                                                             .withOpacity(0.4),
@@ -267,7 +317,9 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                           const EdgeInsets.all(
                                                               5),
                                                       decoration: BoxDecoration(
-                                                        color: documentSnapshot['status'] == 'approved'
+                                                        color: documentSnapshot[
+                                                                    'status'] ==
+                                                                'approved'
                                                             ? greenLightShadeColor
                                                             : mainShadeColor,
                                                         borderRadius:
@@ -275,7 +327,9 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                                                 .circular(5),
                                                       ),
                                                       child: Text(
-                                                        documentSnapshot['status'] == 'approved'
+                                                        documentSnapshot[
+                                                                    'status'] ==
+                                                                'approved'
                                                             ? "Approved"
                                                             : "Pending",
                                                         style: TextStyle(

@@ -14,17 +14,15 @@ class _DeletedCourseScreenState extends State<DeletedCourseScreen> {
       .collection('courses')
       .where('status', isEqualTo: 'delete');
 
-      Future<void> updateCoursesStatus(courseId) async {
+  Future<void> updateCoursesStatus(courseId) async {
     FirebaseFirestore.instance
-        .collection('courses').doc(courseId).update({
-          'status': 'approved'
-        });
+        .collection('courses')
+        .doc(courseId)
+        .update({'status': 'unapproved'});
   }
 
   Future<void> deleteCoures(courseId) async {
-    FirebaseFirestore.instance
-        .collection('courses').doc(courseId).delete();
-        
+    FirebaseFirestore.instance.collection('courses').doc(courseId).delete();
   }
 
   @override
@@ -220,7 +218,8 @@ class _DeletedCourseScreenState extends State<DeletedCourseScreen> {
                                       MaterialButton(
                                         color: Colors.yellow,
                                         onPressed: () {
-                                          updateCoursesStatus(documentSnapshot.id);
+                                          updateCoursesStatus(
+                                              documentSnapshot.id);
                                         },
                                         child: const Text(
                                           'Restore',

@@ -10,15 +10,14 @@ class LiveCourseScreen extends StatefulWidget {
 }
 
 class _LiveCourseScreenState extends State<LiveCourseScreen> {
-  Query<Map<String, dynamic>> courses = FirebaseFirestore.instance
-      .collection('courses');
+  Query<Map<String, dynamic>> courses =
+      FirebaseFirestore.instance.collection('courses');
 
-      Future<void> updateCoursesStatus(courseId, status) async {
+  Future<void> updateCoursesStatus(courseId, status) async {
     FirebaseFirestore.instance
-        .collection('courses').doc(courseId).update({
-          'islive': status
-        });
-        
+        .collection('courses')
+        .doc(courseId)
+        .update({'islive': status});
   }
 
   @override
@@ -232,16 +231,17 @@ class _LiveCourseScreenState extends State<LiveCourseScreen> {
                                         child: Container(
                                           padding: const EdgeInsets.all(5),
                                           decoration: BoxDecoration(
-                                            color: documentSnapshot['islive'] == 'true' 
+                                            color: documentSnapshot['islive'] ==
+                                                    'true'
                                                 ? greenLightShadeColor
                                                 : mainShadeColor,
                                             borderRadius:
                                                 BorderRadius.circular(5),
                                           ),
                                           child: Text(
-                                            documentSnapshot['islive'] == 'true' 
-                                            ? "Live" 
-                                            : "Paused",
+                                            documentSnapshot['islive'] == 'true'
+                                                ? "Live"
+                                                : "Paused",
                                             style: TextStyle(
                                               color: whiteColor,
                                               fontWeight: FontWeight.bold,
@@ -254,11 +254,15 @@ class _LiveCourseScreenState extends State<LiveCourseScreen> {
                                       color: Colors.yellow,
                                       onPressed: () {
                                         documentSnapshot['islive'] == 'true'
-                                        ? updateCoursesStatus(documentSnapshot.id, 'false')
-                                        : updateCoursesStatus(documentSnapshot.id, 'true');
+                                            ? updateCoursesStatus(
+                                                documentSnapshot.id, 'false')
+                                            : updateCoursesStatus(
+                                                documentSnapshot.id, 'true');
                                       },
                                       child: Text(
-                                        documentSnapshot['islive'] == 'true' ? 'Pause Course' : 'Live',
+                                        documentSnapshot['islive'] == 'true'
+                                            ? 'Pause Course'
+                                            : 'Live',
                                         style: const TextStyle(
                                           color: Colors.black54,
                                           fontWeight: FontWeight.bold,

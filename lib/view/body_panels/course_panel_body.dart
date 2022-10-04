@@ -426,9 +426,12 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                         streamSnapshot) {
                                   if (streamSnapshot.hasData) {
                                     return ListView.builder(
-                                      itemCount: streamSnapshot.data!.docs.length,
+                                      itemCount:
+                                          streamSnapshot.data!.docs.length,
                                       itemBuilder: (context, index) {
-                                        final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
+                                        final DocumentSnapshot
+                                            documentSnapshot =
+                                            streamSnapshot.data!.docs[index];
                                         return Padding(
                                           padding: const EdgeInsets.all(10),
                                           child: Column(
@@ -453,7 +456,8 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                     width: 120,
                                                     child: Center(
                                                       child: Text(
-                                                        documentSnapshot['name'],
+                                                        documentSnapshot[
+                                                            'name'],
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.4),
@@ -467,7 +471,8 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                     width: 120,
                                                     child: Center(
                                                       child: Text(
-                                                        documentSnapshot['views'],
+                                                        documentSnapshot[
+                                                            'views'],
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.4),
@@ -481,7 +486,8 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                     width: 120,
                                                     child: Center(
                                                       child: Text(
-                                                        documentSnapshot['purchases'],
+                                                        documentSnapshot[
+                                                            'purchases'],
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.4),
@@ -495,7 +501,8 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                     width: 120,
                                                     child: Center(
                                                       child: Text(
-                                                        documentSnapshot['uploaded_by'],
+                                                        documentSnapshot[
+                                                            'uploaded_by'],
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.4),
@@ -514,25 +521,43 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                                 .all(5),
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: documentSnapshot['status'] == 'approved'
+                                                          color: documentSnapshot[
+                                                                      'status'] ==
+                                                                  'approved'
                                                               ? greenLightShadeColor
-                                                              : documentSnapshot['status'] == 'rejected'
-                                                              ? yellow
-                                                              : documentSnapshot['status'] == 'delete'
-                                                              ? orange
-                                                              : mainShadeColor,
+                                                              : documentSnapshot[
+                                                                          'status'] ==
+                                                                      'rejected'
+                                                                  ? yellow
+                                                                  : documentSnapshot[
+                                                                              'status'] ==
+                                                                          'delete'
+                                                                      ? orange
+                                                                      : documentSnapshot['status'] ==
+                                                                              'live'
+                                                                          ? greenLightShadeColor
+                                                                          : mainShadeColor,
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(5),
                                                         ),
                                                         child: Text(
-                                                          documentSnapshot['status'] == 'approved'
+                                                          documentSnapshot[
+                                                                      'status'] ==
+                                                                  'approved'
                                                               ? "Approved"
-                                                              : documentSnapshot['status'] == 'rejected'
-                                                              ? "Rejected" 
-                                                              : documentSnapshot['status'] == 'delete'
-                                                              ? "Panding"
-                                                              : "Delete",
+                                                              : documentSnapshot[
+                                                                          'status'] ==
+                                                                      'rejected'
+                                                                  ? "Rejected"
+                                                                  : documentSnapshot[
+                                                                              'status'] ==
+                                                                          'delete'
+                                                                      ? "Delete"
+                                                                      : documentSnapshot['status'] ==
+                                                                              'live'
+                                                                          ? "Live"
+                                                                          : "Panding",
                                                           style: TextStyle(
                                                             color: whiteColor,
                                                             fontWeight:
