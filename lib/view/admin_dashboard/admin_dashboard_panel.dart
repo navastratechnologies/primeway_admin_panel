@@ -4,10 +4,11 @@ import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/other_requests_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/user_page.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/pages/wallet_page.dart';
 import 'package:primeway_admin_panel/view/body_panels/admin_panel_body.dart';
-import 'package:primeway_admin_panel/view/top_bar.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:primeway_admin_panel/view/top_bar.dart';
 
 class AdminDashBoard extends StatefulWidget {
   const AdminDashBoard({super.key});
@@ -17,7 +18,6 @@ class AdminDashBoard extends StatefulWidget {
 }
 
 class _AdminDashBoardState extends State<AdminDashBoard> {
-
   final CollectionReference user =
       FirebaseFirestore.instance.collection('users');
 
@@ -557,7 +557,17 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                       ],
                     ),
                   ),
-                  showOtherRequestPanel ? const OtherRequestScreen() : showFeedbackPanel ? const FeedBackScreen() : showBannerPanel ? const BannerScreen() : showUsersPanel ? const UserScreen() :  const AdminPanelBody(),
+                  showWalletPanel
+                      ? const WalletScreen()
+                      : showOtherRequestPanel
+                          ? const OtherRequestScreen()
+                          : showFeedbackPanel
+                              ? const FeedBackScreen()
+                              : showBannerPanel
+                                  ? const BannerScreen()
+                                  : showUsersPanel
+                                      ? const UserScreen()
+                                      : const AdminPanelBody(),
                 ],
               ),
             ),
