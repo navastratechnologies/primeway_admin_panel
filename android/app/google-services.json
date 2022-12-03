@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "782580474549",
+    "project_id": "primeway-fa5e5",
+    "storage_bucket": "primeway-fa5e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782580474549:android:b4b2399811b0ed22b7d4fc",
+        "android_client_info": {
+          "package_name": "com.centurus.primeway_admin_panel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782580474549-ahnpk42eun643pf66ocaksv96n0tacr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDNw-9pivOru6a2ll91LpP8uMEAn6u2Rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782580474549-ahnpk42eun643pf66ocaksv96n0tacr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782580474549:android:98d1421171ef4348b7d4fc",
+        "android_client_info": {
+          "package_name": "com.example.primeway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.primeway",
+            "certificate_hash": "6e7e6cc44386565550266a05898b7b1028682ea8"
+          }
+        },
+        {
+          "client_id": "782580474549-ahnpk42eun643pf66ocaksv96n0tacr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDNw-9pivOru6a2ll91LpP8uMEAn6u2Rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782580474549-ahnpk42eun643pf66ocaksv96n0tacr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
