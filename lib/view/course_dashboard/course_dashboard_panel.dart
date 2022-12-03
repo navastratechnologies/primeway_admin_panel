@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/pages/courses2.dart';
 import 'package:primeway_admin_panel/view/body_panels/course_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/approved_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/deleted_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/live_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/rejected_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/unapproved_course_screen.dart';
+
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/top_bar.dart';
 
@@ -504,7 +506,19 @@ class _CourseDashboardState extends State<CourseDashboard> {
                       ],
                     ),
                   ),
-                  showDeleteCourses ? const DeletedCourseScreen() : showRejectedCourses ? const RejectedCourseScreen() : showApprovedCourses ? const ApprovedCourseScreen() : showPendingCourses ? const UnApprovedCourseScreen() : showLiveCourses ? const LiveCourseScreen()  : const CoursePanelBody(),
+                  showDeleteCourses
+                      ? const DeletedCourseScreen()
+                      : showUploadCourses
+                          ? const CoursesPage()
+                          : showRejectedCourses
+                              ? const RejectedCourseScreen()
+                              : showApprovedCourses
+                                  ? const ApprovedCourseScreen()
+                                  : showPendingCourses
+                                      ? const UnApprovedCourseScreen()
+                                      : showLiveCourses
+                                          ? const LiveCourseScreen()
+                                          : const CoursePanelBody(),
                 ],
               ),
             ),
