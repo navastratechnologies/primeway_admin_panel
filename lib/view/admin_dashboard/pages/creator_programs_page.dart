@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print, invalid_return_type_for_catch_error
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -11,22 +9,25 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
-class BannerScreen extends StatefulWidget {
-  const BannerScreen({super.key});
+class CreatorProgramScreen extends StatefulWidget {
+  const CreatorProgramScreen({super.key});
 
   @override
-  State<BannerScreen> createState() => _BannerScreenState();
+  State<CreatorProgramScreen> createState() => _CreatorProgramScreenState();
 }
 
-class _BannerScreenState extends State<BannerScreen> {
+class _CreatorProgramScreenState extends State<CreatorProgramScreen> {
   File? pickedFile;
   UploadTask? uploadTask;
   Uint8List webImage = Uint8List(8);
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   bool bannerPicked = false;
+  String url = '';
 
-  final CollectionReference banner =
-      FirebaseFirestore.instance.collection('Banner');
+  TextEditingController categoryController = TextEditingController();
+
+  final CollectionReference creator =
+      FirebaseFirestore.instance.collection('creator_program_category');
 
   Future<void> pickImage() async {
     if (!kIsWeb) {
@@ -59,7 +60,7 @@ class _BannerScreenState extends State<BannerScreen> {
 
   Future uploadFile() async {
     Reference ref =
-        FirebaseStorage.instance.ref().child('Banner/${DateTime.now()}.png');
+        FirebaseStorage.instance.ref().child('creator/${DateTime.now()}.png');
     UploadTask uploadTask = ref.putData(
       webImage,
       SettableMetadata(contentType: 'image/png'),
@@ -71,19 +72,23 @@ class _BannerScreenState extends State<BannerScreen> {
         .catchError(
           (error) => print('something went wrong'),
         );
-    String url = await taskSnapshot.ref.getDownloadURL();
+    url = await taskSnapshot.ref.getDownloadURL();
 
-    FirebaseFirestore.instance.collection('Banner').add({
-      'Banner_image': url.toString(),
-      'Banner_link': 'google.com',
-      'Banner_name': 'Banner',
-    });
+    FirebaseFirestore.instance.collection('creator_program_category').add(
+      {
+        'image': url.toString(),
+        'category': categoryController.text,
+      },
+    );
   }
 
-  Future<void> deleteBannerData(bannerId, bannerImage) async {
-    FirebaseFirestore.instance.collection('Banner').doc(bannerId).delete();
+  Future<void> deleteCategoryData(categoryId, categoryUrl) async {
+    FirebaseFirestore.instance
+        .collection('creator_program_category')
+        .doc(categoryId)
+        .delete();
 
-    FirebaseStorage.instance.refFromURL(bannerImage).delete().then(
+    FirebaseStorage.instance.refFromURL(categoryUrl).delete().then(
           (value) => log('image deleted from server'),
         );
   }
@@ -128,7 +133,7 @@ class _BannerScreenState extends State<BannerScreen> {
                             width: 120,
                             child: Center(
                               child: Text(
-                                "Banner Id",
+                                "Id",
                                 style: TextStyle(
                                   color: whiteColor,
                                   fontWeight: FontWeight.bold,
@@ -140,7 +145,19 @@ class _BannerScreenState extends State<BannerScreen> {
                             width: 120,
                             child: Center(
                               child: Text(
-                                "Banner Image",
+                                "Image",
+                                style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 120,
+                            child: Center(
+                              child: Text(
+                                "Category Name",
                                 style: TextStyle(
                                   color: whiteColor,
                                   fontWeight: FontWeight.bold,
@@ -170,7 +187,7 @@ class _BannerScreenState extends State<BannerScreen> {
                   height: displayHeight(context) / 1.25,
                   width: displayWidth(context) / 2,
                   child: StreamBuilder(
-                      stream: banner.snapshots(),
+                      stream: creator.snapshots(),
                       builder: (context,
                           AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                         if (streamSnapshot.hasData) {
@@ -189,7 +206,7 @@ class _BannerScreenState extends State<BannerScreen> {
                                         width: 120,
                                         child: Center(
                                           child: Text(
-                                            index.toString(),
+                                            documentSnapshot.id,
                                             style: TextStyle(
                                               color:
                                                   Colors.black.withOpacity(0.4),
@@ -203,7 +220,20 @@ class _BannerScreenState extends State<BannerScreen> {
                                         height: 100,
                                         child: Center(
                                           child: Image.network(
-                                            documentSnapshot['Banner_image'],
+                                            documentSnapshot['image'],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            documentSnapshot['category'],
+                                            style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(0.4),
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -212,10 +242,9 @@ class _BannerScreenState extends State<BannerScreen> {
                                         child: Center(
                                           child: InkWell(
                                             onTap: () {
-                                              deleteBannerData(
+                                              deleteCategoryData(
                                                 documentSnapshot.id,
-                                                documentSnapshot[
-                                                    'Banner_image'],
+                                                documentSnapshot['image'],
                                               );
                                             },
                                             child: Container(
@@ -257,12 +286,44 @@ class _BannerScreenState extends State<BannerScreen> {
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            InkWell(
+              onTap: () {
+                pickImage();
+              },
+              child: Container(
+                width: displayWidth(context) / 4,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: pickedFile == null
+                    ? Center(
+                        child: FaIcon(
+                          FontAwesomeIcons.camera,
+                          size: 100,
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                      )
+                    : kIsWeb
+                        ? Image.memory(webImage)
+                        : Image.file(pickedFile!),
+              ),
+            ),
+            const SizedBox(height: 20),
             Container(
               width: displayWidth(context) / 4,
-              height: 200,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 color: whiteColor,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -271,17 +332,17 @@ class _BannerScreenState extends State<BannerScreen> {
                   ),
                 ],
               ),
-              child: pickedFile == null
-                  ? Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.camera,
-                        size: 100,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                    )
-                  : kIsWeb
-                      ? Image.memory(webImage)
-                      : Image.file(pickedFile!),
+              child: TextFormField(
+                controller: categoryController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter Creator Program Category name',
+                  hintStyle: TextStyle(
+                    color: Colors.black.withOpacity(0.2),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             MaterialButton(
@@ -292,29 +353,50 @@ class _BannerScreenState extends State<BannerScreen> {
                 borderRadius: BorderRadius.circular(5),
               ),
               onPressed: () {
-                pickImage();
+                if (categoryController.text.isNotEmpty && pickedFile != null) {
+                  uploadFile();
+                } else if (pickedFile == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please select image to upload',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.only(
+                        left: displayWidth(context) / 1.3,
+                        right: 50,
+                        bottom: 100,
+                      ),
+                      backgroundColor: mainColor,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please enter category name to upload',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.only(
+                        left: displayWidth(context) / 1.3,
+                        right: 50,
+                        bottom: 100,
+                      ),
+                      backgroundColor: mainColor,
+                    ),
+                  );
+                }
               },
               child: Text(
-                "Pick Image",
-                style: TextStyle(
-                  color: whiteColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            MaterialButton(
-              minWidth: displayWidth(context) / 4,
-              height: 40,
-              color: mainColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              onPressed: () {
-                uploadFile();
-              },
-              child: Text(
-                "Upload Image",
+                "Upload",
                 style: TextStyle(
                   color: whiteColor,
                   fontWeight: FontWeight.bold,

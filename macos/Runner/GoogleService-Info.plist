@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDaBlgmvTNTRzP0fHkIc_zhxCmoVroHTLc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>782580474549</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.primewayAdminPanel</string>
+	<key>PROJECT_ID</key>
+	<string>primeway-fa5e5</string>
+	<key>STORAGE_BUCKET</key>
+	<string>primeway-fa5e5.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:782580474549:ios:ed35c2e0761e3760b7d4fc</string>
+</dict>
+</plist>

@@ -156,7 +156,7 @@ packages:
     source: hosted
     version: "4.5.2"
   firebase_core_web:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
@@ -441,6 +441,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.12"
+  toast:
+    dependency: "direct main"
+    description:
+      name: toast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:
