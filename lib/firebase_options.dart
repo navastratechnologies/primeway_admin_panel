@@ -44,13 +44,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBptZzJ5pzf26E5iEDGoL2Lr1SZpRXmXcM',
-    appId: '1:782580474549:web:5398232848943852b7d4fc',
-    messagingSenderId: '782580474549',
-    projectId: 'primeway-fa5e5',
-    authDomain: 'primeway-fa5e5.firebaseapp.com',
-    storageBucket: 'primeway-fa5e5.appspot.com',
-    measurementId: 'G-TM1G56MF74',
+    apiKey: "AIzaSyDYjuZa-xQtcTX83kDatHuJNPTmDZGIyVg",
+    authDomain: "primeway-e0f3f.firebaseapp.com",
+    projectId: "primeway-e0f3f",
+    storageBucket: "primeway-e0f3f.appspot.com",
+    messagingSenderId: "836225855666",
+    appId: "1:836225855666:web:706ef5407b807571a3d9ab",
+    measurementId: "G-433C740BYM",
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -67,8 +67,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '782580474549',
     projectId: 'primeway-fa5e5',
     storageBucket: 'primeway-fa5e5.appspot.com',
-    androidClientId: '782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com',
-    iosClientId: '782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs.apps.googleusercontent.com',
+    androidClientId:
+        '782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com',
+    iosClientId:
+        '782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs.apps.googleusercontent.com',
     iosBundleId: 'com.example.primewayAdminPanel',
   );
 
@@ -78,8 +80,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '782580474549',
     projectId: 'primeway-fa5e5',
     storageBucket: 'primeway-fa5e5.appspot.com',
-    androidClientId: '782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com',
-    iosClientId: '782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs.apps.googleusercontent.com',
+    androidClientId:
+        '782580474549-1ql28cgbq76uutmi14r8baof2nk8oac3.apps.googleusercontent.com',
+    iosClientId:
+        '782580474549-5e0mrmstru1vm78ar8ggkpbhuik2hihs.apps.googleusercontent.com',
     iosBundleId: 'com.example.primewayAdminPanel',
   );
 }

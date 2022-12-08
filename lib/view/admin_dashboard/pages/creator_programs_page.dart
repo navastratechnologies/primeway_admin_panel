@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_return_type_for_catch_error
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -67,10 +69,10 @@ class _CreatorProgramScreenState extends State<CreatorProgramScreen> {
     );
     TaskSnapshot taskSnapshot = await uploadTask
         .whenComplete(
-          () => print('done'),
+          () => log('done'),
         )
         .catchError(
-          (error) => print('something went wrong'),
+          (error) => log('something went wrong : $error'),
         );
     url = await taskSnapshot.ref.getDownloadURL();
 
