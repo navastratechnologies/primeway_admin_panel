@@ -1,7 +1,15 @@
+// ignore_for_file: invalid_return_type_for_catch_error
+
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/video_playr.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class UploadCoursesScreen extends StatefulWidget {
@@ -16,10 +24,16 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   TextEditingController chapterTitleController = TextEditingController();
   TextEditingController chapterDescriptionController = TextEditingController();
 
+  TextEditingController lessonNameController = TextEditingController();
+  TextEditingController lessoneDescriptionController = TextEditingController();
+  TextEditingController waterMarkPositionController = TextEditingController();
+
   String draft = 'Draft';
   String type = 'Audio Book';
   var items = [
     "Audio Book",
+    "Rich Text",
+    "Document",
     "Video",
     "eBook",
     "Mixed",
@@ -38,6 +52,71 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       'description': chapterDescriptionController.text,
       'publish_unit': draft,
     });
+  }
+
+  File? pickedFile;
+  UploadTask? uploadTask;
+  Uint8List webImage = Uint8List(8);
+
+  Future<void> pickImage() async {
+    if (!kIsWeb) {
+      ImagePicker picker = ImagePicker();
+      XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        var selected = File(image.path);
+        setState(() {
+          pickedFile = selected;
+        });
+      } else {
+        log('no image has been selected');
+      }
+    } else if (kIsWeb) {
+      ImagePicker picker = ImagePicker();
+      XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        var selectedByte = await image.readAsBytes();
+        setState(() {
+          webImage = selectedByte;
+          pickedFile = File('a');
+        });
+      } else {
+        log('no image has been selected');
+      }
+    } else {
+      log('something went wrong');
+    }
+  }
+
+  Future uploadFile(id) async {
+    Reference ref =
+        FirebaseStorage.instance.ref().child('course/${DateTime.now()}.png');
+    UploadTask uploadTask = ref.putData(
+      webImage,
+      SettableMetadata(contentType: 'image/png'),
+    );
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {
+      log('done');
+    }).catchError(
+      (error) => log('something went wrong : $error'),
+    );
+    String url = await taskSnapshot.ref.getDownloadURL();
+    try {
+      await course
+          .doc(widget.courseId)
+          .collection('chapters')
+          .doc(id)
+          .collection('videos')
+          .doc(lessonNameController.text)
+          .set({
+        'url': url.toString(),
+        'type': type,
+        'title': lessonNameController.text,
+        'description': lessoneDescriptionController.text,
+        'water_position': waterMarkPositionController.text,
+      });
+    } catch (e) {
+      log('message is error : $e');
+    }
   }
 
   @override
@@ -131,16 +210,19 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                   child: ExpansionTile(
                                     title: Text(documentSnapshot.id),
                                     textColor: Colors.blue,
-                                    trailing: InkWell(
-                                      onTap: () {
-                                        course
-                                            .doc(widget.courseId)
-                                            .collection('chapters')
-                                            .doc(documentSnapshot.id)
-                                            .delete();
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        try {
+                                          var id = documentSnapshot.id;
+                                          addlesson(context, id);
+                                          log('This is document id : $id');
+                                        } catch (e) {
+                                          log('Error is : $e');
+                                        }
                                       },
-                                      child: const Icon(
-                                        Icons.delete,
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.blue,
                                       ),
                                     ),
                                     children: <Widget>[
@@ -161,7 +243,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                   .data!.docs.length,
                                               itemBuilder: (context, index) {
                                                 final DocumentSnapshot
-                                                    documentSnapshot =
+                                                    documentSnapshotVideo =
                                                     streamSnapshot
                                                         .data!.docs[index];
                                                 return Padding(
@@ -173,13 +255,20 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                         const BoxDecoration(),
                                                     child: InkWell(
                                                       onTap: () {
-                                                        try {
-                                                          documentSnapshot[
-                                                              'url'];
-                                                          log('url is work : ${documentSnapshot['url']}');
-                                                        } catch (e) {
-                                                          log('url is : $e');
-                                                        }
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CourseVideoScreen(
+                                                              videoTitle:
+                                                                  documentSnapshotVideo[
+                                                                      'title'],
+                                                              videoUrl:
+                                                                  documentSnapshotVideo[
+                                                                      'url'],
+                                                            ),
+                                                          ),
+                                                        );
                                                       },
                                                       child: Padding(
                                                         padding:
@@ -187,7 +276,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                 .only(
                                                           left: 30.0,
                                                         ),
-                                                        child: documentSnapshot[
+                                                        child: documentSnapshotVideo[
                                                                     'type'] ==
                                                                 'Video'
                                                             ? Row(
@@ -201,12 +290,12 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                                 20),
                                                                   ),
                                                                   Text(
-                                                                    documentSnapshot
+                                                                    documentSnapshotVideo
                                                                         .id,
                                                                   ),
                                                                 ],
                                                               )
-                                                            : documentSnapshot[
+                                                            : documentSnapshotVideo[
                                                                         'type'] ==
                                                                     'Audio Book'
                                                                 ? Row(
@@ -219,12 +308,12 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                             EdgeInsets.only(left: 20),
                                                                       ),
                                                                       Text(
-                                                                        documentSnapshot
+                                                                        documentSnapshotVideo
                                                                             .id,
                                                                       ),
                                                                     ],
                                                                   )
-                                                                : documentSnapshot[
+                                                                : documentSnapshotVideo[
                                                                             'type'] ==
                                                                         'eBook'
                                                                     ? Row(
@@ -236,11 +325,11 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                                 EdgeInsets.only(left: 20),
                                                                           ),
                                                                           Text(
-                                                                            documentSnapshot.id,
+                                                                            documentSnapshotVideo.id,
                                                                           ),
                                                                         ],
                                                                       )
-                                                                    : documentSnapshot['type'] ==
+                                                                    : documentSnapshotVideo['type'] ==
                                                                             'Rich Text'
                                                                         ? Row(
                                                                             children: [
@@ -249,7 +338,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                                 padding: EdgeInsets.only(left: 20),
                                                                               ),
                                                                               Text(
-                                                                                documentSnapshot.id,
+                                                                                documentSnapshotVideo.id,
                                                                               ),
                                                                             ],
                                                                           )
@@ -260,7 +349,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                                 padding: EdgeInsets.only(left: 20),
                                                                               ),
                                                                               Text(
-                                                                                documentSnapshot.id,
+                                                                                documentSnapshotVideo.id,
                                                                               ),
                                                                             ],
                                                                           ),
@@ -288,465 +377,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         },
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.blue,
-                      ),
-                      //tooltip: 'Increase volume by 10',
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Container(
-                              //width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: AlertDialog(
-                                title: Container(
-                                  //width: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.plus_one,
-                                            color: Colors.blue,
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return Container(
-                                                    //width: 100,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    child: AlertDialog(
-                                                      title: Container(
-                                                        //width: 100,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(20),
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          30),
-                                                              child: Container(
-                                                                width: 80,
-                                                                height: 80,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              40),
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const Text(
-                                                              'Lesson Type',
-                                                              style: TextStyle(
-                                                                fontSize: 35,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          20),
-                                                              child:
-                                                                  DropdownButtonFormField(
-                                                                decoration:
-                                                                    const InputDecoration(),
-                                                                value: type,
-                                                                items: items
-                                                                    .map((String
-                                                                        items) {
-                                                                  return DropdownMenuItem(
-                                                                    value:
-                                                                        items,
-                                                                    child: Text(
-                                                                        items),
-                                                                  );
-                                                                }).toList(),
-                                                                onChanged: (String?
-                                                                    newValue) {
-                                                                  setState(() {
-                                                                    type =
-                                                                        newValue!;
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                MaterialButton(
-                                                                  shape:
-                                                                      const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .all(
-                                                                      Radius.circular(
-                                                                          0.0),
-                                                                    ),
-                                                                  ),
-                                                                  elevation:
-                                                                      5.0,
-                                                                  minWidth:
-                                                                      100.0,
-                                                                  height: 45,
-                                                                  color: Colors
-                                                                      .green,
-                                                                  child:
-                                                                      const Text(
-                                                                    'Create Lesson',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          16.0,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      // _isNeedHelp = true;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 30,
-                                                                ),
-                                                                MaterialButton(
-                                                                  shape:
-                                                                      const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .all(
-                                                                      Radius.circular(
-                                                                          0.0),
-                                                                    ),
-                                                                  ),
-                                                                  elevation:
-                                                                      5.0,
-                                                                  minWidth:
-                                                                      100.0,
-                                                                  height: 45,
-                                                                  color: Colors
-                                                                      .red,
-                                                                  child:
-                                                                      InkWell(
-                                                                    child:
-                                                                        const Text(
-                                                                      'Cancel',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            16.0,
-                                                                        color: Colors
-                                                                            .white,
-                                                                      ),
-                                                                    ),
-                                                                    onTap: () {
-                                                                      Navigator
-                                                                          .pop(
-                                                                        context,
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      // _isNeedHelp = true;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: const Text(
-                                              'Create new lesson',
-                                              style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 4, 71, 125),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.edit,
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              addUnit(context);
-                                            },
-                                            child: const Text('add new unit'),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.remove_red_eye,
-                                            color: Colors.green,
-                                          ),
-                                          TextButton(
-                                            onPressed: () {},
-                                            child: const Text(
-                                              'Publish Unit',
-                                              style: TextStyle(
-                                                color: Colors.blue,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.blue,
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return Container(
-                                                    //width: 100,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                        20,
-                                                      ),
-                                                    ),
-                                                    child: AlertDialog(
-                                                      title: Container(
-                                                        //width: 100,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            20,
-                                                          ),
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 80,
-                                                              width: 80,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                  40,
-                                                                ),
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 30,
-                                                            ),
-                                                            const Text(
-                                                              'Are you sure?',
-                                                              style: TextStyle(
-                                                                fontSize: 30.0,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            const Text(
-                                                              'you want to delete the following unit?',
-                                                              style: TextStyle(
-                                                                fontSize: 15.0,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            const Text(
-                                                              'Discussion & user Management',
-                                                              style: TextStyle(
-                                                                fontSize: 16.0,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 300,
-                                                              child: Text(
-                                                                'all the lessons and resourses will be deleted along with all the student progress',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        15.0,
-                                                                    color: Colors
-                                                                        .black),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 20,
-                                                            ),
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceEvenly,
-                                                              children: [
-                                                                MaterialButton(
-                                                                  shape:
-                                                                      const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .all(
-                                                                      Radius.circular(
-                                                                          0.0),
-                                                                    ),
-                                                                  ),
-                                                                  elevation:
-                                                                      5.0,
-                                                                  minWidth:
-                                                                      80.0,
-                                                                  height: 45,
-                                                                  color: Colors
-                                                                      .green,
-                                                                  child:
-                                                                      const Text(
-                                                                    'Yes,Delete Unit',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            16.0,
-                                                                        color: Colors
-                                                                            .black),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      // _isNeedHelp = true;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                                MaterialButton(
-                                                                  shape:
-                                                                      const RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .all(
-                                                                      Radius.circular(
-                                                                          0.0),
-                                                                    ),
-                                                                  ),
-                                                                  elevation:
-                                                                      5.0,
-                                                                  minWidth:
-                                                                      80.0,
-                                                                  height: 45,
-                                                                  color: Colors
-                                                                      .red,
-                                                                  child:
-                                                                      const Text(
-                                                                    'No',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            16.0,
-                                                                        color: Colors
-                                                                            .black),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      // _isNeedHelp = true;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: const Text(
-                                              'Delete',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     addlesson(context);
+                    //   },
+                    //   icon: const Icon(
+                    //     Icons.edit,
+                    //     color: Colors.blue,
+                    //   ),
+                    // ),
                   ],
                 ),
                 Container(height: 1, width: 850, color: Colors.grey),
@@ -755,6 +394,875 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  addlesson(BuildContext context, id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          //width: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: AlertDialog(
+            title: Container(
+              //width: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.plus_one,
+                        color: Colors.blue,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                //width: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: AlertDialog(
+                                  title: Container(
+                                    //width: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 30),
+                                          child: Container(
+                                            width: 80,
+                                            height: 80,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(40),
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Lesson Type',
+                                          style: TextStyle(
+                                            fontSize: 35,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: DropdownButtonFormField(
+                                            decoration: const InputDecoration(),
+                                            value: type,
+                                            items: items.map((String items) {
+                                              return DropdownMenuItem(
+                                                value: items,
+                                                child: Text(items),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                type = newValue!;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            MaterialButton(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(0.0),
+                                                ),
+                                              ),
+                                              elevation: 5.0,
+                                              minWidth: 100.0,
+                                              height: 45,
+                                              color: Colors.green,
+                                              child: const Text(
+                                                'Create Lesson',
+                                                style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                try {
+                                                  uploadlesson(context, id);
+                                                  log('This is uploade document id : $id');
+                                                } catch (e) {
+                                                  log('Error is : $e');
+                                                }
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              width: 30,
+                                            ),
+                                            MaterialButton(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(0.0),
+                                                ),
+                                              ),
+                                              elevation: 5.0,
+                                              minWidth: 100.0,
+                                              height: 45,
+                                              color: Colors.red,
+                                              child: InkWell(
+                                                child: const Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.pop(
+                                                    context,
+                                                  );
+                                                },
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  // _isNeedHelp = true;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: const Text(
+                          'Create new lesson',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 4, 71, 125),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.edit,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          addUnit(context);
+                        },
+                        child: const Text('add new unit'),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.remove_red_eye,
+                        color: Colors.green,
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Publish Unit',
+                          style: TextStyle(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.delete_forever,
+                        color: Colors.blue,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                //width: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                ),
+                                child: AlertDialog(
+                                  title: Container(
+                                    //width: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        20,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 80,
+                                          width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              40,
+                                            ),
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        const Text(
+                                          'Are you sure?',
+                                          style: TextStyle(
+                                            fontSize: 30.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        const Text(
+                                          'you want to delete the following unit?',
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Text(
+                                          id,
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        const SizedBox(
+                                          width: 300,
+                                          child: Text(
+                                            'all the lessons and resourses will be deleted along with all the student progress',
+                                            style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            MaterialButton(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(0.0),
+                                                ),
+                                              ),
+                                              elevation: 5.0,
+                                              minWidth: 80.0,
+                                              height: 45,
+                                              color: Colors.green,
+                                              child: const Text(
+                                                'Yes,Delete Unit',
+                                                style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: () {
+                                                course
+                                                    .doc(widget.courseId)
+                                                    .collection('chapters')
+                                                    .doc(id)
+                                                    .delete();
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            MaterialButton(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(0.0),
+                                                ),
+                                              ),
+                                              elevation: 5.0,
+                                              minWidth: 80.0,
+                                              height: 45,
+                                              color: Colors.red,
+                                              child: const Text(
+                                                'No',
+                                                style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  uploadlesson(BuildContext context, id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: AlertDialog(
+            title: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      type == 'Document'
+                          ? Text(
+                              'New Lesson(File)Details ',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.7),
+                                fontSize: 23,
+                              ),
+                            )
+                          : type == "Video"
+                              ? Text(
+                                  'New Lesson(Video)Details ',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 23,
+                                  ),
+                                )
+                              : type == "Audio Book"
+                                  ? Text(
+                                      'New Lesson(Audio)Details ',
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.7),
+                                        fontSize: 23,
+                                      ),
+                                    )
+                                  : Text(
+                                      'New Lesson(URL)Details ',
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.7),
+                                        fontSize: 23,
+                                      ),
+                                    ),
+                    ],
+                  ),
+                  Container(
+                    height: 1,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'LESSON NAME',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.7),
+                                  fontSize: 13),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 300,
+                            child: TextField(
+                              controller: lessonNameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: 'name of lesson',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                            child: Text(
+                              'LESSON DESCRIPTION',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.7),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 300,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextField(
+                                controller: lessoneDescriptionController,
+                                maxLines: 5,
+                                decoration:
+                                    const InputDecoration(hintText: 'passw'),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                            child: Text(
+                              'WATERMARK POSITION',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.7),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 300,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: TextField(
+                                controller: waterMarkPositionController,
+                                maxLines: 5,
+                                decoration:
+                                    const InputDecoration(hintText: 'passw'),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 15, 0, 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio(
+                                  value: 'Draft',
+                                  groupValue: draft,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      draft = value.toString();
+                                    });
+                                  },
+                                ),
+                                const Text('DRAFT'),
+                                const SizedBox(
+                                  width: 55,
+                                ),
+                                Radio(
+                                  value: 'Published',
+                                  groupValue: draft,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      draft = value.toString();
+                                    });
+                                  },
+                                ),
+                                const Text('PUBLISHED'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 20),
+                            child: Container(
+                              height: 200,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.grey.withOpacity(0.3),
+                                border: Border.all(color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                          type == "Document"
+                              ? TextButton(
+                                  onPressed: (() {
+                                    pickImage();
+                                  }),
+                                  child: const Text(
+                                    'Upload New Document',
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 15),
+                                  ),
+                                )
+                              : type == "Video"
+                                  ? TextButton(
+                                      onPressed: (() {
+                                        pickImage();
+                                      }),
+                                      child: const Text(
+                                        'Upload New Video',
+                                        style: TextStyle(
+                                            color: Colors.blue, fontSize: 15),
+                                      ),
+                                    )
+                                  : type == "Audio Book"
+                                      ? TextButton(
+                                          onPressed: (() {
+                                            pickImage();
+                                          }),
+                                          child: const Text(
+                                            'Upload New Audio',
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 15),
+                                          ),
+                                        )
+                                      : const Text(
+                                          '',
+                                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              'You can upload Document, Video and Audio here',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 1,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(0.0),
+                          ),
+                        ),
+                        elevation: 5.0,
+                        minWidth: 70.0,
+                        height: 42,
+                        color: Colors.green,
+                        child: const Text(
+                          'SAVE',
+                          style: TextStyle(fontSize: 13.0, color: Colors.white),
+                        ),
+                        onPressed: () {
+                          try {
+                            uploadFile(id);
+                            log('This is uploade file document id : $id');
+                          } catch (e) {
+                            log('Error is : $e');
+                          }
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: MaterialButton(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(0.0),
+                            ),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 70.0,
+                          height: 42,
+                          color: Colors.grey,
+                          child: const Text(
+                            'CLOSE',
+                            style:
+                                TextStyle(fontSize: 13.0, color: Colors.white),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  addUrl(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          child: AlertDialog(
+            title: Container(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'New Lesson(File)Details ',
+                        style: TextStyle(
+                            color: Colors.black.withOpacity(0.7), fontSize: 23),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 1,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'LESSON NAME',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.7),
+                                  fontSize: 13),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 300,
+                            child: TextField(
+                              //obscureText: true,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  //labelText: 'Lesson Name'
+                                  hintText: 'name of lesson'),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                            child: Text(
+                              'YOUTUBE URL',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.7),
+                                  fontSize: 13),
+                            ),
+                          ),
+                          Container(
+                            width: 300,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: TextField(
+                                maxLines: 5,
+                                //obscureText: true,
+                                decoration: InputDecoration(
+                                    // border: OutlineInputBorder(),
+                                    hintText: 'passw'
+                                    //labelText: 'Password',
+                                    ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 15, 0, 12),
+                            child: Text(
+                              'PUBLISH LESSON',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.7),
+                                  fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 12, 0, 12),
+                            child: Text(
+                              'LESSON DESCRIPTION',
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.7),
+                                  fontSize: 13),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 0),
+                            child: Container(
+                              width: 300,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: TextField(
+                                  maxLines: 7,
+                                  //obscureText: true,
+                                  decoration: InputDecoration(
+                                      // border: OutlineInputBorder(),
+                                      hintText: 'Brief discussion about lesson'
+                                      //labelText: 'Password',
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 1,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(0.0),
+                          ),
+                        ),
+                        elevation: 5.0,
+                        minWidth: 70.0,
+                        height: 42,
+                        color: Colors.green,
+                        child: const Text(
+                          'SAVE',
+                          style: TextStyle(fontSize: 13.0, color: Colors.white),
+                        ),
+                        onPressed: () {},
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: MaterialButton(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(0.0),
+                            ),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 70.0,
+                          height: 42,
+                          color: Colors.grey,
+                          child: const Text(
+                            'CLOSE',
+                            style:
+                                TextStyle(fontSize: 13.0, color: Colors.white),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -910,6 +1418,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                               ),
                               onPressed: () {
                                 createChapter();
+                                Navigator.pop(context);
+                                chapterTitleController.clear();
+                                chapterDescriptionController.clear();
                               },
                             ),
                             const SizedBox(
