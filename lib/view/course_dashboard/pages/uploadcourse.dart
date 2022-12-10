@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_return_type_for_catch_error
+// ignore_for_file: invalid_return_type_for_catch_error, unused_field
 
 import 'dart:developer';
 import 'dart:io';
@@ -9,8 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/video_playr.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+
+import '../video_playr.dart';
 
 class UploadCoursesScreen extends StatefulWidget {
   final String courseId;
@@ -88,8 +89,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   }
 
   Future uploadFile(id) async {
-    Reference ref =
-        FirebaseStorage.instance.ref().child('course/${DateTime.now()}.png');
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('course/${widget.courseId}${DateTime.now()}.png');
     UploadTask uploadTask = ref.putData(
       webImage,
       SettableMetadata(contentType: 'image/png'),
@@ -122,187 +124,174 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: 1000,
-        // height: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
+      body: Row(
+        children: [
+          SizedBox(
+            width: 1000,
+            // height: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 50),
-                      child: Container(
-                        height: 50,
-                        width: 500,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.grey),
-                          color: greenLightShadeColor,
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 40),
-                          child: TextField(
-                            //obscureText: true,
-                            decoration: InputDecoration(
-                              //border: OutlineInputBorder(),
-                              hintText: 'Search Unit',
-                              prefixIcon: Icon(Icons.search),
+                    Row(
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 50),
+                          child: Container(
+                            height: 50,
+                            width: 500,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: Colors.grey),
+                              color: greenLightShadeColor,
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: TextField(
+                                //obscureText: true,
+                                decoration: InputDecoration(
+                                  //border: OutlineInputBorder(),
+                                  hintText: 'Search Unit',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 120,
-                    ),
-                    MaterialButton(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20.0),
+                        const SizedBox(
+                          width: 120,
                         ),
-                      ),
-                      elevation: 5.0,
-                      minWidth: 150.0,
-                      height: 50,
-                      color: mainColor,
-                      child: const Text(
-                        '+ New Unit',
-                        style: TextStyle(fontSize: 16.0, color: Colors.white),
-                      ),
-                      onPressed: () {
-                        addUnit(context);
-                      },
+                        MaterialButton(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 150.0,
+                          height: 50,
+                          color: mainColor,
+                          child: const Text(
+                            '+ New Unit',
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.white),
+                          ),
+                          onPressed: () {
+                            addUnit(context);
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                Container(height: 1, width: 850, color: Colors.grey),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 800,
-                      // height: 50,
-                      child: StreamBuilder(
-                        stream: course
-                            .doc(widget.courseId)
-                            .collection('chapters')
-                            .snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                          if (streamSnapshot.hasData) {
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: streamSnapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                final DocumentSnapshot documentSnapshot =
-                                    streamSnapshot.data!.docs[index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(0),
-                                  child: ExpansionTile(
-                                    title: Text(documentSnapshot.id),
-                                    textColor: Colors.blue,
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        try {
-                                          var id = documentSnapshot.id;
-                                          addlesson(context, id);
-                                          log('This is document id : $id');
-                                        } catch (e) {
-                                          log('Error is : $e');
-                                        }
-                                      },
-                                      icon: const Icon(
-                                        Icons.edit,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                    children: <Widget>[
-                                      StreamBuilder(
-                                        stream: course
-                                            .doc(widget.courseId)
-                                            .collection('chapters')
-                                            .doc(documentSnapshot.id)
-                                            .collection('videos')
-                                            .snapshots(),
-                                        builder: (context,
-                                            AsyncSnapshot<QuerySnapshot>
-                                                streamSnapshot) {
-                                          if (streamSnapshot.hasData) {
-                                            return ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: streamSnapshot
-                                                  .data!.docs.length,
-                                              itemBuilder: (context, index) {
-                                                final DocumentSnapshot
-                                                    documentSnapshotVideo =
-                                                    streamSnapshot
-                                                        .data!.docs[index];
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(0),
-                                                  child: Container(
-                                                    height: 50,
-                                                    decoration:
-                                                        const BoxDecoration(),
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                CourseVideoScreen(
-                                                              videoTitle:
-                                                                  documentSnapshotVideo[
-                                                                      'title'],
-                                                              videoUrl:
-                                                                  documentSnapshotVideo[
-                                                                      'url'],
+                    Container(height: 1, width: 850, color: Colors.grey),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 800,
+                          // height: 50,
+                          child: StreamBuilder(
+                            stream: course
+                                .doc(widget.courseId)
+                                .collection('chapters')
+                                .snapshots(),
+                            builder: (context,
+                                AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                              if (streamSnapshot.hasData) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: streamSnapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final DocumentSnapshot documentSnapshot =
+                                        streamSnapshot.data!.docs[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0),
+                                      child: ExpansionTile(
+                                        title: Text(documentSnapshot.id),
+                                        textColor: Colors.blue,
+                                        trailing: IconButton(
+                                          onPressed: () {
+                                            try {
+                                              var id = documentSnapshot.id;
+                                              addlesson(context, id);
+                                              log('This is document id : $id');
+                                            } catch (e) {
+                                              log('Error is : $e');
+                                            }
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                        children: <Widget>[
+                                          StreamBuilder(
+                                            stream: course
+                                                .doc(widget.courseId)
+                                                .collection('chapters')
+                                                .doc(documentSnapshot.id)
+                                                .collection('videos')
+                                                .snapshots(),
+                                            builder: (context,
+                                                AsyncSnapshot<QuerySnapshot>
+                                                    streamSnapshot) {
+                                              if (streamSnapshot.hasData) {
+                                                return ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: streamSnapshot
+                                                      .data!.docs.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    final DocumentSnapshot
+                                                        documentSnapshotVideo =
+                                                        streamSnapshot
+                                                            .data!.docs[index];
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      child: Container(
+                                                        height: 50,
+                                                        decoration:
+                                                            const BoxDecoration(),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        CourseVideoScreen(
+                                                                  videoTitle:
+                                                                      documentSnapshotVideo[
+                                                                          'title'],
+                                                                  videoUrl:
+                                                                      documentSnapshotVideo[
+                                                                          'url'],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              left: 30.0,
                                                             ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          left: 30.0,
-                                                        ),
-                                                        child: documentSnapshotVideo[
-                                                                    'type'] ==
-                                                                'Video'
-                                                            ? Row(
-                                                                children: [
-                                                                  const Icon(Icons
-                                                                      .movie),
-                                                                  const Padding(
-                                                                    padding: EdgeInsets
-                                                                        .only(
-                                                                            left:
-                                                                                20),
-                                                                  ),
-                                                                  Text(
-                                                                    documentSnapshotVideo
-                                                                        .id,
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            : documentSnapshotVideo[
+                                                            child: documentSnapshotVideo[
                                                                         'type'] ==
-                                                                    'Audio Book'
+                                                                    'Video'
                                                                 ? Row(
                                                                     children: [
                                                                       const Icon(
                                                                           Icons
-                                                                              .audiotrack),
+                                                                              .movie),
                                                                       const Padding(
                                                                         padding:
                                                                             EdgeInsets.only(left: 20),
@@ -315,11 +304,11 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                   )
                                                                 : documentSnapshotVideo[
                                                                             'type'] ==
-                                                                        'eBook'
+                                                                        'Audio Book'
                                                                     ? Row(
                                                                         children: [
                                                                           const Icon(
-                                                                              Icons.book),
+                                                                              Icons.audiotrack),
                                                                           const Padding(
                                                                             padding:
                                                                                 EdgeInsets.only(left: 20),
@@ -330,10 +319,10 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                         ],
                                                                       )
                                                                     : documentSnapshotVideo['type'] ==
-                                                                            'Rich Text'
+                                                                            'eBook'
                                                                         ? Row(
                                                                             children: [
-                                                                              const Icon(Icons.text_snippet),
+                                                                              const Icon(Icons.book),
                                                                               const Padding(
                                                                                 padding: EdgeInsets.only(left: 20),
                                                                               ),
@@ -342,57 +331,64 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                               ),
                                                                             ],
                                                                           )
-                                                                        : Row(
-                                                                            children: [
-                                                                              const Icon(Icons.not_interested_sharp),
-                                                                              const Padding(
-                                                                                padding: EdgeInsets.only(left: 20),
+                                                                        : documentSnapshotVideo['type'] ==
+                                                                                'Rich Text'
+                                                                            ? Row(
+                                                                                children: [
+                                                                                  const Icon(Icons.text_snippet),
+                                                                                  const Padding(
+                                                                                    padding: EdgeInsets.only(left: 20),
+                                                                                  ),
+                                                                                  Text(
+                                                                                    documentSnapshotVideo.id,
+                                                                                  ),
+                                                                                ],
+                                                                              )
+                                                                            : Row(
+                                                                                children: [
+                                                                                  const Icon(Icons.not_interested_sharp),
+                                                                                  const Padding(
+                                                                                    padding: EdgeInsets.only(left: 20),
+                                                                                  ),
+                                                                                  Text(
+                                                                                    documentSnapshotVideo.id,
+                                                                                  ),
+                                                                                ],
                                                                               ),
-                                                                              Text(
-                                                                                documentSnapshotVideo.id,
-                                                                              ),
-                                                                            ],
-                                                                          ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
+                                                    );
+                                                  },
                                                 );
-                                              },
-                                            );
-                                          }
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        },
+                                              }
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                      ),
+                              }
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    // IconButton(
-                    //   onPressed: () {
-                    //     addlesson(context);
-                    //   },
-                    //   icon: const Icon(
-                    //     Icons.edit,
-                    //     color: Colors.blue,
-                    //   ),
-                    // ),
+                    Container(height: 1, width: 850, color: Colors.grey),
                   ],
                 ),
-                Container(height: 1, width: 850, color: Colors.grey),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
