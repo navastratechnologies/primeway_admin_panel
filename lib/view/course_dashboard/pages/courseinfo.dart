@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/pages/courseinfo2.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/coursesprice.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
@@ -35,7 +36,10 @@ class CoursesInfo extends StatefulWidget {
   State<CoursesInfo> createState() => _CoursesInfoState();
 }
 
-class _CoursesInfoState extends State<CoursesInfo> {
+class _CoursesInfoState extends State<CoursesInfo>
+    with SingleTickerProviderStateMixin<CoursesInfo> {
+  late TabController tabController;
+
   TextEditingController courseNameController = TextEditingController();
   TextEditingController courseAuthorNameController = TextEditingController();
   TextEditingController coursePointsRequiredController =
@@ -143,13 +147,19 @@ class _CoursesInfoState extends State<CoursesInfo> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
         title: const Text(
           'New Course Details',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
         actions: [
           MaterialButton(
@@ -159,658 +169,643 @@ class _CoursesInfoState extends State<CoursesInfo> {
             elevation: 5.0,
             minWidth: 200.0,
             height: 45,
-            color: whiteColor,
-            hoverColor: mainColor,
+            color: greenShadeColor,
+            //hoverColor: mainColor,
             child: const Text(
               'Save',
               style: TextStyle(
                 fontSize: 16.0,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             onPressed: () {
               uploadFile();
-              setState(() {
-                // _isNeedHelp = true;
-              });
             },
           ),
         ],
       ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        //color: Colors.amber,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            SizedBox(
+              height: 100,
+              width: double.infinity,
+              //color: Colors.amber,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      MaterialButton(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                        ),
-                        elevation: 5.0,
-                        minWidth: 200.0,
-                        height: 45,
-                        color: Colors.grey,
-                        hoverColor: Colors.blue,
-                        child: const Text(
-                          'Course Detail',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                        onPressed: () {},
-                      ),
-                      MaterialButton(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                          Radius.circular(0.0),
-                        )),
-                        elevation: 5.0,
-                        minWidth: 200.0,
-                        height: 45,
-                        color: Colors.grey,
-                        hoverColor: Colors.blue,
-                        child: const Text(
-                          'Course Price',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CoursesPrice(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: 1000,
-                    height: 2,
-                    color: Colors.black,
-                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-                    child: SizedBox(
-                      width: 1000,
-                      height: 550,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 600,
-                            width: 300,
-                            child: ListView(
-                              children: [
-                                SizedBox(
-                                  height: 100,
-                                  width: 300,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'COURSE NAME',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: courseNameController,
-                                        //obscureText: true,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'name of courses',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TabBar(
+                          controller: tabController,
+                          indicatorColor: mainColor,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          isScrollable: true,
+                          tabs: [
+                            Tab(
+                              child: Text(
+                                'Course Detail',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: greenShadeColor,
                                 ),
-                                SizedBox(
-                                  height: 100,
-                                  width: 300,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'AUTHOR NAME',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      TextField(
-                                        controller: courseAuthorNameController,
-                                        //obscureText: true,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Name of the Course Author',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 100,
-                                  width: 300,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'COURSE TYPE',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 50,
-                                        width: 300,
-                                        child: DropdownButtonFormField(
-                                          decoration: const InputDecoration(),
-                                          value: type,
-                                          items: courseType.map((String items) {
-                                            return DropdownMenuItem(
-                                              value: items,
-                                              child: Text(items),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              type = newValue!;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 100,
-                                  width: 300,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: const [
-                                      Text(
-                                        'REQUIRED POINTS',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      TextField(
-                                        //obscureText: true,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Points required to access course',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                () {
-                                  return SizedBox(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('AVAILBILITY'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Radio(
-                                              // title: const Text('REGISTER USERS'),
-                                              value: 'Register User',
-                                              groupValue: available,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  available = value.toString();
-                                                });
-                                              },
-                                            ),
-                                            const Text('Register User'),
-                                            const SizedBox(
-                                              width: 20,
-                                            ),
-                                            Radio(
-                                              // title: const Text('PUBLIC'),
-                                              value: 'Public',
-                                              groupValue: available,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  available = value.toString();
-                                                });
-                                              },
-                                            ),
-                                            const Text('Public'),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        const Text('PUBLISH COURSE ?'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Radio(
-                                              // title: const Text('REGISTER USERS'),
-                                              value: 'Draft',
-                                              groupValue: draft,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  draft = value.toString();
-                                                });
-                                              },
-                                            ),
-                                            const Text('DRAFT'),
-                                            const SizedBox(
-                                              width: 55,
-                                            ),
-                                            Radio(
-                                              // title: const Text('PUBLIC'),
-                                              value: 'Published',
-                                              groupValue: draft,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  draft = value.toString();
-                                                });
-                                              },
-                                            ),
-                                            const Text('PUBLISHED'),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }(),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: isFeatured,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isFeatured = true;
-                                        });
-                                      },
-                                    ),
-                                    const Text('IS FEATURED'),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                width: 300,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'COURSE LANGUAGE',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    TextField(
-                                      controller: courseLanguageController,
-                                      //obscureText: true,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        hintText: 'Language of the Course',
-                                      ),
-                                    ),
-                                  ],
+                            Tab(
+                              child: Text(
+                                'Course Price',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: greenShadeColor,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'COURSE DESCRIPTION',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 130,
-                                      width: 300,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(6),
-                                        border: Border.all(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      child: TextField(
-                                        controller: courseDescriptionController,
-                                        decoration: const InputDecoration(
-                                          hintText:
-                                              'Description about the Course',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                        maxLines: 6,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'SHORT DESCRIPTION',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 80,
-                                      width: 300,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(6),
-                                      //     border: Border.all(color: Colors.grey)),
-                                      child: TextField(
-                                        controller:
-                                            courseShortDescriptionController,
-                                        maxLines: 5,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Short description about the Course',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: 30,
-                                width: 300,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 220,
-                                      child: TextField(
-                                        controller: courseDateController,
-                                        obscureText: true,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 30,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[350],
-                                        // borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Days',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                              // available()
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'COURSE FOR WHOM ?',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 80,
-                                      width: 300,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(6),
-                                      //     border: Border.all(color: Colors.grey)),
-                                      child: TextField(
-                                        controller: courseForWhomController,
-                                        maxLines: 5,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Enter comma seperated sentences',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'COURSE REQUIREMENTS',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 80,
-                                      width: 300,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(6),
-                                      //     border: Border.all(color: Colors.grey)),
-                                      child: TextField(
-                                        controller:
-                                            courseRequirementsController,
-                                        maxLines: 5,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Enter comma seperated sentences',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'WHAT WILL STUDENTS LEARN ?',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 80,
-                                      width: 300,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(6),
-                                      //     border: Border.all(color: Colors.grey)),
-                                      child: TextField(
-                                        controller: studentLearnController,
-                                        maxLines: 5,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Enter comma seperated sentences',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'COURSE BENEFITS',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 80,
-                                      width: 300,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(6),
-                                      //     border: Border.all(color: Colors.grey)),
-                                      child: TextField(
-                                        controller: courseBenefitsController,
-                                        maxLines: 5,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText:
-                                              'Enter comma seperated sentences',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // available()
-                            ],
-                          )
-                        ],
-                      ),
+                            )
+                          ],
+                        ),
+
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        //   child: SizedBox(
+                        //     width: 1000,
+                        //     height: 550,
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         SizedBox(
+                        //           height: 600,
+                        //           width: 300,
+                        //           child: ListView(
+                        //             children: [
+                        //               SizedBox(
+                        //                 height: 100,
+                        //                 width: 300,
+                        //                 child: Column(
+                        //                   mainAxisAlignment: MainAxisAlignment.start,
+                        //                   crossAxisAlignment:
+                        //                       CrossAxisAlignment.start,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'COURSE NAME',
+                        //                       style: TextStyle(
+                        //                         fontSize: 13,
+                        //                         color: Colors.black,
+                        //                       ),
+                        //                     ),
+                        //                     TextField(
+                        //                       controller: courseNameController,
+                        //                       //obscureText: true,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText: 'name of courses',
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 100,
+                        //                 width: 300,
+                        //                 child: Column(
+                        //                   mainAxisAlignment: MainAxisAlignment.start,
+                        //                   crossAxisAlignment:
+                        //                       CrossAxisAlignment.start,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'AUTHOR NAME',
+                        //                       style: TextStyle(
+                        //                         fontSize: 13,
+                        //                         color: Colors.black,
+                        //                       ),
+                        //                     ),
+                        //                     TextField(
+                        //                       controller: courseAuthorNameController,
+                        //                       //obscureText: true,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText: 'Name of the Course Author',
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 100,
+                        //                 width: 300,
+                        //                 child: Column(
+                        //                   mainAxisAlignment: MainAxisAlignment.start,
+                        //                   crossAxisAlignment:
+                        //                       CrossAxisAlignment.start,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'COURSE TYPE',
+                        //                       style: TextStyle(
+                        //                         fontSize: 13,
+                        //                         color: Colors.black,
+                        //                       ),
+                        //                     ),
+                        //                     SizedBox(
+                        //                       height: 50,
+                        //                       width: 300,
+                        //                       child: DropdownButtonFormField(
+                        //                         decoration: const InputDecoration(),
+                        //                         value: type,
+                        //                         items: courseType.map((String items) {
+                        //                           return DropdownMenuItem(
+                        //                             value: items,
+                        //                             child: Text(items),
+                        //                           );
+                        //                         }).toList(),
+                        //                         onChanged: (String? newValue) {
+                        //                           setState(() {
+                        //                             type = newValue!;
+                        //                           });
+                        //                         },
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 100,
+                        //                 width: 300,
+                        //                 child: Column(
+                        //                   mainAxisAlignment: MainAxisAlignment.start,
+                        //                   crossAxisAlignment:
+                        //                       CrossAxisAlignment.start,
+                        //                   children: const [
+                        //                     Text(
+                        //                       'REQUIRED POINTS',
+                        //                       style: TextStyle(
+                        //                         fontSize: 13,
+                        //                         color: Colors.black,
+                        //                       ),
+                        //                     ),
+                        //                     TextField(
+                        //                       //obscureText: true,
+                        //                       decoration: InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Points required to access course',
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //               () {
+                        //                 return SizedBox(
+                        //                   child: Column(
+                        //                     mainAxisAlignment:
+                        //                         MainAxisAlignment.start,
+                        //                     crossAxisAlignment:
+                        //                         CrossAxisAlignment.start,
+                        //                     children: [
+                        //                       const Text('AVAILBILITY'),
+                        //                       Row(
+                        //                         mainAxisAlignment:
+                        //                             MainAxisAlignment.start,
+                        //                         children: [
+                        //                           Radio(
+                        //                             // title: const Text('REGISTER USERS'),
+                        //                             value: 'Register User',
+                        //                             groupValue: available,
+                        //                             onChanged: (value) {
+                        //                               setState(() {
+                        //                                 available = value.toString();
+                        //                               });
+                        //                             },
+                        //                           ),
+                        //                           const Text('Register User'),
+                        //                           const SizedBox(
+                        //                             width: 20,
+                        //                           ),
+                        //                           Radio(
+                        //                             // title: const Text('PUBLIC'),
+                        //                             value: 'Public',
+                        //                             groupValue: available,
+                        //                             onChanged: (value) {
+                        //                               setState(() {
+                        //                                 available = value.toString();
+                        //                               });
+                        //                             },
+                        //                           ),
+                        //                           const Text('Public'),
+                        //                         ],
+                        //                       ),
+                        //                       const SizedBox(
+                        //                         height: 10,
+                        //                       ),
+                        //                       const Text('PUBLISH COURSE ?'),
+                        //                       Row(
+                        //                         mainAxisAlignment:
+                        //                             MainAxisAlignment.start,
+                        //                         children: [
+                        //                           Radio(
+                        //                             // title: const Text('REGISTER USERS'),
+                        //                             value: 'Draft',
+                        //                             groupValue: draft,
+                        //                             onChanged: (value) {
+                        //                               setState(() {
+                        //                                 draft = value.toString();
+                        //                               });
+                        //                             },
+                        //                           ),
+                        //                           const Text('DRAFT'),
+                        //                           const SizedBox(
+                        //                             width: 55,
+                        //                           ),
+                        //                           Radio(
+                        //                             // title: const Text('PUBLIC'),
+                        //                             value: 'Published',
+                        //                             groupValue: draft,
+                        //                             onChanged: (value) {
+                        //                               setState(() {
+                        //                                 draft = value.toString();
+                        //                               });
+                        //                             },
+                        //                           ),
+                        //                           const Text('PUBLISHED'),
+                        //                         ],
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 );
+                        //               }(),
+                        //               const SizedBox(
+                        //                 height: 10,
+                        //               ),
+                        //               Row(
+                        //                 children: [
+                        //                   Checkbox(
+                        //                     value: isFeatured,
+                        //                     onChanged: (value) {
+                        //                       setState(() {
+                        //                         isFeatured = true;
+                        //                       });
+                        //                     },
+                        //                   ),
+                        //                   const Text('IS FEATURED'),
+                        //                 ],
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         Column(
+                        //           children: [
+                        //             SizedBox(
+                        //               height: 100,
+                        //               width: 300,
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'COURSE LANGUAGE',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   TextField(
+                        //                     controller: courseLanguageController,
+                        //                     //obscureText: true,
+                        //                     decoration: const InputDecoration(
+                        //                       border: OutlineInputBorder(),
+                        //                       hintText: 'Language of the Course',
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'COURSE DESCRIPTION',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   Container(
+                        //                     height: 130,
+                        //                     width: 300,
+                        //                     decoration: BoxDecoration(
+                        //                       borderRadius: BorderRadius.circular(6),
+                        //                       border: Border.all(
+                        //                         color: Colors.grey,
+                        //                       ),
+                        //                     ),
+                        //                     child: TextField(
+                        //                       controller: courseDescriptionController,
+                        //                       decoration: const InputDecoration(
+                        //                         hintText:
+                        //                             'Description about the Course',
+                        //                         border: OutlineInputBorder(),
+                        //                       ),
+                        //                       maxLines: 6,
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'SHORT DESCRIPTION',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 80,
+                        //                     width: 300,
+                        //                     // decoration: BoxDecoration(
+                        //                     //     borderRadius: BorderRadius.circular(6),
+                        //                     //     border: Border.all(color: Colors.grey)),
+                        //                     child: TextField(
+                        //                       controller:
+                        //                           courseShortDescriptionController,
+                        //                       maxLines: 5,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Short description about the Course',
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Container(
+                        //               height: 30,
+                        //               width: 300,
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(6),
+                        //               ),
+                        //               child: Row(
+                        //                 children: [
+                        //                   SizedBox(
+                        //                     width: 220,
+                        //                     child: TextField(
+                        //                       controller: courseDateController,
+                        //                       obscureText: true,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                   Container(
+                        //                     height: 30,
+                        //                     width: 80,
+                        //                     decoration: BoxDecoration(
+                        //                       color: Colors.grey[350],
+                        //                       // borderRadius: BorderRadius.circular(6),
+                        //                     ),
+                        //                     child: const Center(
+                        //                       child: Text(
+                        //                         'Days',
+                        //                         style: TextStyle(
+                        //                           fontWeight: FontWeight.bold,
+                        //                           fontSize: 13,
+                        //                           color: Colors.black,
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //                   )
+                        //                 ],
+                        //               ),
+                        //             )
+                        //             // available()
+                        //           ],
+                        //         ),
+                        //         Column(
+                        //           children: [
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'COURSE FOR WHOM ?',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 80,
+                        //                     width: 300,
+                        //                     // decoration: BoxDecoration(
+                        //                     //     borderRadius: BorderRadius.circular(6),
+                        //                     //     border: Border.all(color: Colors.grey)),
+                        //                     child: TextField(
+                        //                       controller: courseForWhomController,
+                        //                       maxLines: 5,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Enter comma seperated sentences',
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'COURSE REQUIREMENTS',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 80,
+                        //                     width: 300,
+                        //                     // decoration: BoxDecoration(
+                        //                     //     borderRadius: BorderRadius.circular(6),
+                        //                     //     border: Border.all(color: Colors.grey)),
+                        //                     child: TextField(
+                        //                       controller:
+                        //                           courseRequirementsController,
+                        //                       maxLines: 5,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Enter comma seperated sentences',
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'WHAT WILL STUDENTS LEARN ?',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 80,
+                        //                     width: 300,
+                        //                     // decoration: BoxDecoration(
+                        //                     //     borderRadius: BorderRadius.circular(6),
+                        //                     //     border: Border.all(color: Colors.grey)),
+                        //                     child: TextField(
+                        //                       controller: studentLearnController,
+                        //                       maxLines: 5,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Enter comma seperated sentences',
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             Padding(
+                        //               padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   const Text(
+                        //                     'COURSE BENEFITS',
+                        //                     style: TextStyle(
+                        //                       fontSize: 13,
+                        //                       color: Colors.black,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 80,
+                        //                     width: 300,
+                        //                     // decoration: BoxDecoration(
+                        //                     //     borderRadius: BorderRadius.circular(6),
+                        //                     //     border: Border.all(color: Colors.grey)),
+                        //                     child: TextField(
+                        //                       controller: courseBenefitsController,
+                        //                       maxLines: 5,
+                        //                       decoration: const InputDecoration(
+                        //                         border: OutlineInputBorder(),
+                        //                         hintText:
+                        //                             'Enter comma seperated sentences',
+                        //                       ),
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //             // available()
+                        //           ],
+                        //         )
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ),
+                  // Container(
+                  //   height: 800,
+                  //   width: 2,
+                  //   color: Colors.black,
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 100),
+                  //   child: Column(
+                  //     children: [
+                  //       pickedFile == null
+                  //           ? Container(
+                  //               height: 180,
+                  //               width: 220,
+                  //               decoration: BoxDecoration(
+                  //                 borderRadius: BorderRadius.circular(20),
+                  //                 border: Border.all(
+                  //                   color: Colors.black,
+                  //                 ),
+                  //               ),
+                  //               child: Image.asset('assets/capture.png'),
+                  //             )
+                  //           : kIsWeb
+                  //               ? Container(
+                  //                   height: 180,
+                  //                   width: 220,
+                  //                   decoration: BoxDecoration(
+                  //                     borderRadius: BorderRadius.circular(20),
+                  //                     border: Border.all(
+                  //                       color: Colors.black,
+                  //                     ),
+                  //                   ),
+                  //                   child: Image.memory(webImage),
+                  //                 )
+                  //               : Container(
+                  //                   height: 180,
+                  //                   width: 220,
+                  //                   decoration: BoxDecoration(
+                  //                     borderRadius: BorderRadius.circular(20),
+                  //                     border: Border.all(
+                  //                       color: Colors.black,
+                  //                     ),
+                  //                   ),
+                  //                   child: Image.file(pickedFile!),
+                  //                 ),
+                  //       const SizedBox(
+                  //         height: 30,
+                  //       ),
+                  //       InkWell(
+                  //         onTap: () {
+                  //           pickImage();
+                  //         },
+                  //         child: const Text(
+                  //           'UPLOAD PHOTO HERE',
+                  //           style: TextStyle(
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.bold,
+                  //             color: Colors.blue,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // )
                 ],
               ),
             ),
             Container(
-              height: 800,
-              width: 2,
-              color: Colors.black,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100),
-              child: Column(
-                children: [
-                  pickedFile == null
-                      ? Container(
-                          height: 180,
-                          width: 220,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          child: Image.asset('assets/capture.png'),
-                        )
-                      : kIsWeb
-                          ? Container(
-                              height: 180,
-                              width: 220,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              child: Image.memory(webImage),
-                            )
-                          : Container(
-                              height: 180,
-                              width: 220,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              child: Image.file(pickedFile!),
-                            ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      pickImage();
-                    },
-                    child: const Text(
-                      'UPLOAD PHOTO HERE',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
+              height: MediaQuery.of(context).size.height - 200,
+              child: TabBarView(
+                controller: tabController,
+                children: [CourseInfo2(), CoursesPrice()],
               ),
             )
           ],
@@ -818,4 +813,8 @@ class _CoursesInfoState extends State<CoursesInfo> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

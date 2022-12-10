@@ -411,6 +411,34 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                          MaterialButton(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(0.0),
+                                                  ),
+                                                ),
+                                                //elevation: 5.0,
+                                                minWidth: 50.0,
+                                                height: 30,
+                                                
+                                                child: const Text(
+                                                  'X',
+                                                  style: TextStyle(
+                                                    fontSize: 19.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                Navigator.pop(context);
+                                                },
+                                              ),
+
+                  ],),
+                  Container(height: 1,width: double.infinity,color: Colors.grey,),
+                  Row(
                     children: [
                       const Icon(
                         Icons.plus_one,
@@ -443,7 +471,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(40),
-                                              color: Colors.red,
+                                              color:greenShadeColor,
                                             ),
                                           ),
                                         ),
@@ -473,70 +501,73 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                             },
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            MaterialButton(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(0.0),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                                          child: Row(
+                                            children: [
+                                              MaterialButton(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(0.0),
+                                                  ),
                                                 ),
-                                              ),
-                                              elevation: 5.0,
-                                              minWidth: 100.0,
-                                              height: 45,
-                                              color: Colors.green,
-                                              child: const Text(
-                                                'Create Lesson',
-                                                style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                try {
-                                                  uploadlesson(context, id);
-                                                  log('This is uploade document id : $id');
-                                                } catch (e) {
-                                                  log('Error is : $e');
-                                                }
-                                              },
-                                            ),
-                                            const SizedBox(
-                                              width: 30,
-                                            ),
-                                            MaterialButton(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(0.0),
-                                                ),
-                                              ),
-                                              elevation: 5.0,
-                                              minWidth: 100.0,
-                                              height: 45,
-                                              color: Colors.red,
-                                              child: InkWell(
+                                                elevation: 5.0,
+                                                minWidth: 100.0,
+                                                height: 45,
+                                                color: greenShadeColor,
                                                 child: const Text(
-                                                  'Cancel',
+                                                  'Create Lesson',
                                                   style: TextStyle(
                                                     fontSize: 16.0,
                                                     color: Colors.white,
                                                   ),
                                                 ),
-                                                onTap: () {
-                                                  Navigator.pop(
-                                                    context,
-                                                  );
+                                                onPressed: () {
+                                                  try {
+                                                    uploadlesson(context, id);
+                                                    log('This is uploade document id : $id');
+                                                  } catch (e) {
+                                                    log('Error is : $e');
+                                                  }
                                                 },
                                               ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  // _isNeedHelp = true;
-                                                });
-                                              },
-                                            ),
-                                          ],
+                                              const SizedBox(
+                                                width: 30,
+                                              ),
+                                              MaterialButton(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(0.0),
+                                                  ),
+                                                ),
+                                                elevation: 5.0,
+                                                minWidth: 100.0,
+                                                height: 45,
+                                                color: mainColor,
+                                                child: InkWell(
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    Navigator.pop(
+                                                      context,
+                                                    );
+                                                  },
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // _isNeedHelp = true;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -620,120 +651,123 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                         20,
                                       ),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 80,
-                                          width: 80,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              40,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 60),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 80,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(
+                                                40,
+                                              ),
+                                              color:greenShadeColor,
                                             ),
-                                            color: Colors.red,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        const Text(
-                                          'Are you sure?',
-                                          style: TextStyle(
-                                            fontSize: 30.0,
-                                            color: Colors.black,
+                                          const SizedBox(
+                                            height: 30,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        const Text(
-                                          'you want to delete the following unit?',
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        Text(
-                                          id,
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        const SizedBox(
-                                          width: 300,
-                                          child: Text(
-                                            'all the lessons and resourses will be deleted along with all the student progress',
+                                          const Text(
+                                            'Are you sure?',
                                             style: TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black),
-                                            textAlign: TextAlign.center,
+                                              fontSize: 30.0,
+                                              color: Colors.black,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            MaterialButton(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(0.0),
-                                                ),
-                                              ),
-                                              elevation: 5.0,
-                                              minWidth: 80.0,
-                                              height: 45,
-                                              color: Colors.green,
-                                              child: const Text(
-                                                'Yes,Delete Unit',
-                                                style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    color: Colors.white),
-                                              ),
-                                              onPressed: () {
-                                                course
-                                                    .doc(widget.courseId)
-                                                    .collection('chapters')
-                                                    .doc(id)
-                                                    .delete();
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              },
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          const Text(
+                                            'you want to delete the following unit?',
+                                            style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: Colors.black,
                                             ),
-                                            MaterialButton(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(0.0),
-                                                ),
-                                              ),
-                                              elevation: 5.0,
-                                              minWidth: 80.0,
-                                              height: 45,
-                                              color: Colors.red,
-                                              child: const Text(
-                                                'No',
-                                                style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    color: Colors.white),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Text(
+                                            id,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          const SizedBox(
+                                            width: 300,
+                                            child: Text(
+                                              'all the lessons and resourses will be deleted along with all the student progress',
+                                              style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              MaterialButton(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(0.0),
+                                                  ),
+                                                ),
+                                                elevation: 5.0,
+                                                minWidth: 80.0,
+                                                height: 45,
+                                                color:mainColor,
+                                                child: const Text(
+                                                  'Yes,Delete Unit',
+                                                  style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  course
+                                                      .doc(widget.courseId)
+                                                      .collection('chapters')
+                                                      .doc(id)
+                                                      .delete();
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              MaterialButton(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(0.0),
+                                                  ),
+                                                ),
+                                                elevation: 5.0,
+                                                minWidth: 80.0,
+                                                height: 45,
+                                                color: greenShadeColor,
+                                                child: const Text(
+                                                  'No',
+                                                  style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: Colors.white),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -744,7 +778,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         child: const Text(
                           'Delete',
                           style: TextStyle(
-                            color: Colors.red,
+                            color:Colors.red,
                           ),
                         ),
                       ),
