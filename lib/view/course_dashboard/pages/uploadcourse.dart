@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/text_editor.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 import '../video_playr.dart';
@@ -413,31 +414,34 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                          MaterialButton(
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(0.0),
-                                                  ),
-                                                ),
-                                                //elevation: 5.0,
-                                                minWidth: 50.0,
-                                                height: 30,
-                                                
-                                                child: const Text(
-                                                  'X',
-                                                  style: TextStyle(
-                                                    fontSize: 19.0,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                onPressed: () {
-                                                Navigator.pop(context);
-                                                },
-                                              ),
+                      MaterialButton(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(0.0),
+                          ),
+                        ),
+                        //elevation: 5.0,
+                        minWidth: 50.0,
+                        height: 30,
 
-                  ],),
-                  Container(height: 1,width: double.infinity,color: Colors.grey,),
+                        child: const Text(
+                          'X',
+                          style: TextStyle(
+                            fontSize: 19.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 1,
+                    width: double.infinity,
+                    color: Colors.grey,
+                  ),
                   Row(
                     children: [
                       const Icon(
@@ -471,7 +475,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(40),
-                                              color:greenShadeColor,
+                                              color: greenShadeColor,
                                             ),
                                           ),
                                         ),
@@ -502,13 +506,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 50),
                                           child: Row(
                                             children: [
                                               MaterialButton(
                                                 shape:
                                                     const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(0.0),
                                                   ),
                                                 ),
@@ -538,7 +544,8 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                               MaterialButton(
                                                 shape:
                                                     const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(0.0),
                                                   ),
                                                 ),
@@ -652,17 +659,19 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                       ),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 60),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 60),
                                       child: Column(
                                         children: [
                                           Container(
                                             height: 80,
                                             width: 80,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(
+                                              borderRadius:
+                                                  BorderRadius.circular(
                                                 40,
                                               ),
-                                              color:greenShadeColor,
+                                              color: greenShadeColor,
                                             ),
                                           ),
                                           const SizedBox(
@@ -719,14 +728,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                               MaterialButton(
                                                 shape:
                                                     const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(0.0),
                                                   ),
                                                 ),
                                                 elevation: 5.0,
                                                 minWidth: 80.0,
                                                 height: 45,
-                                                color:mainColor,
+                                                color: mainColor,
                                                 child: const Text(
                                                   'Yes,Delete Unit',
                                                   style: TextStyle(
@@ -746,7 +756,8 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                               MaterialButton(
                                                 shape:
                                                     const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
+                                                  borderRadius:
+                                                      BorderRadius.all(
                                                     Radius.circular(0.0),
                                                   ),
                                                 ),
@@ -778,7 +789,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         child: const Text(
                           'Delete',
                           style: TextStyle(
-                            color:Colors.red,
+                            color: Colors.red,
                           ),
                         ),
                       ),
@@ -835,13 +846,16 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                         fontSize: 23,
                                       ),
                                     )
-                                  : Text(
-                                      'New Lesson(URL)Details ',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontSize: 23,
-                                      ),
-                                    ),
+                                  : type == "Rich Text"
+                                      ? addText(context, id)
+                                      : Text(
+                                          'New Lesson(URL)Details ',
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.7),
+                                            fontSize: 23,
+                                          ),
+                                        ),
                     ],
                   ),
                   Container(
@@ -974,7 +988,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 20),
+                              horizontal: 50,
+                              vertical: 20,
+                            ),
                             child: Container(
                               height: 200,
                               width: 300,
@@ -1100,25 +1116,30 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     );
   }
 
-  addUrl(BuildContext context) {
+  addText(BuildContext context, id) {
     showDialog(
       context: context,
       builder: (context) {
         return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: AlertDialog(
             title: Container(
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'New Lesson(File)Details ',
+                        'New Lesson(Text)Details ',
                         style: TextStyle(
-                            color: Colors.black.withOpacity(0.7), fontSize: 23),
+                          color: Colors.black.withOpacity(0.7),
+                          fontSize: 23,
+                        ),
                       ),
                     ],
                   ),
@@ -1149,38 +1170,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                           const SizedBox(
                             width: 300,
                             child: TextField(
-                              //obscureText: true,
                               decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  //labelText: 'Lesson Name'
-                                  hintText: 'name of lesson'),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
-                            child: Text(
-                              'YOUTUBE URL',
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.7),
-                                  fontSize: 13),
-                            ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: TextField(
-                                maxLines: 5,
-                                //obscureText: true,
-                                decoration: InputDecoration(
-                                    // border: OutlineInputBorder(),
-                                    hintText: 'passw'
-                                    //labelText: 'Password',
-                                    ),
+                                border: OutlineInputBorder(),
+                                hintText: 'name of lesson',
                               ),
                             ),
                           ),
@@ -1189,52 +1181,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                             child: Text(
                               'PUBLISH LESSON',
                               style: TextStyle(
-                                  color: Colors.black.withOpacity(0.7),
-                                  fontSize: 13),
+                                color: Colors.black.withOpacity(0.7),
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(
                         width: 50,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(50, 12, 0, 12),
-                            child: Text(
-                              'LESSON DESCRIPTION',
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.7),
-                                  fontSize: 13),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 0),
-                            child: Container(
-                              width: 300,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: TextField(
-                                  maxLines: 7,
-                                  //obscureText: true,
-                                  decoration: InputDecoration(
-                                      // border: OutlineInputBorder(),
-                                      hintText: 'Brief discussion about lesson'
-                                      //labelText: 'Password',
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -1260,10 +1215,20 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         height: 42,
                         color: Colors.green,
                         child: const Text(
-                          'SAVE',
-                          style: TextStyle(fontSize: 13.0, color: Colors.white),
+                          'Next',
+                          style: TextStyle(
+                            fontSize: 13.0,
+                            color: Colors.white,
+                          ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TextEditerPage(),
+                            ),
+                          );
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -1279,10 +1244,14 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                           color: Colors.grey,
                           child: const Text(
                             'CLOSE',
-                            style:
-                                TextStyle(fontSize: 13.0, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 13.0,
+                              color: Colors.white,
+                            ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
                       ),
                     ],

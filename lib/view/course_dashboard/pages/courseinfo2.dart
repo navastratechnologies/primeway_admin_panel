@@ -3,22 +3,20 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CourseInfo2 extends StatefulWidget {
+
   const CourseInfo2({super.key});
 
   @override
   State<CourseInfo2> createState() => _CourseInfo2State();
 }
 
-class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClientMixin {
+class _CourseInfo2State extends State<CourseInfo2>
+    with AutomaticKeepAliveClientMixin {
   late TabController tabController;
 
   TextEditingController courseNameController = TextEditingController();
@@ -47,7 +45,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
   ];
 
   File? pickedFile;
-  UploadTask? uploadTask;
   Uint8List webImage = Uint8List(8);
 
   Future<void> pickImage() async {
@@ -79,56 +76,9 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
     }
   }
 
-  Future uploadFile() async {
-    Reference ref =
-        FirebaseStorage.instance.ref().child('course/${DateTime.now()}.png');
-    UploadTask uploadTask = ref.putData(
-      webImage,
-      SettableMetadata(contentType: 'image/png'),
-    );
-    TaskSnapshot taskSnapshot = await uploadTask
-        .whenComplete(
-          () => log('done'),
-        )
-        .catchError(
-          (error) => log('something went wrong'),
-        );
-    String url = await taskSnapshot.ref.getDownloadURL();
-
-    FirebaseFirestore.instance.collection('courses').add({
-      'image': url.toString(),
-      'name': courseNameController.text,
-      'author_name': courseAuthorNameController.text,
-      'course_type': type,
-      'required_points': coursePointsRequiredController.text,
-      'availbility': available,
-      'publish_course': draft,
-      'is_featured': isFeatured,
-      'language': courseLanguageController.text,
-      'course_description': courseDescriptionController.text,
-      'short_description': courseShortDescriptionController.text,
-      'validity': courseDateController.text,
-      'course_for_whom': courseForWhomController.text,
-      'course_requirements': courseRequirementsController.text,
-      'students_learn': studentLearnController.text,
-      'course_benefits': courseBenefitsController.text,
-      'views': 0,
-      'purchases': 0,
-      'uploaded_by': 'Admin',
-      'status': 'paused',
-      'base_ammount': 'ount',
-      'gst_ammount': 'unt',
-      'gst_rate': '',
-      'cgst_ammount': 'ount',
-      'cgst_rate': 'te',
-      'sgst_ammount': 'ount',
-      'sgst_rate': 'e',
-      'net_ammount': 'unt',
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40),
@@ -160,7 +110,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                           ),
                           TextField(
                             controller: courseNameController,
-                            //obscureText: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'name of courses',
@@ -185,7 +134,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                           ),
                           TextField(
                             controller: courseAuthorNameController,
-                            //obscureText: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Name of the Course Author',
@@ -245,7 +193,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                             ),
                           ),
                           TextField(
-                            //obscureText: true,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Points required to access course',
@@ -265,7 +212,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Radio(
-                                  // title: const Text('REGISTER USERS'),
                                   value: 'Register User',
                                   groupValue: available,
                                   onChanged: (value) {
@@ -279,7 +225,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                                   width: 20,
                                 ),
                                 Radio(
-                                  // title: const Text('PUBLIC'),
                                   value: 'Public',
                                   groupValue: available,
                                   onChanged: (value) {
@@ -299,7 +244,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Radio(
-                                  // title: const Text('REGISTER USERS'),
                                   value: 'Draft',
                                   groupValue: draft,
                                   onChanged: (value) {
@@ -313,7 +257,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                                   width: 55,
                                 ),
                                 Radio(
-                                  // title: const Text('PUBLIC'),
                                   value: 'Published',
                                   groupValue: draft,
                                   onChanged: (value) {
@@ -366,7 +309,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         ),
                         TextField(
                           controller: courseLanguageController,
-                          //obscureText: true,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Language of the Course',
@@ -425,9 +367,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         SizedBox(
                           height: 80,
                           width: 300,
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(6),
-                          //     border: Border.all(color: Colors.grey)),
                           child: TextField(
                             controller: courseShortDescriptionController,
                             maxLines: 5,
@@ -452,7 +391,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                           width: 220,
                           child: TextField(
                             controller: courseDateController,
-                            obscureText: true,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                             ),
@@ -463,7 +401,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                           width: 80,
                           decoration: BoxDecoration(
                             color: Colors.grey[350],
-                            // borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Center(
                             child: Text(
@@ -479,7 +416,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                       ],
                     ),
                   )
-                  // available()
                 ],
               ),
               Column(
@@ -500,9 +436,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         SizedBox(
                           height: 80,
                           width: 300,
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(6),
-                          //     border: Border.all(color: Colors.grey)),
                           child: TextField(
                             controller: courseForWhomController,
                             maxLines: 5,
@@ -531,9 +464,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         SizedBox(
                           height: 80,
                           width: 300,
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(6),
-                          //     border: Border.all(color: Colors.grey)),
                           child: TextField(
                             controller: courseRequirementsController,
                             maxLines: 5,
@@ -562,9 +492,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         SizedBox(
                           height: 80,
                           width: 300,
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(6),
-                          //     border: Border.all(color: Colors.grey)),
                           child: TextField(
                             controller: studentLearnController,
                             maxLines: 5,
@@ -593,9 +520,6 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
                         SizedBox(
                           height: 80,
                           width: 300,
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(6),
-                          //     border: Border.all(color: Colors.grey)),
                           child: TextField(
                             controller: courseBenefitsController,
                             maxLines: 5,
@@ -680,8 +604,7 @@ class _CourseInfo2State extends State<CourseInfo2> with AutomaticKeepAliveClient
       ),
     );
   }
-  
+
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
