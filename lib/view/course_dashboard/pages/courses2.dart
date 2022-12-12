@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/edit_course_info.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/uploadcourse.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -49,27 +50,7 @@ class _CoursesPageState extends State<CoursesPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CoursesInfo(
-                        baseAmmount: '',
-                        cgstAmmount: '',
-                        cgstRate: '',
-                        courseDate: '',
-                        courseAuthorName: '',
-                        courseBenefits: '',
-                        courseDescription: '',
-                        courseForWhom: '',
-                        courseLanguage: '',
-                        courseName: '',
-                        coursePoint: '',
-                        courseReqirement: '',
-                        courseShortDescription: '',
-                        gstAmmount: '',
-                        gstRate: '',
-                        netAmmount: '',
-                        sgstAmmount: '',
-                        sgstRate: '',
-                        studentLearn: '',
-                      ),
+                      builder: (context) => const CoursesInfo(),
                     ),
                   );
                 },
@@ -180,7 +161,18 @@ class _CoursesPageState extends State<CoursesPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditCourseInfo(
+                                                  courseId: streamSnapshot
+                                                      .data!.docs[index].id,
+                                                ),
+                                              ),
+                                            );
+                                          },
                                           child: const Text(
                                             'Edit',
                                             style: TextStyle(

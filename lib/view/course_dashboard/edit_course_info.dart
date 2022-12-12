@@ -6,21 +6,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/courseinfo2.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/coursesprice.dart';
-import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/edit_course.dart';
 
-class CoursesInfo extends StatefulWidget {
-  const CoursesInfo({
-    super.key,
-  });
+import '../helpers/app_constants.dart';
+import 'edit_course_price.dart';
+
+class EditCourseInfo extends StatefulWidget {
+  final String courseId;
+  const EditCourseInfo({super.key, required this.courseId});
 
   @override
-  State<CoursesInfo> createState() => _CoursesInfoState();
+  State<EditCourseInfo> createState() => _EditCourseInfoState();
 }
 
-class _CoursesInfoState extends State<CoursesInfo>
-    with SingleTickerProviderStateMixin<CoursesInfo> {
+class _EditCourseInfoState extends State<EditCourseInfo>
+    with SingleTickerProviderStateMixin<EditCourseInfo> {
   late TabController tabController;
 
   TextEditingController courseNameController = TextEditingController();
@@ -75,7 +75,10 @@ class _CoursesInfoState extends State<CoursesInfo>
         );
     String url = await taskSnapshot.ref.getDownloadURL();
 
-    FirebaseFirestore.instance.collection('courses').add({
+    FirebaseFirestore.instance
+        .collection('courses')
+        .doc(widget.courseId)
+        .update({
       'image': url.toString(),
       'name': courseNameController.text,
       'author_name': courseAuthorNameController.text,
@@ -107,8 +110,75 @@ class _CoursesInfoState extends State<CoursesInfo>
     });
   }
 
+  String courseName = '';
+  String courseAuthorName = '';
+  String courseTypes = '';
+  String coursePoints = '';
+  String courseAvailbility = '';
+  String coursePublish = '';
+  bool? courseIsFeatured;
+  String courseLanguage = '';
+  String courseDescription = '';
+  String courseShortDescription = '';
+  String courseDays = '';
+  String courseForWhom = '';
+  String courseRequirements = '';
+  String studentLearn = '';
+  String courseBenefits = '';
+  String courseImage = '';
+  String courseBaseAmmount = '';
+  String courseGstAmmount = '';
+  String courseGstRate = '';
+  String courseCgstAmmount = '';
+  String courseCgstRate = '';
+  String courseSgstAmmount = '';
+  String courseSgstRate = '';
+  String courseNetAmmount = '';
+
+  Future<void> getCourseData() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(widget.courseId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      try {
+        setState(() {
+          courseName = documentSnapshot.get('name');
+          courseAuthorName = documentSnapshot.get('author_name');
+          courseTypes = documentSnapshot.get('course_type');
+          coursePoints = documentSnapshot.get('required_points');
+          courseAvailbility = documentSnapshot.get('availbility');
+          coursePublish = documentSnapshot.get('publish_course');
+          courseIsFeatured = documentSnapshot.get('is_featured');
+          courseLanguage = documentSnapshot.get('language');
+          courseDescription = documentSnapshot.get('course_description');
+          courseShortDescription = documentSnapshot.get('short_description');
+          courseDays = documentSnapshot.get('validity');
+          courseForWhom = documentSnapshot.get('course_for_whom');
+          courseRequirements = documentSnapshot.get('course_requirements');
+          studentLearn = documentSnapshot.get('students_learn');
+          courseBenefits = documentSnapshot.get('course_benefits');
+          courseImage = documentSnapshot.get('image');
+          courseBaseAmmount = documentSnapshot.get('base_ammount');
+          courseGstAmmount = documentSnapshot.get('gst_ammount');
+          courseGstRate = documentSnapshot.get('gst_rate');
+          courseCgstAmmount = documentSnapshot.get('cgst_ammount');
+          courseCgstRate = documentSnapshot.get('cgst_rate');
+          courseSgstAmmount = documentSnapshot.get('sgst_ammount');
+          courseSgstRate = documentSnapshot.get('sgst_rate');
+          courseNetAmmount = documentSnapshot.get('net_ammount');
+          log('course name is : $courseName');
+        });
+      } catch (e) {
+        log('edit course data error : $e');
+      }
+    });
+  }
+
   @override
   void initState() {
+    getCourseData();
+    courseNameController.text = courseName;
     super.initState();
     tabController = TabController(length: 2, vsync: this);
   }
@@ -131,7 +201,6 @@ class _CoursesInfoState extends State<CoursesInfo>
             minWidth: 200.0,
             height: 45,
             color: greenShadeColor,
-            //hoverColor: mainColor,
             child: const Text(
               'Save',
               style: TextStyle(
@@ -200,9 +269,21 @@ class _CoursesInfoState extends State<CoursesInfo>
             height: MediaQuery.of(context).size.height - 200,
             child: TabBarView(
               controller: tabController,
-              children: const [
-                CourseInfo2(),
-                CoursesPrice(),
+              children: [
+                EditCourse(
+                  // courseAuthorName: courseAuthorName,
+                  // courseBenefit: courseBenefits,
+                  // courseDate: courseDays,
+                  // courseDescription: courseDescription,
+                  // courseForWhom: courseForWhom,
+                  // courseLanguage: courseLanguage,
+                  courseName: courseName,
+                  // courseRequiredPoint: coursePoints,
+                  // courseRequirement: courseRequirements,
+                  // courseShortDescription: courseShortDescription,
+                  // studentLearn: studentLearn
+                ),
+                const EditCoursePrice(),
               ],
             ),
           )
