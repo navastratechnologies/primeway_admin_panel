@@ -1,5 +1,4 @@
 // ignore_for_file: invalid_return_type_for_catch_error
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -178,7 +177,6 @@ class _EditCourseInfoState extends State<EditCourseInfo>
   @override
   void initState() {
     getCourseData();
-    courseNameController.text = courseName;
     super.initState();
     tabController = TabController(length: 2, vsync: this);
   }

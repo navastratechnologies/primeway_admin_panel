@@ -7,31 +7,31 @@ import 'package:image_picker/image_picker.dart';
 
 class EditCourse extends StatefulWidget {
   final String courseName;
-      // courseAuthorName,
-      // courseRequiredPoint,
-      // courseLanguage,
-      // courseDescription,
-      // courseShortDescription,
-      // courseDate,
-      // courseForWhom,
-      // courseRequirement,
-      // studentLearn,
-      // courseBenefit
-      
-  const EditCourse(
-      {super.key,
-      required this.courseName,
-      // required this.courseAuthorName,
-      // required this.courseRequiredPoint,
-      // required this.courseLanguage,
-      // required this.courseDescription,
-      // required this.courseShortDescription,
-      // required this.courseDate,
-      // required this.courseForWhom,
-      // required this.courseRequirement,
-      // required this.studentLearn,
-      // required this.courseBenefit,
-      });
+  // courseAuthorName,
+  // courseRequiredPoint,
+  // courseLanguage,
+  // courseDescription,
+  // courseShortDescription,
+  // courseDate,
+  // courseForWhom,
+  // courseRequirement,
+  // studentLearn,
+  // courseBenefit
+
+  const EditCourse({
+    super.key,
+    required this.courseName,
+    // required this.courseAuthorName,
+    // required this.courseRequiredPoint,
+    // required this.courseLanguage,
+    // required this.courseDescription,
+    // required this.courseShortDescription,
+    // required this.courseDate,
+    // required this.courseForWhom,
+    // required this.courseRequirement,
+    // required this.studentLearn,
+    // required this.courseBenefit,
+  });
 
   @override
   State<EditCourse> createState() => _EditCourseState();
@@ -100,7 +100,10 @@ class _EditCourseState extends State<EditCourse>
 
   @override
   void initState() {
-    courseNameController.text = widget.courseName;
+    setState(() {
+      courseNameController.text = widget.courseName;
+      log('Course name is : ${courseNameController.text} : ${widget.courseName}');
+    });
     // courseAuthorNameController.text = widget.courseAuthorName;
     // coursePointsRequiredController.text = widget.courseRequiredPoint;
     // courseLanguageController.text = widget.courseLanguage;
