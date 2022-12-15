@@ -504,89 +504,183 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                   SizedBox(
                                     width: 80,
                                     child: Center(
-                                      child: Text(
-                                        documentSnapshot['user_Id'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                      child: documentSnapshot['user_Id'] != null
+                                          ? Text(
+                                              documentSnapshot['user_Id'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          : Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Text(
-                                        documentSnapshot['user_name'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Text(
-                                        documentSnapshot['transaction_Id'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Text(
-                                        documentSnapshot['wallet_balance'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Text(
-                                        documentSnapshot['requested_for'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          color: documentSnapshot['status'] ==
-                                                  'approved'
-                                              ? greenLightShadeColor
-                                              : mainShadeColor,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: Text(
-                                          documentSnapshot['status'] ==
-                                                  'approved'
-                                              ? "Approved"
-                                              : "Pending",
-                                          style: TextStyle(
-                                            color: whiteColor,
-                                            fontWeight: FontWeight.bold,
+                                  documentSnapshot['user_name'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot['user_name'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
+                                  documentSnapshot['transaction_Id'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot[
+                                                  'transaction_Id'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                  documentSnapshot['wallet_balance'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot[
+                                                  'wallet_balance'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                  documentSnapshot['requested_for'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot['requested_for'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                  documentSnapshot['status'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: documentSnapshot[
+                                                            'status'] ==
+                                                        'approved'
+                                                    ? greenLightShadeColor
+                                                    : mainShadeColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: Text(
+                                                documentSnapshot['status'] ==
+                                                        'approved'
+                                                    ? "Approved"
+                                                    : "Pending",
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Container(
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: Text(
+                                                '',
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                 ],
                               ),
                               const SizedBox(height: 2),

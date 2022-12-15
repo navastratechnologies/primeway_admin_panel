@@ -133,7 +133,9 @@ class _WalletScreenState extends State<WalletScreen> {
                 },
                 mouseCursor: SystemMouseCursors.click,
                 child: dashboardTile(
-                  '$totalWalletBalance',
+                  '$totalWalletBalance'.isNotEmpty
+                      ? '$totalWalletBalance'
+                      : '0',
                   'Total P Coins',
                   "Available In User's Wallet",
                   Icons.paid,
@@ -151,7 +153,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 },
                 mouseCursor: SystemMouseCursors.click,
                 child: dashboardTile(
-                  transCount,
+                  transCount.isNotEmpty ? transCount : '0',
                   'Total Transactions',
                   "All Time Transactions",
                   Icons.point_of_sale,
@@ -295,54 +297,126 @@ class _WalletScreenState extends State<WalletScreen> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    SizedBox(
-                                                      width: 80,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'user_id'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                    documentSnapshot[
+                                                                'user_id'] !=
+                                                            null
+                                                        ? SizedBox(
+                                                            width: 80,
+                                                            child: Center(
+                                                              child: Text(
+                                                                documentSnapshot[
+                                                                    'user_id'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : SizedBox(
+                                                            width: 80,
+                                                            child: Center(
+                                                              child: Text(
+                                                                '',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'user_name'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                    documentSnapshot[
+                                                                'user_name'] !=
+                                                            null
+                                                        ? SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child: Text(
+                                                                documentSnapshot[
+                                                                    'user_name'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child: Text(
+                                                                '',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'wallet_balance'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                    documentSnapshot[
+                                                                'wallet_balance'] !=
+                                                            null
+                                                        ? SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child: Text(
+                                                                documentSnapshot[
+                                                                    'wallet_balance'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child: Text(
+                                                                '',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ),
                                                     SizedBox(
                                                       width: 220,
                                                       child: Center(
@@ -476,16 +550,27 @@ class _WalletScreenState extends State<WalletScreen> {
                                                                                           ),
                                                                                         ),
                                                                                         const SizedBox(width: 40),
-                                                                                        SizedBox(
-                                                                                          width: 200,
-                                                                                          child: SelectableText(
-                                                                                            '${documentSnapshot['wallet_balance']} P Coins',
-                                                                                            style: TextStyle(
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                              color: Colors.black.withOpacity(0.4),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
+                                                                                        '${documentSnapshot['wallet_balance']}'.isNotEmpty
+                                                                                            ? SizedBox(
+                                                                                                width: 200,
+                                                                                                child: SelectableText(
+                                                                                                  '${documentSnapshot['wallet_balance']} P Coins',
+                                                                                                  style: TextStyle(
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    color: Colors.black.withOpacity(0.4),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              )
+                                                                                            : SizedBox(
+                                                                                                width: 200,
+                                                                                                child: SelectableText(
+                                                                                                  '0 P Coins',
+                                                                                                  style: TextStyle(
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    color: Colors.black.withOpacity(0.4),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
                                                                                       ],
                                                                                     ),
                                                                                   ],
@@ -1415,7 +1500,14 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  dashboardTile(count, title, subTitle, icon, color, iconColor) {
+  dashboardTile(
+    count,
+    title,
+    subTitle,
+    icon,
+    color,
+    iconColor,
+  ) {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(

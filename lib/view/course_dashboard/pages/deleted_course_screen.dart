@@ -165,18 +165,33 @@ class _DeletedCourseScreenState extends State<DeletedCourseScreen> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: Text(
-                                        documentSnapshot['name'],
-                                        style: TextStyle(
-                                          color: Colors.black.withOpacity(0.4),
-                                          fontWeight: FontWeight.bold,
+                                  documentSnapshot['name'] != null
+                                      ? SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot['name'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              '',
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
                                   SizedBox(
                                     width: 120,
                                     child: Center(

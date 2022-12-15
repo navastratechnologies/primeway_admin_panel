@@ -747,8 +747,10 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                   course
                                                       .doc(widget.courseId)
                                                       .collection('chapters')
-                                                      .doc(id)
-                                                      .delete();
+                                                      .doc(id).update({
+                                                        'status' : 'delete'
+                                                      });
+                                                   
                                                   Navigator.pop(context);
                                                   Navigator.pop(context);
                                                 },

@@ -452,121 +452,241 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
                                                       ),
                                                     ),
                                                   ),
-                                                  SizedBox(
-                                                    width: 120,
-                                                    child: Center(
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'name'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 120,
-                                                    child: Center(
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'views'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 120,
-                                                    child: Center(
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'purchases'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 120,
-                                                    child: Center(
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'uploaded_by'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 120,
-                                                    child: Center(
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: documentSnapshot[
-                                                                      'status'] ==
-                                                                  'approved'
-                                                              ? greenLightShadeColor
-                                                              : documentSnapshot[
-                                                                          'status'] ==
-                                                                      'rejected'
-                                                                  ? yellow
-                                                                  : documentSnapshot[
-                                                                              'status'] ==
-                                                                          'delete'
-                                                                      ? orange
-                                                                      : documentSnapshot['status'] ==
-                                                                              'live'
-                                                                          ? greenLightShadeColor
-                                                                          : mainShadeColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                                      'status'] ==
-                                                                  'approved'
-                                                              ? "Approved"
-                                                              : documentSnapshot[
-                                                                          'status'] ==
-                                                                      'rejected'
-                                                                  ? "Rejected"
-                                                                  : documentSnapshot[
-                                                                              'status'] ==
-                                                                          'delete'
-                                                                      ? "Delete"
-                                                                      : documentSnapshot['status'] ==
-                                                                              'live'
-                                                                          ? "Live"
-                                                                          : "Panding",
-                                                          style: TextStyle(
-                                                            color: whiteColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                  documentSnapshot['name'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              documentSnapshot[
+                                                                  'name'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  documentSnapshot['views'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              documentSnapshot[
+                                                                  'views'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                  documentSnapshot[
+                                                              'purchases'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              documentSnapshot[
+                                                                  'purchases'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                  documentSnapshot[
+                                                              'uploaded_by'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              documentSnapshot[
+                                                                  'uploaded_by'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Text(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                  documentSnapshot['status'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: documentSnapshot[
+                                                                            'status'] ==
+                                                                        'approved'
+                                                                    ? greenLightShadeColor
+                                                                    : documentSnapshot['status'] ==
+                                                                            'rejected'
+                                                                        ? yellow
+                                                                        : documentSnapshot['status'] ==
+                                                                                'delete'
+                                                                            ? orange
+                                                                            : documentSnapshot['status'] == 'live'
+                                                                                ? greenLightShadeColor
+                                                                                : mainShadeColor,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                              ),
+                                                              child: Text(
+                                                                documentSnapshot[
+                                                                            'status'] ==
+                                                                        'approved'
+                                                                    ? "Approved"
+                                                                    : documentSnapshot['status'] ==
+                                                                            'rejected'
+                                                                        ? "Rejected"
+                                                                        : documentSnapshot['status'] ==
+                                                                                'delete'
+                                                                            ? "Delete"
+                                                                            : documentSnapshot['status'] == 'live'
+                                                                                ? "Live"
+                                                                                : "Panding",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      whiteColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color:
+                                                                    Colors.grey,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                              ),
+                                                              child: Text(
+                                                                '',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      whiteColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                 ],
                                               ),
                                               const SizedBox(height: 2),

@@ -271,78 +271,172 @@ class _UserScreenState extends State<UserScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              SizedBox(
-                                                width: 80,
-                                                child: Center(
-                                                  child: Text(
-                                                    documentSnapshot['user_Id'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                              documentSnapshot['user_Id'] !=
+                                                      null
+                                                  ? SizedBox(
+                                                      width: 80,
+                                                      child: Center(
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'user_Id'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      width: 80,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '',
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Text(
-                                                    documentSnapshot['name'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                              documentSnapshot['name'] != null
+                                                  ? SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'name'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '',
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Text(
-                                                    documentSnapshot[
-                                                        'phone_number'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                              documentSnapshot[
+                                                          'phone_number'] !=
+                                                      null
+                                                  ? SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'phone_number'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '',
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Text(
-                                                    documentSnapshot['address'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                              documentSnapshot['address'] !=
+                                                      null
+                                                  ? SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'address'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '',
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Text(
-                                                    documentSnapshot[
-                                                        'social_account'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                              documentSnapshot[
+                                                          'social_account'] !=
+                                                      null
+                                                  ? SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'social_account'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: Text(
+                                                          '',
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
                                               SizedBox(
                                                 width: 120,
                                                 child: Center(

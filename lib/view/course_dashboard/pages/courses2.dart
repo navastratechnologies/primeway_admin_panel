@@ -61,7 +61,8 @@ class _CoursesPageState extends State<CoursesPage> {
             height: 650,
             width: 1200,
             child: StreamBuilder(
-              stream: course.snapshots(),
+              stream:
+                  course.where('status', isNotEqualTo: 'delete').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                 if (streamSnapshot.hasData) {
                   return ResponsiveGridList(
@@ -217,7 +218,9 @@ class _CoursesPageState extends State<CoursesPage> {
                                             course
                                                 .doc(streamSnapshot
                                                     .data!.docs[index].id)
-                                                .delete();
+                                                .update({
+                                              'status': 'delete',
+                                            });
                                           },
                                           child: const Text(
                                             'Delete',
