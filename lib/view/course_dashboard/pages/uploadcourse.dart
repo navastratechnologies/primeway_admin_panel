@@ -747,10 +747,10 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                   course
                                                       .doc(widget.courseId)
                                                       .collection('chapters')
-                                                      .doc(id).update({
-                                                        'status' : 'delete'
-                                                      });
-                                                   
+                                                      .doc(id)
+                                                      .update(
+                                                          {'status': 'delete'});
+
                                                   Navigator.pop(context);
                                                   Navigator.pop(context);
                                                 },
@@ -1104,7 +1104,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                             style:
                                 TextStyle(fontSize: 13.0, color: Colors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
                       ),
                     ],
