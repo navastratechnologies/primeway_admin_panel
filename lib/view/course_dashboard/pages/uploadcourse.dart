@@ -53,6 +53,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       'title': chapterTitleController.text,
       'description': chapterDescriptionController.text,
       'publish_unit': draft,
+      'video_count': '',
     });
   }
 
@@ -116,6 +117,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
         'title': lessonNameController.text,
         'description': lessoneDescriptionController.text,
         'water_position': waterMarkPositionController.text,
+        'duration': '',
       });
     } catch (e) {
       log('message is error : $e');
