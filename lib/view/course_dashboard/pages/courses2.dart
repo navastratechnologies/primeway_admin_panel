@@ -95,9 +95,7 @@ class _CoursesPageState extends State<CoursesPage> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: NetworkImage(
-                                            streamSnapshot.data!.docs[index]
-                                                ['image'],
-                                          ),
+                                              '${streamSnapshot.data!.docs[index]['image']}'),
                                         ),
                                       ),
                                     ),
