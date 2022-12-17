@@ -144,7 +144,6 @@ class _EditCourseInfoState extends State<EditCourseInfo> {
         courseShortDescriptionController.text = courseShortDescription;
         courseDateController.text = courseDays;
         studentLearnController.text = studentLearn;
-        // pickedFile = courseImage;
         baseAmmountController.text = courseBaseAmmount;
         gstRateController.text = courseGstRate;
         discountController.text = courseDiscount;
