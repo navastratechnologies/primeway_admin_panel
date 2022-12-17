@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class CoursesInfo extends StatefulWidget {
   const CoursesInfo({
@@ -20,44 +19,21 @@ class CoursesInfo extends StatefulWidget {
   State<CoursesInfo> createState() => _CoursesInfoState();
 }
 
-class _CoursesInfoState extends State<CoursesInfo>
-    with SingleTickerProviderStateMixin<CoursesInfo> {
-  late TabController tabController;
-
+class _CoursesInfoState extends State<CoursesInfo> {
   TextEditingController courseNameController = TextEditingController();
   TextEditingController courseAuthorNameController = TextEditingController();
-  TextEditingController coursePointsRequiredController =
-      TextEditingController();
   TextEditingController courseLanguageController = TextEditingController();
   TextEditingController courseDescriptionController = TextEditingController();
   TextEditingController courseShortDescriptionController =
       TextEditingController();
   TextEditingController courseDateController = TextEditingController();
-  TextEditingController courseForWhomController = TextEditingController();
-  TextEditingController courseRequirementsController = TextEditingController();
   TextEditingController studentLearnController = TextEditingController();
-  TextEditingController courseBenefitsController = TextEditingController();
   TextEditingController baseAmmountController = TextEditingController();
-  TextEditingController gstAmmountController = TextEditingController();
-  TextEditingController cgstAmmountController = TextEditingController();
-  TextEditingController sgstAmmountController = TextEditingController();
   TextEditingController gstRateController = TextEditingController();
-  TextEditingController cgstRateController = TextEditingController();
-  TextEditingController sgstRateController = TextEditingController();
-  TextEditingController netAmmountCountroller = TextEditingController();
+  TextEditingController discountController = TextEditingController();
 
-  String available = 'Register User';
   String draft = 'Draft';
-  String type = 'Audio Book';
-  bool isFeatured = false;
-  var courseType = [
-    "Audio Book",
-    "Video",
-    "eBook",
-    "Mixed",
-  ];
   int total = 0;
-
   Uint8List webImage = Uint8List(8);
   File? pickedFile;
 
@@ -110,31 +86,19 @@ class _CoursesInfoState extends State<CoursesInfo>
       'image': url.toString(),
       'name': courseNameController.text,
       'author_name': courseAuthorNameController.text,
-      'course_type': type,
-      'required_points': coursePointsRequiredController.text,
-      'availbility': available,
       'publish_course': draft,
-      'is_featured': isFeatured,
       'language': courseLanguageController.text,
       'course_description': courseDescriptionController.text,
       'short_description': courseShortDescriptionController.text,
       'validity': courseDateController.text,
-      'course_for_whom': courseForWhomController.text,
-      'course_requirements': courseRequirementsController.text,
       'students_learn': studentLearnController.text,
-      'course_benefits': courseBenefitsController.text,
       'views': '0',
       'purchases': '0',
       'uploaded_by': 'Admin',
       'status': 'paused',
-      'base_ammount': total,
-      'gst_ammount': gstAmmountController.text,
+      'base_ammount': baseAmmountController.text,
       'gst_rate': gstRateController.text,
-      'cgst_ammount': cgstAmmountController.text,
-      'cgst_rate': cgstRateController.text,
-      'sgst_ammount': sgstAmmountController.text,
-      'sgst_rate': sgstRateController.text,
-      'net_ammount': baseAmmountController.text,
+      'discount': discountController.text,
       'deleted_by': '',
       'islive': 'false',
     });
@@ -143,7 +107,6 @@ class _CoursesInfoState extends State<CoursesInfo>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -174,11 +137,6 @@ class _CoursesInfoState extends State<CoursesInfo>
             ),
             onPressed: () {
               try {
-                total = (int.parse(netAmmountCountroller.text) +
-                    int.parse(sgstAmmountController.text) +
-                    int.parse(gstAmmountController.text) +
-                    int.parse(cgstAmmountController.text) +
-                    int.parse(netAmmountCountroller.text));
                 log('total is : $total');
               } catch (e) {
                 log('total is error : $e');
@@ -264,110 +222,12 @@ class _CoursesInfoState extends State<CoursesInfo>
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 100,
-                            width: 300,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'COURSE TYPE',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  height: 50,
-                                  width: 300,
-                                  child: DropdownButtonFormField(
-                                    decoration: const InputDecoration(),
-                                    value: type,
-                                    items: courseType.map((String items) {
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: Text(items),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        type = newValue!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 100,
-                            width: 300,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'REQUIRED POINTS',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText:
-                                        'Points required to access course',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                           () {
                             return SizedBox(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('AVAILBILITY'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Radio(
-                                        value: 'Register User',
-                                        groupValue: available,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            available = value.toString();
-                                          });
-                                        },
-                                      ),
-                                      const Text('Register User'),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      Radio(
-                                        value: 'Public',
-                                        groupValue: available,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            available = value.toString();
-                                          });
-                                        },
-                                      ),
-                                      const Text('Public'),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
                                   const Text('PUBLISH COURSE ?'),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -401,22 +261,6 @@ class _CoursesInfoState extends State<CoursesInfo>
                               ),
                             );
                           }(),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: isFeatured,
-                                onChanged: (value) {
-                                  setState(() {
-                                    isFeatured = true;
-                                  });
-                                },
-                              ),
-                              const Text('IS FEATURED'),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -565,68 +409,6 @@ class _CoursesInfoState extends State<CoursesInfo>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'COURSE FOR WHOM ?',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: courseForWhomController,
-                                  maxLines: 5,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter comma seperated sentences',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'COURSE REQUIREMENTS',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: courseRequirementsController,
-                                  maxLines: 5,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter comma seperated sentences',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
                                 'WHAT WILL STUDENTS LEARN ?',
                                 style: TextStyle(
                                   color: Colors.black.withOpacity(0.4),
@@ -651,39 +433,6 @@ class _CoursesInfoState extends State<CoursesInfo>
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'COURSE BENEFITS',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: courseBenefitsController,
-                                  maxLines: 5,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter comma seperated sentences',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // available()
                       ],
                     ),
                     Column(
@@ -708,10 +457,10 @@ class _CoursesInfoState extends State<CoursesInfo>
                                 height: 80,
                                 width: 300,
                                 child: TextField(
-                                  controller: cgstAmmountController,
+                                  controller: baseAmmountController,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Enter base amount',
+                                    hintText: 'Enter base amount',
                                   ),
                                 ),
                               ),
@@ -732,10 +481,10 @@ class _CoursesInfoState extends State<CoursesInfo>
                                 height: 80,
                                 width: 300,
                                 child: TextField(
-                                  controller: cgstAmmountController,
+                                  controller: gstRateController,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Enter gst in (%)',
+                                    hintText: 'Enter gst in (%)',
                                   ),
                                 ),
                               ),
@@ -756,18 +505,16 @@ class _CoursesInfoState extends State<CoursesInfo>
                                 height: 80,
                                 width: 300,
                                 child: TextField(
-                                  controller: cgstAmmountController,
+                                  controller: discountController,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Enter discount amount',
+                                    hintText: 'Enter discount amount',
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-
-                        // available()
                       ],
                     ),
                     Container(
