@@ -56,6 +56,7 @@ class _CoursesInfoState extends State<CoursesInfo>
     "eBook",
     "Mixed",
   ];
+  int total = 0;
 
   Uint8List webImage = Uint8List(8);
   File? pickedFile;
@@ -126,14 +127,14 @@ class _CoursesInfoState extends State<CoursesInfo>
       'purchases': '0',
       'uploaded_by': 'Admin',
       'status': 'paused',
-      'base_ammount': baseAmmountController.text,
+      'base_ammount': total,
       'gst_ammount': gstAmmountController.text,
       'gst_rate': gstRateController.text,
       'cgst_ammount': cgstAmmountController.text,
       'cgst_rate': cgstRateController.text,
       'sgst_ammount': sgstAmmountController.text,
       'sgst_rate': sgstRateController.text,
-      'net_ammount': netAmmountCountroller.text,
+      'net_ammount': baseAmmountController.text,
       'deleted_by': '',
       'islive': 'false',
     });
@@ -172,6 +173,17 @@ class _CoursesInfoState extends State<CoursesInfo>
               ),
             ),
             onPressed: () {
+              try {
+                total = (int.parse(netAmmountCountroller.text) +
+                    int.parse(sgstAmmountController.text) +
+                    int.parse(gstAmmountController.text) +
+                    int.parse(cgstAmmountController.text) +
+                    int.parse(netAmmountCountroller.text));
+                log('total is : $total');
+              } catch (e) {
+                log('total is error : $e');
+              }
+
               uploadFile();
               Navigator.pop(context);
             },
@@ -831,6 +843,7 @@ class _CoursesInfoState extends State<CoursesInfo>
                           ),
                         ),
                         TextField(
+                          enabled: false,
                           controller: netAmmountCountroller,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
