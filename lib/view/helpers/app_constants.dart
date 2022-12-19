@@ -9,6 +9,7 @@ Color greenLightShadeColor = const Color(0xff5CE2B9);
 Color greenSelectedColor = Colors.green[900]!;
 Color orange = Colors.orange;
 Color yellow = Colors.yellow;
+Color purpleColor = const Color(0xff8043F9);
 
 List<Color> gradientColors = [
   const Color(0xff23b6e6),

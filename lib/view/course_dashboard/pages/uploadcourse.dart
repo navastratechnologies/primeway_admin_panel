@@ -41,10 +41,26 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     "Mixed",
   ];
 
+  String chapters = '';
+  String chapterCounts = '';
+
   final CollectionReference course =
       FirebaseFirestore.instance.collection('courses');
 
-  Future<void> createChapter() async {
+  Future getCourseChaptersData() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(widget.courseId)
+        .get()
+        .then((value) {
+      setState(() {
+        chapters = value.get('chapters');
+      });
+    });
+    log('chapter count is $chapters');
+  }
+
+  Future createChapter() async {
     course
         .doc(widget.courseId)
         .collection('chapters')
@@ -54,6 +70,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       'description': chapterDescriptionController.text,
       'publish_unit': draft,
       'video_count': '',
+    });
+    course.doc(widget.courseId).update({
+      'chapters': "${int.parse(chapters) + 1}",
     });
   }
 
@@ -125,6 +144,12 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   }
 
   @override
+  void initState() {
+    getCourseChaptersData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
@@ -141,8 +166,6 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      // mainAxisAlignment: MainAxisAlignment.start,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 50),
@@ -157,9 +180,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 40),
                               child: TextField(
-                                //obscureText: true,
                                 decoration: InputDecoration(
-                                  //border: OutlineInputBorder(),
                                   hintText: 'Search Unit',
                                   prefixIcon: Icon(Icons.search),
                                 ),
@@ -222,6 +243,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                           onPressed: () {
                                             try {
                                               var id = documentSnapshot.id;
+                                              getCourseChaptersData();
                                               addlesson(context, id);
                                               log('This is document id : $id');
                                             } catch (e) {
@@ -605,6 +627,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                       ),
                       TextButton(
                         onPressed: () {
+                          getCourseChaptersData();
                           addUnit(context);
                         },
                         child: const Text('add new unit'),
@@ -746,6 +769,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                       color: Colors.white),
                                                 ),
                                                 onPressed: () {
+                                                  
                                                   course
                                                       .doc(widget.courseId)
                                                       .collection('chapters')
@@ -1422,6 +1446,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                 ),
                               ),
                               onPressed: () {
+                                getCourseChaptersData();
                                 createChapter();
                                 Navigator.pop(context);
                                 chapterTitleController.clear();
