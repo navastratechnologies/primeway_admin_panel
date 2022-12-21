@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 import '../helpers/app_constants.dart';
 
@@ -161,10 +164,15 @@ class _EditCourseInfoState extends State<EditCourseInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: mainColor,
+        centerTitle: false,
+        backgroundColor: greenShadeColor,
         title: const Text(
-          'New Course Details',
+          'Edit Course Details',
           style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back),
         ),
         actions: [
           MaterialButton(
@@ -174,12 +182,13 @@ class _EditCourseInfoState extends State<EditCourseInfo> {
             elevation: 5.0,
             minWidth: 200.0,
             height: 45,
-            color: greenShadeColor,
+            color: purpleColor,
             child: const Text(
               'Save',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
             onPressed: () {
@@ -189,463 +198,356 @@ class _EditCourseInfoState extends State<EditCourseInfo> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: ScreenTypeLayout(
+          mobile: mobileBody(),
+          desktop: desktopBody(),
+        ),
+      ),
+    );
+  }
+
+  desktopBody() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        textFieldWithData(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: VerticalDivider(
+            thickness: 1.2,
+            indent: 20,
+            endIndent: 20,
+            color: Colors.black.withOpacity(0.05),
+          ),
+        ),
+        imageUploadData(),
+      ],
+    );
+  }
+
+  mobileBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        imageUploadData(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: VerticalDivider(
+            thickness: 1.2,
+            indent: 20,
+            endIndent: 20,
+            color: Colors.black.withOpacity(0.05),
+          ),
+        ),
+        textFieldWithData(),
+      ],
+    );
+  }
+
+  imageUploadData() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 20,
+        left: 10,
+        right: 10,
+      ),
+      child: Column(
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height - 200,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
-              child: SizedBox(
-                width: double.infinity,
-                height: 550,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          DottedBorder(
+            borderType: BorderType.RRect,
+            radius: const Radius.circular(12),
+            padding: const EdgeInsets.all(6),
+            color: greenShadeColor,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(12),
+              ),
+              child: Container(
+                height: 200,
+                width: 300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Stack(
                   children: [
-                    SizedBox(
-                      height: 600,
+                    Image.network(
+                      courseImage,
+                      height: 200,
                       width: 300,
-                      child: ListView(
-                        children: [
-                          SizedBox(
-                            height: 100,
-                            width: 300,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'COURSE NAME',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  controller: courseNameController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'name of courses',
-                                  ),
-                                ),
-                              ],
-                            ),
+                      fit: BoxFit.cover,
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: greenShadeColor,
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Old Image',
+                          style: TextStyle(
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(
-                            height: 100,
-                            width: 300,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'AUTHOR NAME',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  controller: courseAuthorNameController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Name of the Course Author',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          () {
-                            return SizedBox(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('PUBLISH COURSE ?'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Radio(
-                                        value: 'Draft',
-                                        groupValue: draft,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            draft = value.toString();
-                                          });
-                                        },
-                                      ),
-                                      const Text('DRAFT'),
-                                      const SizedBox(
-                                        width: 55,
-                                      ),
-                                      Radio(
-                                        value: 'Published',
-                                        groupValue: draft,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            draft = value.toString();
-                                          });
-                                        },
-                                      ),
-                                      const Text('PUBLISHED'),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          }(),
-                        ],
+                        ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 100,
-                          width: 300,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'COURSE LANGUAGE',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              TextField(
-                                controller: courseLanguageController,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Language of the Course',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'COURSE DESCRIPTION',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 130,
-                                width: 300,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                child: TextField(
-                                  controller: courseDescriptionController,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Description about the Course',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  maxLines: 6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'SHORT DESCRIPTION',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: courseShortDescriptionController,
-                                  maxLines: 5,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText:
-                                        'Short description about the Course',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 30,
-                          width: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 220,
-                                child: TextField(
-                                  controller: courseDateController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 30,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[350],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Days',
-                                    style: TextStyle(
-                                      color: Colors.black.withOpacity(0.4),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'WHAT WILL STUDENTS LEARN ?',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: studentLearnController,
-                                  maxLines: 5,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter comma seperated sentences',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'BASE AMOUNT',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: baseAmmountController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter base amount',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'GST PERCENTAGE',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: gstRateController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter gst in (%)',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'DISCOUNT AMOUNT',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.4),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: 300,
-                                child: TextField(
-                                  controller: discountController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Enter discount amount',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      height: 700,
-                      width: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 100),
-                      child: Column(
-                        children: [
-                          const Text('This is old Image'),
-                          Container(
-                            height: 180,
-                            width: 220,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.black,
-                              ),
-                            ),
-                            child: Image(
-                              image: NetworkImage(courseImage),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Text('This is new Image'),
-                          pickedFile == null
-                              ? Container(
-                                  height: 180,
-                                  width: 220,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  child: Image.asset('assets/capture.png'),
-                                )
-                              : kIsWeb
-                                  ? Container(
-                                      height: 180,
-                                      width: 220,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      child: Image.memory(webImage),
-                                    )
-                                  : Container(
-                                      height: 180,
-                                      width: 220,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      child: Image.file(pickedFile!),
-                                    ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              pickImage();
-                            },
-                            child: const Text(
-                              'UPLOAD PHOTO HERE',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
               ),
             ),
-          )
+          ),
+          const SizedBox(height: 30),
+          InkWell(
+            onTap: () {
+              pickImage();
+            },
+            child: DottedBorder(
+              borderType: BorderType.RRect,
+              radius: const Radius.circular(12),
+              padding: const EdgeInsets.all(6),
+              color: greenShadeColor,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(12),
+                ),
+                child: pickedFile == null
+                    ? SizedBox(
+                        height: 200,
+                        width: 300,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              'assets/upload_thumbnail.jpeg',
+                              height: 200,
+                              width: 300,
+                              fit: BoxFit.cover,
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: greenShadeColor,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: mainColor.withOpacity(0.1),
+                                      blurRadius: 10,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.add_rounded,
+                                  color: whiteColor,
+                                ),
+                              ),
+                            ),
+                          
+                          ],
+                        ),
+                      )
+                    : Container(
+                        height: 200,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Image.memory(
+                          webImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          Text(
+            'Upload Course Thumbnail here.',
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.4),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  textFieldWithData() {
+    return Expanded(
+      child: ResponsiveGridList(
+        horizontalGridSpacing: 30,
+        horizontalGridMargin: 10,
+        verticalGridMargin: 20,
+        verticalGridSpacing: 30,
+        minItemWidth: 200,
+        maxItemsPerRow: 3,
+        listViewBuilderOptions: ListViewBuilderOptions(
+          shrinkWrap: true,
+          // physics: const NeverScrollableScrollPhysics(),
+        ),
+        children: [
+          textfieldWithLabelWidget(
+            'Course Name',
+            courseNameController,
+            'Name of the Course',
+          ),
+          textfieldWithLabelWidget(
+            'Author Name',
+            courseAuthorNameController,
+            'Name of the Author',
+          ),
+          textfieldWithLabelWidget(
+            'Language',
+            courseLanguageController,
+            'Language of the Course',
+          ),
+          textfieldWithLabelWidget(
+            'Description',
+            courseDescriptionController,
+            'Long Description of the Course',
+          ),
+          textfieldWithLabelWidget(
+            'Short Description',
+            courseShortDescriptionController,
+            'Short Description of the Course',
+          ),
+          textfieldWithLabelWidget(
+            'Valid Upto',
+            courseDateController,
+            'Valid Upto in Days',
+          ),
+          textfieldWithLabelWidget(
+            'What will students learn ?',
+            studentLearnController,
+            'What will student learn from this course',
+          ),
+          textfieldWithLabelWidget(
+            'base Amount',
+            baseAmmountController,
+            'Base amount of the Course',
+          ),
+          textfieldWithLabelWidget(
+            'GST',
+            gstRateController,
+            'GST in Percentage',
+          ),
+          textfieldWithLabelWidget(
+            'Discount',
+            discountController,
+            'Discount in Percentage',
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Publish Course ?',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio(
+                    value: 'Draft',
+                    groupValue: draft,
+                    onChanged: (value) {
+                      setState(() {
+                        draft = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'Draft',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 55,
+                  ),
+                  Radio(
+                    value: 'Published',
+                    groupValue: draft,
+                    onChanged: (value) {
+                      setState(() {
+                        draft = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'Published',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  textfieldWithLabelWidget(label, controller, hintText) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.5),
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            // vertical: 5,
+            horizontal: 10,
+          ),
+          decoration: BoxDecoration(
+            color: whiteColor,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: mainColor.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: hintText,
+              hintStyle: TextStyle(
+                color: Colors.black.withOpacity(0.2),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
