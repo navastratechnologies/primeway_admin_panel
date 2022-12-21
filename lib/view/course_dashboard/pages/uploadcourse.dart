@@ -246,127 +246,137 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                           builder: (context,
                               AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                             if (streamSnapshot.hasData) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: streamSnapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  final DocumentSnapshot documentSnapshotVideo =
-                                      streamSnapshot.data!.docs[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.all(0),
-                                    child: Container(
-                                      height: 50,
-                                      decoration: const BoxDecoration(),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CourseVideoScreen(
-                                                videoTitle:
-                                                    documentSnapshotVideo[
-                                                        'title'],
-                                                videoUrl: documentSnapshotVideo[
-                                                    'url'],
+                              return SizedBox(
+                                height: 200,
+                                width: 200,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: streamSnapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final DocumentSnapshot
+                                        documentSnapshotVideo =
+                                        streamSnapshot.data!.docs[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0),
+                                      child: Container(
+                                        height: 50,
+                                        decoration: const BoxDecoration(),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CourseVideoScreen(
+                                                  videoTitle:
+                                                      documentSnapshotVideo[
+                                                          'title'],
+                                                  videoUrl:
+                                                      documentSnapshotVideo[
+                                                          'url'],
+                                                ),
                                               ),
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 30.0,
                                             ),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 30.0,
+                                            child: documentSnapshotVideo[
+                                                        'type'] ==
+                                                    'Video'
+                                                ? Row(
+                                                    children: [
+                                                      const Icon(Icons.movie),
+                                                      const Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 20),
+                                                      ),
+                                                      Text(
+                                                        documentSnapshotVideo
+                                                            .id,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : documentSnapshotVideo[
+                                                            'type'] ==
+                                                        'Audio Book'
+                                                    ? Row(
+                                                        children: [
+                                                          const Icon(
+                                                              Icons.audiotrack),
+                                                          const Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 20),
+                                                          ),
+                                                          Text(
+                                                            documentSnapshotVideo
+                                                                .id,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : documentSnapshotVideo[
+                                                                'type'] ==
+                                                            'eBook'
+                                                        ? Row(
+                                                            children: [
+                                                              const Icon(
+                                                                  Icons.book),
+                                                              const Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            20),
+                                                              ),
+                                                              Text(
+                                                                documentSnapshotVideo
+                                                                    .id,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : documentSnapshotVideo[
+                                                                    'type'] ==
+                                                                'Rich Text'
+                                                            ? Row(
+                                                                children: [
+                                                                  const Icon(Icons
+                                                                      .text_snippet),
+                                                                  const Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                20),
+                                                                  ),
+                                                                  Text(
+                                                                    documentSnapshotVideo
+                                                                        .id,
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: [
+                                                                  const Icon(Icons
+                                                                      .not_interested_sharp),
+                                                                  const Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                20),
+                                                                  ),
+                                                                  Text(
+                                                                    documentSnapshotVideo
+                                                                        .id,
+                                                                  ),
+                                                                ],
+                                                              ),
                                           ),
-                                          child: documentSnapshotVideo[
-                                                      'type'] ==
-                                                  'Video'
-                                              ? Row(
-                                                  children: [
-                                                    const Icon(Icons.movie),
-                                                    const Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 20),
-                                                    ),
-                                                    Text(
-                                                      documentSnapshotVideo.id,
-                                                    ),
-                                                  ],
-                                                )
-                                              : documentSnapshotVideo['type'] ==
-                                                      'Audio Book'
-                                                  ? Row(
-                                                      children: [
-                                                        const Icon(
-                                                            Icons.audiotrack),
-                                                        const Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 20),
-                                                        ),
-                                                        Text(
-                                                          documentSnapshotVideo
-                                                              .id,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  : documentSnapshotVideo[
-                                                              'type'] ==
-                                                          'eBook'
-                                                      ? Row(
-                                                          children: [
-                                                            const Icon(
-                                                                Icons.book),
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left: 20),
-                                                            ),
-                                                            Text(
-                                                              documentSnapshotVideo
-                                                                  .id,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : documentSnapshotVideo[
-                                                                  'type'] ==
-                                                              'Rich Text'
-                                                          ? Row(
-                                                              children: [
-                                                                const Icon(Icons
-                                                                    .text_snippet),
-                                                                const Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          left:
-                                                                              20),
-                                                                ),
-                                                                Text(
-                                                                  documentSnapshotVideo
-                                                                      .id,
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Row(
-                                                              children: [
-                                                                const Icon(Icons
-                                                                    .not_interested_sharp),
-                                                                const Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          left:
-                                                                              20),
-                                                                ),
-                                                                Text(
-                                                                  documentSnapshotVideo
-                                                                      .id,
-                                                                ),
-                                                              ],
-                                                            ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               );
                             }
                             return const Center(
