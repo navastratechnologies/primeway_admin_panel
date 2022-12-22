@@ -9,11 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/text_editor.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
-
-import '../video_playr.dart';
+import 'package:video_player/video_player.dart';
 
 class UploadCoursesScreen extends StatefulWidget {
   final String courseId;
@@ -144,10 +143,41 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     }
   }
 
+  late VideoPlayerController _controller;
+
+  bool showControls = true;
+
+  String videoTitle = '';
+  String videoUrl = '';
+
+  String _videoDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return [
+      if (duration.inHours > 0) hours,
+      minutes,
+      seconds,
+    ].join(':');
+  }
+
   @override
   void initState() {
     getCourseChaptersData();
+    _controller = VideoPlayerController.network(videoUrl)
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -191,139 +221,128 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
         stream: course.doc(widget.courseId).collection('chapters').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
           if (streamSnapshot.hasData) {
-            return ResponsiveGridList(
-              horizontalGridSpacing: 10,
-              horizontalGridMargin: 10,
-              verticalGridMargin: 20,
-              minItemWidth: 400,
-              maxItemsPerRow: 3,
-              listViewBuilderOptions: ListViewBuilderOptions(),
-              children:
-                  List.generate(streamSnapshot.data!.docs.length, (index) {
-                final DocumentSnapshot documentSnapshot =
-                    streamSnapshot.data!.docs[index];
-                return Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: whiteColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: mainColor.withOpacity(0.1),
-                          blurRadius: 10,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                    child: ExpansionTile(
-                      // backgroundColor: whiteColor,
-                      title: Text(documentSnapshot.id),
-                      textColor: Colors.blue,
-                      trailing: IconButton(
-                        onPressed: () {
-                          try {
-                            var id = documentSnapshot.id;
-                            getCourseChaptersData();
-                            addlesson(context, id);
-                            log('This is document id : $id');
-                          } catch (e) {
-                            log('Error is : $e');
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.edit,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      children: <Widget>[
-                        StreamBuilder(
-                          stream: course
-                              .doc(widget.courseId)
-                              .collection('chapters')
-                              .doc(documentSnapshot.id)
-                              .collection('videos')
-                              .snapshots(),
-                          builder: (context,
-                              AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                            if (streamSnapshot.hasData) {
-                              return SizedBox(
-                                height: 200,
-                                width: 200,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: streamSnapshot.data!.docs.length,
-                                  itemBuilder: (context, index) {
-                                    final DocumentSnapshot
-                                        documentSnapshotVideo =
-                                        streamSnapshot.data!.docs[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.all(0),
-                                      child: Container(
-                                        height: 50,
-                                        decoration: const BoxDecoration(),
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CourseVideoScreen(
-                                                  videoTitle:
-                                                      documentSnapshotVideo[
-                                                          'title'],
-                                                  videoUrl:
-                                                      documentSnapshotVideo[
-                                                          'url'],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 30.0,
-                                            ),
-                                            child: documentSnapshotVideo[
-                                                        'type'] ==
-                                                    'Video'
-                                                ? Row(
-                                                    children: [
-                                                      const Icon(Icons.movie),
-                                                      const Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 20),
-                                                      ),
-                                                      Text(
-                                                        documentSnapshotVideo
-                                                            .id,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : documentSnapshotVideo[
-                                                            'type'] ==
-                                                        'Audio Book'
-                                                    ? Row(
-                                                        children: [
-                                                          const Icon(
-                                                              Icons.audiotrack),
-                                                          const Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 20),
-                                                          ),
-                                                          Text(
-                                                            documentSnapshotVideo
-                                                                .id,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : documentSnapshotVideo[
+            return Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    height: displayHeight(context),
+                    width: displayWidth(context) / 2,
+                    child: ListView.builder(
+                        itemCount: streamSnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final DocumentSnapshot documentSnapshot =
+                              streamSnapshot.data!.docs[index];
+                          var tapIndex = 0;
+                          return Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: mainColor.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: ExpansionTile(
+                                key: Key(tapIndex.toString()),
+                                title: Text("${documentSnapshot.id} $tapIndex"),
+                                textColor: Colors.blue,
+                                onExpansionChanged: (value) {
+                                  setState(() {
+                                    tapIndex = index;
+                                    log('tap index is $tapIndex');
+                                  });
+                                },
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    try {
+                                      var id = documentSnapshot.id;
+                                      getCourseChaptersData();
+                                      addlesson(context, id);
+                                      log('This is document id : $id');
+                                    } catch (e) {
+                                      log('Error is : $e');
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                children: [
+                                  StreamBuilder(
+                                    stream: course
+                                        .doc(widget.courseId)
+                                        .collection('chapters')
+                                        .doc(documentSnapshot.id)
+                                        .collection('videos')
+                                        .snapshots(),
+                                    builder: (context,
+                                        AsyncSnapshot<QuerySnapshot>
+                                            streamSnapshot) {
+                                      if (streamSnapshot.hasData) {
+                                        return ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount:
+                                              streamSnapshot.data!.docs.length,
+                                          itemBuilder: (context, index) {
+                                            final DocumentSnapshot
+                                                documentSnapshotVideo =
+                                                streamSnapshot
+                                                    .data!.docs[index];
+                                            videoUrl =
+                                                documentSnapshotVideo['url'];
+                                            videoTitle =
+                                                documentSnapshotVideo['title'];
+                                            return Padding(
+                                              padding: const EdgeInsets.all(0),
+                                              child: Container(
+                                                height: 50,
+                                                decoration:
+                                                    const BoxDecoration(),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (documentSnapshotVideo[
+                                                              'url']
+                                                          .toString()
+                                                          .contains('mp4')) {
+                                                        _controller =
+                                                            VideoPlayerController
+                                                                .network(
+                                                                    documentSnapshotVideo[
+                                                                        'url'])
+                                                              ..initialize()
+                                                                  .then((_) {
+                                                                // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+                                                                setState(() {});
+                                                              });
+                                                      }
+
+                                                      videoTitle =
+                                                          documentSnapshotVideo[
+                                                              'title'];
+                                                    });
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      left: 30.0,
+                                                    ),
+                                                    child: documentSnapshotVideo[
                                                                 'type'] ==
-                                                            'eBook'
+                                                            'Video'
                                                         ? Row(
                                                             children: [
                                                               const Icon(
-                                                                  Icons.book),
+                                                                  Icons.movie),
                                                               const Padding(
                                                                 padding: EdgeInsets
                                                                     .only(
@@ -338,11 +357,11 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                           )
                                                         : documentSnapshotVideo[
                                                                     'type'] ==
-                                                                'Rich Text'
+                                                                'Audio Book'
                                                             ? Row(
                                                                 children: [
                                                                   const Icon(Icons
-                                                                      .text_snippet),
+                                                                      .audiotrack),
                                                                   const Padding(
                                                                     padding: EdgeInsets
                                                                         .only(
@@ -355,40 +374,253 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                   ),
                                                                 ],
                                                               )
-                                                            : Row(
-                                                                children: [
-                                                                  const Icon(Icons
-                                                                      .not_interested_sharp),
-                                                                  const Padding(
-                                                                    padding: EdgeInsets
-                                                                        .only(
-                                                                            left:
-                                                                                20),
-                                                                  ),
-                                                                  Text(
-                                                                    documentSnapshotVideo
-                                                                        .id,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                                                            : documentSnapshotVideo[
+                                                                        'type'] ==
+                                                                    'eBook'
+                                                                ? Row(
+                                                                    children: [
+                                                                      const Icon(
+                                                                          Icons
+                                                                              .book),
+                                                                      const Padding(
+                                                                        padding:
+                                                                            EdgeInsets.only(left: 20),
+                                                                      ),
+                                                                      Text(
+                                                                        documentSnapshotVideo
+                                                                            .id,
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : documentSnapshotVideo[
+                                                                            'type'] ==
+                                                                        'Rich Text'
+                                                                    ? Row(
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons.text_snippet),
+                                                                          const Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(left: 20),
+                                                                          ),
+                                                                          Text(
+                                                                            documentSnapshotVideo.id,
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    : Row(
+                                                                        children: [
+                                                                          const Icon(
+                                                                              Icons.not_interested_sharp),
+                                                                          const Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(left: 20),
+                                                                          ),
+                                                                          Text(
+                                                                            documentSnapshotVideo.id,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
                   ),
-                );
-              }),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _controller.value.isInitialized
+                          ? SizedBox(
+                              height: 300,
+                              width: displayWidth(context) / 3,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(
+                                    () {
+                                      showControls = !showControls;
+                                    },
+                                  );
+                                },
+                                child: AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: Stack(
+                                    children: [
+                                      VideoPlayer(_controller),
+                                      showControls
+                                          ? Center(
+                                              child: InkWell(
+                                                onHover: (value) {
+                                                  showControls = value;
+                                                },
+                                                onTap: () {
+                                                  setState(() {
+                                                    _controller.value.isPlaying
+                                                        ? _controller.pause()
+                                                        : _controller.play();
+                                                    _controller.value.isPlaying
+                                                        ? showControls = false
+                                                        : showControls = true;
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  _controller.value.isPlaying
+                                                      ? Icons.pause_rounded
+                                                      : Icons
+                                                          .play_arrow_rounded,
+                                                  size: 50,
+                                                  color: Colors.white
+                                                      .withOpacity(0.6),
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      showControls
+                                          ? Align(
+                                              alignment: Alignment.topLeft,
+                                              child: InkWell(
+                                                onTap: () =>
+                                                    Navigator.pop(context),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Icon(
+                                                    Icons.arrow_back,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                      showControls
+                                          ? Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 7,
+                                                  horizontal: 10,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.amber,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child:
+                                                          ValueListenableBuilder(
+                                                        valueListenable:
+                                                            _controller,
+                                                        builder: (context,
+                                                            VideoPlayerValue
+                                                                value,
+                                                            child) {
+                                                          return Text(
+                                                            _videoDuration(
+                                                                value.position),
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child:
+                                                          VideoProgressIndicator(
+                                                        _controller,
+                                                        allowScrubbing: true,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.amber,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child: Text(
+                                                        _videoDuration(
+                                                            _controller.value
+                                                                .duration),
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: 500,
+                              width: 800,
+                              child: Center(
+                                child:
+                                    Lottie.asset('assets/json/buffering.json'),
+                              ),
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 18, horizontal: 10),
+                        child: Text(
+                          videoTitle,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             );
           }
           return const Center(
@@ -396,240 +628,6 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
           );
         },
       ),
-
-      // body: Row(
-      //   children: [
-      //     SizedBox(
-      //       width: 1000,
-      //       // height: double.infinity,
-      //       child: Padding(
-      //         padding: const EdgeInsets.all(20.0),
-      //         child: SingleChildScrollView(
-      //           scrollDirection: Axis.vertical,
-      //           child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.start,
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               MaterialButton(
-      //                 shape: const RoundedRectangleBorder(
-      //                   borderRadius: BorderRadius.all(
-      //                     Radius.circular(20.0),
-      //                   ),
-      //                 ),
-      //                 elevation: 5.0,
-      //                 minWidth: 150.0,
-      //                 height: 50,
-      //                 color: mainColor,
-      //                 child: const Text(
-      //                   '+ New Unit',
-      //                   style: TextStyle(fontSize: 16.0, color: Colors.white),
-      //                 ),
-      //                 onPressed: () {
-      //                   addUnit(context);
-      //                 },
-      //               ),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.start,
-      //                 //crossAxisAlignment: CrossAxisAlignment.start,
-      //                 children: [
-      //                   SizedBox(
-      //                     width: 800,
-      //                     // height: 50,
-      //                     child: StreamBuilder(
-      //                       stream: course
-      //                           .doc(widget.courseId)
-      //                           .collection('chapters')
-      //                           .snapshots(),
-      //                       builder: (context,
-      //                           AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-      //                         if (streamSnapshot.hasData) {
-      //                           return ListView.builder(
-      //                             shrinkWrap: true,
-      //                             itemCount: streamSnapshot.data!.docs.length,
-      //                             itemBuilder: (context, index) {
-      //                               final DocumentSnapshot documentSnapshot =
-      //                                   streamSnapshot.data!.docs[index];
-      //                               return Padding(
-      //                                 padding: const EdgeInsets.all(0),
-      //                                 child: ExpansionTile(
-      //                                   title: Text(documentSnapshot.id),
-      //                                   textColor: Colors.blue,
-      //                                   trailing: IconButton(
-      //                                     onPressed: () {
-      //                                       try {
-      //                                         var id = documentSnapshot.id;
-      //                                         getCourseChaptersData();
-      //                                         addlesson(context, id);
-      //                                         log('This is document id : $id');
-      //                                       } catch (e) {
-      //                                         log('Error is : $e');
-      //                                       }
-      //                                     },
-      //                                     icon: const Icon(
-      //                                       Icons.edit,
-      //                                       color: Colors.blue,
-      //                                     ),
-      //                                   ),
-      //                                   children: <Widget>[
-      //                                     StreamBuilder(
-      //                                       stream: course
-      //                                           .doc(widget.courseId)
-      //                                           .collection('chapters')
-      //                                           .doc(documentSnapshot.id)
-      //                                           .collection('videos')
-      //                                           .snapshots(),
-      //                                       builder: (context,
-      //                                           AsyncSnapshot<QuerySnapshot>
-      //                                               streamSnapshot) {
-      //                                         if (streamSnapshot.hasData) {
-      //                                           return ListView.builder(
-      //                                             shrinkWrap: true,
-      //                                             itemCount: streamSnapshot
-      //                                                 .data!.docs.length,
-      //                                             itemBuilder:
-      //                                                 (context, index) {
-      //                                               final DocumentSnapshot
-      //                                                   documentSnapshotVideo =
-      //                                                   streamSnapshot
-      //                                                       .data!.docs[index];
-      //                                               return Padding(
-      //                                                 padding:
-      //                                                     const EdgeInsets.all(
-      //                                                         0),
-      //                                                 child: Container(
-      //                                                   height: 50,
-      //                                                   decoration:
-      //                                                       const BoxDecoration(),
-      //                                                   child: InkWell(
-      //                                                     onTap: () {
-      //                                                       Navigator.push(
-      //                                                         context,
-      //                                                         MaterialPageRoute(
-      //                                                           builder:
-      //                                                               (context) =>
-      //                                                                   CourseVideoScreen(
-      //                                                             videoTitle:
-      //                                                                 documentSnapshotVideo[
-      //                                                                     'title'],
-      //                                                             videoUrl:
-      //                                                                 documentSnapshotVideo[
-      //                                                                     'url'],
-      //                                                           ),
-      //                                                         ),
-      //                                                       );
-      //                                                     },
-      //                                                     child: Padding(
-      //                                                       padding:
-      //                                                           const EdgeInsets
-      //                                                               .only(
-      //                                                         left: 30.0,
-      //                                                       ),
-      //                                                       child: documentSnapshotVideo[
-      //                                                                   'type'] ==
-      //                                                               'Video'
-      //                                                           ? Row(
-      //                                                               children: [
-      //                                                                 const Icon(
-      //                                                                     Icons
-      //                                                                         .movie),
-      //                                                                 const Padding(
-      //                                                                   padding:
-      //                                                                       EdgeInsets.only(left: 20),
-      //                                                                 ),
-      //                                                                 Text(
-      //                                                                   documentSnapshotVideo
-      //                                                                       .id,
-      //                                                                 ),
-      //                                                               ],
-      //                                                             )
-      //                                                           : documentSnapshotVideo[
-      //                                                                       'type'] ==
-      //                                                                   'Audio Book'
-      //                                                               ? Row(
-      //                                                                   children: [
-      //                                                                     const Icon(
-      //                                                                         Icons.audiotrack),
-      //                                                                     const Padding(
-      //                                                                       padding:
-      //                                                                           EdgeInsets.only(left: 20),
-      //                                                                     ),
-      //                                                                     Text(
-      //                                                                       documentSnapshotVideo.id,
-      //                                                                     ),
-      //                                                                   ],
-      //                                                                 )
-      //                                                               : documentSnapshotVideo['type'] ==
-      //                                                                       'eBook'
-      //                                                                   ? Row(
-      //                                                                       children: [
-      //                                                                         const Icon(Icons.book),
-      //                                                                         const Padding(
-      //                                                                           padding: EdgeInsets.only(left: 20),
-      //                                                                         ),
-      //                                                                         Text(
-      //                                                                           documentSnapshotVideo.id,
-      //                                                                         ),
-      //                                                                       ],
-      //                                                                     )
-      //                                                                   : documentSnapshotVideo['type'] ==
-      //                                                                           'Rich Text'
-      //                                                                       ? Row(
-      //                                                                           children: [
-      //                                                                             const Icon(Icons.text_snippet),
-      //                                                                             const Padding(
-      //                                                                               padding: EdgeInsets.only(left: 20),
-      //                                                                             ),
-      //                                                                             Text(
-      //                                                                               documentSnapshotVideo.id,
-      //                                                                             ),
-      //                                                                           ],
-      //                                                                         )
-      //                                                                       : Row(
-      //                                                                           children: [
-      //                                                                             const Icon(Icons.not_interested_sharp),
-      //                                                                             const Padding(
-      //                                                                               padding: EdgeInsets.only(left: 20),
-      //                                                                             ),
-      //                                                                             Text(
-      //                                                                               documentSnapshotVideo.id,
-      //                                                                             ),
-      //                                                                           ],
-      //                                                                         ),
-      //                                                     ),
-      //                                                   ),
-      //                                                 ),
-      //                                               );
-      //                                             },
-      //                                           );
-      //                                         }
-      //                                         return const Center(
-      //                                           child:
-      //                                               CircularProgressIndicator(),
-      //                                         );
-      //                                       },
-      //                                     ),
-      //                                   ],
-      //                                 ),
-      //                               );
-      //                             },
-      //                           );
-      //                         }
-      //                         return const Center(
-      //                           child: CircularProgressIndicator(),
-      //                         );
-      //                       },
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //               Container(height: 1, width: 850, color: Colors.grey),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
