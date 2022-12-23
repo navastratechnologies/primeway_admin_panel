@@ -4,14 +4,15 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/text_editor.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:video_player/video_player.dart';
 
 class UploadCoursesScreen extends StatefulWidget {
@@ -34,7 +35,6 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   String type = 'Audio Book';
   var items = [
     "Audio Book",
-    "Rich Text",
     "Document",
     "Video",
     "eBook",
@@ -79,6 +79,9 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   File? pickedFile;
   UploadTask? uploadTask;
   Uint8List webImage = Uint8List(8);
+  Uint8List webAudio = Uint8List(8);
+  Uint8List webVideo = Uint8List(8);
+  Uint8List webDoc = Uint8List(8);
 
   Future<void> pickImage() async {
     if (!kIsWeb) {
@@ -161,6 +164,24 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       minutes,
       seconds,
     ].join(':');
+  }
+
+  File pickAudioFileType = File("");
+  File? pickDocFileType;
+
+  pickAnyFileFunction(FileType type) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: type,
+    );
+
+    if (result == null) return;
+
+    var selectedByte = result.files.first;
+    log('file byte is ${selectedByte.bytes}');
+    setState(() {
+      webDoc = selectedByte.bytes!;
+      pickDocFileType = File('a');
+    });
   }
 
   @override
@@ -320,10 +341,14 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                                                     documentSnapshotVideo[
                                                                         'url'])
                                                               ..initialize()
-                                                                  .then((_) {
-                                                                // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-                                                                setState(() {});
-                                                              });
+                                                                  .then(
+                                                                (_) {
+                                                                  // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+                                                                  setState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                              );
                                                       }
 
                                                       videoTitle =
@@ -439,186 +464,212 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                           );
                         }),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _controller.value.isInitialized
-                          ? SizedBox(
-                              height: 300,
-                              width: displayWidth(context) / 3,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(
-                                    () {
-                                      showControls = !showControls;
-                                    },
-                                  );
-                                },
-                                child: AspectRatio(
-                                  aspectRatio: _controller.value.aspectRatio,
-                                  child: Stack(
-                                    children: [
-                                      VideoPlayer(_controller),
-                                      showControls
-                                          ? Center(
-                                              child: InkWell(
-                                                onHover: (value) {
-                                                  showControls = value;
-                                                },
-                                                onTap: () {
-                                                  setState(() {
-                                                    _controller.value.isPlaying
-                                                        ? _controller.pause()
-                                                        : _controller.play();
-                                                    _controller.value.isPlaying
-                                                        ? showControls = false
-                                                        : showControls = true;
-                                                  });
-                                                },
-                                                child: Icon(
-                                                  _controller.value.isPlaying
-                                                      ? Icons.pause_rounded
-                                                      : Icons
-                                                          .play_arrow_rounded,
-                                                  size: 50,
-                                                  color: Colors.white
-                                                      .withOpacity(0.6),
-                                                ),
-                                              ),
-                                            )
-                                          : Container(),
-                                      showControls
-                                          ? Align(
-                                              alignment: Alignment.topLeft,
-                                              child: InkWell(
-                                                onTap: () =>
-                                                    Navigator.pop(context),
-                                                child: const Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Icon(
-                                                    Icons.arrow_back,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Container(),
-                                      showControls
-                                          ? Align(
-                                              alignment: Alignment.bottomCenter,
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 7,
-                                                  horizontal: 10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                ),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.amber,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child:
-                                                          ValueListenableBuilder(
-                                                        valueListenable:
-                                                            _controller,
-                                                        builder: (context,
-                                                            VideoPlayerValue
-                                                                value,
-                                                            child) {
-                                                          return Text(
-                                                            _videoDuration(
-                                                                value.position),
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child:
-                                                          VideoProgressIndicator(
-                                                        _controller,
-                                                        allowScrubbing: true,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                          horizontal: 10,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.amber,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        _videoDuration(
-                                                            _controller.value
-                                                                .duration),
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          : Container(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          : SizedBox(
-                              height: 500,
-                              width: 800,
-                              child: Center(
-                                child:
-                                    Lottie.asset('assets/json/buffering.json'),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     _controller.value.isInitialized
+                  //         ? SizedBox(
+                  //             height: 300,
+                  //             width: displayWidth(context) / 3,
+                  //             child: InkWell(
+                  //               onTap: () {
+                  //                 setState(
+                  //                   () {
+                  //                     showControls = !showControls;
+                  //                   },
+                  //                 );
+                  //               },
+                  //               child: AspectRatio(
+                  //                 aspectRatio: _controller.value.aspectRatio,
+                  //                 child: Stack(
+                  //                   children: [
+                  //                     VideoPlayer(_controller),
+                  //                     showControls
+                  //                         ? Center(
+                  //                             child: InkWell(
+                  //                               onHover: (value) {
+                  //                                 showControls = value;
+                  //                               },
+                  //                               onTap: () {
+                  //                                 setState(() {
+                  //                                   _controller.value.isPlaying
+                  //                                       ? _controller.pause()
+                  //                                       : _controller.play();
+                  //                                   _controller.value.isPlaying
+                  //                                       ? showControls = false
+                  //                                       : showControls = true;
+                  //                                 });
+                  //                               },
+                  //                               child: Icon(
+                  //                                 _controller.value.isPlaying
+                  //                                     ? Icons.pause_rounded
+                  //                                     : Icons
+                  //                                         .play_arrow_rounded,
+                  //                                 size: 50,
+                  //                                 color: Colors.white
+                  //                                     .withOpacity(0.6),
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                         : Container(),
+                  //                     showControls
+                  //                         ? Align(
+                  //                             alignment: Alignment.topLeft,
+                  //                             child: InkWell(
+                  //                               onTap: () =>
+                  //                                   Navigator.pop(context),
+                  //                               child: const Padding(
+                  //                                 padding: EdgeInsets.all(8.0),
+                  //                                 child: Icon(
+                  //                                   Icons.arrow_back,
+                  //                                   color: Colors.white,
+                  //                                 ),
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                         : Container(),
+                  //                     showControls
+                  //                         ? Align(
+                  //                             alignment: Alignment.bottomCenter,
+                  //                             child: Container(
+                  //                               padding:
+                  //                                   const EdgeInsets.symmetric(
+                  //                                 vertical: 7,
+                  //                                 horizontal: 10,
+                  //                               ),
+                  //                               decoration: BoxDecoration(
+                  //                                 color: Colors.black
+                  //                                     .withOpacity(0.5),
+                  //                               ),
+                  //                               child: Row(
+                  //                                 crossAxisAlignment:
+                  //                                     CrossAxisAlignment.center,
+                  //                                 children: [
+                  //                                   Container(
+                  //                                     padding:
+                  //                                         const EdgeInsets.all(
+                  //                                             3),
+                  //                                     decoration: BoxDecoration(
+                  //                                       color: Colors.amber,
+                  //                                       borderRadius:
+                  //                                           BorderRadius
+                  //                                               .circular(5),
+                  //                                     ),
+                  //                                     child:
+                  //                                         ValueListenableBuilder(
+                  //                                       valueListenable:
+                  //                                           _controller,
+                  //                                       builder: (context,
+                  //                                           VideoPlayerValue
+                  //                                               value,
+                  //                                           child) {
+                  //                                         return Text(
+                  //                                           _videoDuration(
+                  //                                               value.position),
+                  //                                           style:
+                  //                                               const TextStyle(
+                  //                                             color:
+                  //                                                 Colors.white,
+                  //                                             fontSize: 14,
+                  //                                             fontWeight:
+                  //                                                 FontWeight
+                  //                                                     .bold,
+                  //                                           ),
+                  //                                         );
+                  //                                       },
+                  //                                     ),
+                  //                                   ),
+                  //                                   Expanded(
+                  //                                     child:
+                  //                                         VideoProgressIndicator(
+                  //                                       _controller,
+                  //                                       allowScrubbing: true,
+                  //                                       padding:
+                  //                                           const EdgeInsets
+                  //                                               .symmetric(
+                  //                                         horizontal: 10,
+                  //                                       ),
+                  //                                     ),
+                  //                                   ),
+                  //                                   Container(
+                  //                                     padding:
+                  //                                         const EdgeInsets.all(
+                  //                                             3),
+                  //                                     decoration: BoxDecoration(
+                  //                                       color: Colors.amber,
+                  //                                       borderRadius:
+                  //                                           BorderRadius
+                  //                                               .circular(5),
+                  //                                     ),
+                  //                                     child: Text(
+                  //                                       _videoDuration(
+                  //                                           _controller.value
+                  //                                               .duration),
+                  //                                       style: const TextStyle(
+                  //                                         color: Colors.white,
+                  //                                         fontSize: 14,
+                  //                                         fontWeight:
+                  //                                             FontWeight.bold,
+                  //                                       ),
+                  //                                     ),
+                  //                                   ),
+                  //                                 ],
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                         : Container(),
+                  //                   ],
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           )
+                  //         : SizedBox(
+                  //             height: 500,
+                  //             width: 800,
+                  //             child: Center(
+                  //               child:
+                  //                   Lottie.asset('assets/json/buffering.json'),
+                  //             ),
+                  //           ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(
+                  //           vertical: 18, horizontal: 10),
+                  //       child: Text(
+                  //         videoTitle,
+                  //         style: const TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: 18,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  pickDocFileType == null
+                      ? InkWell(
+                          onTap: () {
+                            pickAnyFileFunction(FileType.any);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 50,
+                              vertical: 20,
+                            ),
+                            child: Container(
+                              height: 200,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.grey.withOpacity(0.3),
+                                border: Border.all(color: Colors.grey),
                               ),
                             ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 18, horizontal: 10),
-                        child: Text(
-                          videoTitle,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
                           ),
+                        )
+                      : SizedBox(
+                          height: 200,
+                          width: 300,
+                          child: SfPdfViewer.memory(webDoc),
                         ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             );
@@ -646,7 +697,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                     Align(
                       alignment: Alignment.topRight,
                       child: MaterialButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.pop(context),
                         child: const Icon(Icons.close),
                       ),
                     ),
@@ -1057,46 +1108,20 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      type == 'Document'
-                          ? Text(
-                              'New Lesson(File)Details ',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.7),
-                                fontSize: 23,
-                              ),
-                            )
-                          : type == "Video"
-                              ? Text(
-                                  'New Lesson(Video)Details ',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.7),
-                                    fontSize: 23,
-                                  ),
-                                )
-                              : type == "Audio Book"
-                                  ? Text(
-                                      'New Lesson(Audio)Details ',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontSize: 23,
-                                      ),
-                                    )
-                                  : type == "Rich Text"
-                                      ? addText(context, id)
-                                      : Text(
-                                          'New Lesson(URL)Details ',
-                                          style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.7),
-                                            fontSize: 23,
-                                          ),
-                                        ),
-                    ],
+                  Text(
+                    type == 'Document'
+                        ? 'New Lesson(File)Details '
+                        : type == "Video"
+                            ? 'New Lesson(Video)Details '
+                            : 'New Lesson(Audio)Details ',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.7),
+                      fontSize: 23,
+                    ),
                   ),
+                  const SizedBox(height: 5),
                   Container(
                     height: 1,
                     width: double.infinity,
@@ -1225,58 +1250,41 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                       ),
                       Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 50,
-                              vertical: 20,
-                            ),
-                            child: Container(
-                              height: 200,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey.withOpacity(0.3),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                            ),
-                          ),
-                          type == "Document"
-                              ? TextButton(
-                                  onPressed: (() {
-                                    pickImage();
-                                  }),
-                                  child: const Text(
-                                    'Upload New Document',
-                                    style: TextStyle(
-                                        color: Colors.blue, fontSize: 15),
+                          pickDocFileType == null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 50,
+                                    vertical: 20,
+                                  ),
+                                  child: Container(
+                                    height: 200,
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.grey.withOpacity(0.3),
+                                      border: Border.all(color: Colors.grey),
+                                    ),
                                   ),
                                 )
-                              : type == "Video"
-                                  ? TextButton(
-                                      onPressed: (() {
-                                        pickImage();
-                                      }),
-                                      child: const Text(
-                                        'Upload New Video',
-                                        style: TextStyle(
-                                            color: Colors.blue, fontSize: 15),
-                                      ),
-                                    )
-                                  : type == "Audio Book"
-                                      ? TextButton(
-                                          onPressed: (() {
-                                            pickImage();
-                                          }),
-                                          child: const Text(
-                                            'Upload New Audio',
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: 15),
-                                          ),
-                                        )
-                                      : const Text(
-                                          '',
-                                        ),
+                              : SizedBox(
+                                  height: 200,
+                                  width: 300,
+                                  child: SfPdfViewer.memory(webDoc),
+                                ),
+                          TextButton(
+                            onPressed: (() {
+                              pickAnyFileFunction(FileType.any);
+                            }),
+                            child: Text(
+                              type == "Document"
+                                  ? 'Upload New Document'
+                                  : type == "Video"
+                                      ? 'Upload New Video'
+                                      : 'Upload New Audio',
+                              style: const TextStyle(
+                                  color: Colors.blue, fontSize: 15),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Text(
