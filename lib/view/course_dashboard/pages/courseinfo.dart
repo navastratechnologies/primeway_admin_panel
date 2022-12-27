@@ -390,7 +390,7 @@ class _CoursesInfoState extends State<CoursesInfo> {
                   fontSize: 13,
                 ),
               ),
-               const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

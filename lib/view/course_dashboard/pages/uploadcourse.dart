@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_return_type_for_catch_error, unused_field
 
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -9,11 +10,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/pages/showPdf_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/text_editor.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:video_player/video_player.dart';
+import 'package:image_picker_platform_interface/src/types/image_source.dart'
+    as imagesource;
 
 class UploadCoursesScreen extends StatefulWidget {
   final String courseId;
@@ -30,6 +33,12 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   TextEditingController lessonNameController = TextEditingController();
   TextEditingController lessoneDescriptionController = TextEditingController();
   TextEditingController waterMarkPositionController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
+
+  bool showWarning = false;
+
+  String videoUrl =
+      '<iframe width="10" height="10" src="" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 
   String draft = 'Draft';
   String type = 'Audio Book';
@@ -37,8 +46,6 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     "Audio Book",
     "Document",
     "Video",
-    "eBook",
-    "Mixed",
   ];
 
   String chapters = '';
@@ -86,7 +93,8 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
   Future<void> pickImage() async {
     if (!kIsWeb) {
       ImagePicker picker = ImagePicker();
-      XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      XFile? image =
+          await picker.pickImage(source: imagesource.ImageSource.gallery);
       if (image != null) {
         var selected = File(image.path);
         setState(() {
@@ -97,7 +105,8 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       }
     } else if (kIsWeb) {
       ImagePicker picker = ImagePicker();
-      XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      XFile? image =
+          await picker.pickImage(source: imagesource.ImageSource.gallery);
       if (image != null) {
         var selectedByte = await image.readAsBytes();
         setState(() {
@@ -112,93 +121,143 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     }
   }
 
-  Future uploadFile(id) async {
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child('course/${widget.courseId}${DateTime.now()}.png');
-    UploadTask uploadTask = ref.putData(
-      webImage,
-      SettableMetadata(contentType: 'image/png'),
-    );
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {
-      log('done');
-    }).catchError(
-      (error) => log('something went wrong : $error'),
-    );
-    String url = await taskSnapshot.ref.getDownloadURL();
-    try {
-      await course
-          .doc(widget.courseId)
-          .collection('chapters')
-          .doc(id)
-          .collection('videos')
-          .doc(lessonNameController.text)
-          .set({
-        'url': url.toString(),
-        'type': type,
-        'title': lessonNameController.text,
-        'description': lessoneDescriptionController.text,
-        'water_position': waterMarkPositionController.text,
-        'duration': '',
+  File? pickDocFileType, pickVideoFileType, pickAudioFileType;
+  String? fileurl, fileType;
+  String filename = '';
+
+  pickAnyFileFunction(FileType type) async {
+    if (type == FileType.custom) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: type,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+      );
+      if (result == null) return;
+
+      var selectedByte = result.files.first;
+      log('file byte is ${selectedByte.name}');
+      setState(() {
+        webDoc = selectedByte.bytes!;
+        filename = selectedByte.name;
+        fileType = "Document";
+        pickDocFileType = File('a');
       });
-    } catch (e) {
-      log('message is error : $e');
+    } else if (type == FileType.video) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: type,
+      );
+      if (result == null) return;
+
+      var selectedByte = result.files.first;
+      log('file byte is ${selectedByte.name}');
+      setState(() {
+        webVideo = selectedByte.bytes!;
+        filename = selectedByte.name;
+        fileType = "Video";
+        pickVideoFileType = File('a');
+      });
+    } else {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: type,
+      );
+      if (result == null) return;
+
+      var selectedByte = result.files.first;
+      log('file byte is ${selectedByte.name}');
+      setState(() {
+        webAudio = selectedByte.bytes!;
+        filename = selectedByte.name;
+        fileType = "Audio Book";
+        pickAudioFileType = File('a');
+      });
     }
   }
 
-  late VideoPlayerController _controller;
-
-  bool showControls = true;
-
-  String videoTitle = '';
-  String videoUrl = '';
-
-  String _videoDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(duration.inHours);
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return [
-      if (duration.inHours > 0) hours,
-      minutes,
-      seconds,
-    ].join(':');
-  }
-
-  File pickAudioFileType = File("");
-  File? pickDocFileType;
-
-  pickAnyFileFunction(FileType type) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: type,
+  Future uploadAnyFileFunction(FileType type, id) async {
+    if (type == FileType.custom) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('course_videos/${DateTime.now()}.pdf');
+      UploadTask uploadTask = ref.putData(
+        webDoc,
+        SettableMetadata(contentType: 'application/pdf'),
+      );
+      TaskSnapshot taskSnapshot = await uploadTask
+          .whenComplete(
+            () => log('done'),
+          )
+          .catchError(
+            (error) => log('something went wrong'),
+          );
+      String url = await taskSnapshot.ref.getDownloadURL();
+      setState(() {
+        fileurl = url;
+      });
+    } else if (type == FileType.video) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('course_videos/${DateTime.now()}.mp4');
+      UploadTask uploadTask = ref.putData(
+        webVideo,
+        SettableMetadata(contentType: 'video/mp4'),
+      );
+      TaskSnapshot taskSnapshot = await uploadTask
+          .whenComplete(
+            () => log('done'),
+          )
+          .catchError(
+            (error) => log('something went wrong'),
+          );
+      String url = await taskSnapshot.ref.getDownloadURL();
+      setState(() {
+        fileurl = url;
+      });
+    } else {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('course_videos/${DateTime.now()}.mp3');
+      UploadTask uploadTask = ref.putData(
+        webAudio,
+        SettableMetadata(contentType: 'audio/mpeg'),
+      );
+      TaskSnapshot taskSnapshot = await uploadTask
+          .whenComplete(
+            () => log('done'),
+          )
+          .catchError(
+            (error) => log('something went wrong'),
+          );
+      String url = await taskSnapshot.ref.getDownloadURL();
+      setState(() {
+        fileurl = url;
+      });
+    }
+    FirebaseFirestore.instance
+        .collection('courses')
+        .doc(widget.courseId)
+        .collection('chapters')
+        .doc(id)
+        .collection('videos')
+        .add(
+      {
+        "title": lessonNameController.text,
+        "duration": durationController.text,
+        "description": lessoneDescriptionController.text,
+        "water_position": waterMarkPositionController.text,
+        "url": fileurl,
+        "type": fileType,
+      },
     );
-
-    if (result == null) return;
-
-    var selectedByte = result.files.first;
-    log('file byte is ${selectedByte.bytes}');
-    setState(() {
-      webDoc = selectedByte.bytes!;
-      pickDocFileType = File('a');
-    });
   }
 
   @override
   void initState() {
     getCourseChaptersData();
-    _controller = VideoPlayerController.network(videoUrl)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
   }
 
   @override
@@ -244,433 +303,178 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
           if (streamSnapshot.hasData) {
             return Padding(
               padding: const EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: displayHeight(context),
-                    width: displayWidth(context) / 2,
-                    child: ListView.builder(
-                        itemCount: streamSnapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          final DocumentSnapshot documentSnapshot =
-                              streamSnapshot.data!.docs[index];
-                          var tapIndex = 0;
-                          return Padding(
-                            padding: const EdgeInsets.all(3),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: whiteColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: mainColor.withOpacity(0.1),
-                                    blurRadius: 10,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
+              child: SizedBox(
+                height: displayHeight(context),
+                width: displayWidth(context),
+                child: ListView.builder(
+                    itemCount: streamSnapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final DocumentSnapshot documentSnapshot =
+                          streamSnapshot.data!.docs[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: mainColor.withOpacity(0.1),
+                                blurRadius: 10,
+                                spreadRadius: 1,
                               ),
-                              child: ExpansionTile(
-                                key: Key(tapIndex.toString()),
-                                title: Text("${documentSnapshot.id} $tapIndex"),
-                                textColor: Colors.blue,
-                                onExpansionChanged: (value) {
-                                  setState(() {
-                                    tapIndex = index;
-                                    log('tap index is $tapIndex');
-                                  });
-                                },
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    try {
-                                      var id = documentSnapshot.id;
-                                      getCourseChaptersData();
-                                      addlesson(context, id);
-                                      log('This is document id : $id');
-                                    } catch (e) {
-                                      log('Error is : $e');
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                children: [
-                                  StreamBuilder(
-                                    stream: course
-                                        .doc(widget.courseId)
-                                        .collection('chapters')
-                                        .doc(documentSnapshot.id)
-                                        .collection('videos')
-                                        .snapshots(),
-                                    builder: (context,
-                                        AsyncSnapshot<QuerySnapshot>
-                                            streamSnapshot) {
-                                      if (streamSnapshot.hasData) {
-                                        return ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount:
-                                              streamSnapshot.data!.docs.length,
-                                          itemBuilder: (context, index) {
-                                            final DocumentSnapshot
-                                                documentSnapshotVideo =
-                                                streamSnapshot
-                                                    .data!.docs[index];
-                                            videoUrl =
-                                                documentSnapshotVideo['url'];
-                                            videoTitle =
-                                                documentSnapshotVideo['title'];
-                                            return Padding(
-                                              padding: const EdgeInsets.all(0),
-                                              child: Container(
-                                                height: 50,
-                                                decoration:
-                                                    const BoxDecoration(),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      if (documentSnapshotVideo[
-                                                              'url']
-                                                          .toString()
-                                                          .contains('mp4')) {
-                                                        _controller =
-                                                            VideoPlayerController
-                                                                .network(
-                                                                    documentSnapshotVideo[
-                                                                        'url'])
-                                                              ..initialize()
-                                                                  .then(
-                                                                (_) {
-                                                                  // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-                                                                  setState(
-                                                                    () {},
-                                                                  );
-                                                                },
-                                                              );
-                                                      }
-
-                                                      videoTitle =
-                                                          documentSnapshotVideo[
-                                                              'title'];
-                                                    });
-                                                  },
+                            ],
+                          ),
+                          child: ExpansionTile(
+                            title: Text(documentSnapshot.id),
+                            textColor: Colors.blue,
+                            trailing: IconButton(
+                              onPressed: () {
+                                try {
+                                  var id = documentSnapshot.id;
+                                  getCourseChaptersData();
+                                  addlesson(context, id);
+                                  log('This is document id : $id');
+                                } catch (e) {
+                                  log('Error is : $e');
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            children: [
+                              StreamBuilder(
+                                stream: course
+                                    .doc(widget.courseId)
+                                    .collection('chapters')
+                                    .doc(documentSnapshot.id)
+                                    .collection('videos')
+                                    .snapshots(),
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot>
+                                        streamSnapshot) {
+                                  if (streamSnapshot.hasData) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount:
+                                          streamSnapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        final DocumentSnapshot
+                                            documentSnapshotVideo =
+                                            streamSnapshot.data!.docs[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.all(0),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            width: displayWidth(context),
+                                            height:
+                                                documentSnapshotVideo['type'] ==
+                                                        "Video"
+                                                    ? 200
+                                                    : documentSnapshotVideo[
+                                                                'type'] ==
+                                                            "Document"
+                                                        ? 40
+                                                        : 120,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  height: 50,
+                                                  decoration:
+                                                      const BoxDecoration(),
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.only(
                                                       left: 30.0,
                                                     ),
-                                                    child: documentSnapshotVideo[
-                                                                'type'] ==
-                                                            'Video'
-                                                        ? Row(
-                                                            children: [
-                                                              const Icon(
-                                                                  Icons.movie),
-                                                              const Padding(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            20),
-                                                              ),
-                                                              Text(
-                                                                documentSnapshotVideo
-                                                                    .id,
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : documentSnapshotVideo[
-                                                                    'type'] ==
-                                                                'Audio Book'
-                                                            ? Row(
-                                                                children: [
-                                                                  const Icon(Icons
-                                                                      .audiotrack),
-                                                                  const Padding(
-                                                                    padding: EdgeInsets
-                                                                        .only(
-                                                                            left:
-                                                                                20),
-                                                                  ),
-                                                                  Text(
-                                                                    documentSnapshotVideo
-                                                                        .id,
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            : documentSnapshotVideo[
-                                                                        'type'] ==
-                                                                    'eBook'
-                                                                ? Row(
-                                                                    children: [
-                                                                      const Icon(
-                                                                          Icons
-                                                                              .book),
-                                                                      const Padding(
-                                                                        padding:
-                                                                            EdgeInsets.only(left: 20),
-                                                                      ),
-                                                                      Text(
-                                                                        documentSnapshotVideo
-                                                                            .id,
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                : documentSnapshotVideo[
-                                                                            'type'] ==
-                                                                        'Rich Text'
-                                                                    ? Row(
-                                                                        children: [
-                                                                          const Icon(
-                                                                              Icons.text_snippet),
-                                                                          const Padding(
-                                                                            padding:
-                                                                                EdgeInsets.only(left: 20),
-                                                                          ),
-                                                                          Text(
-                                                                            documentSnapshotVideo.id,
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    : Row(
-                                                                        children: [
-                                                                          const Icon(
-                                                                              Icons.not_interested_sharp),
-                                                                          const Padding(
-                                                                            padding:
-                                                                                EdgeInsets.only(left: 20),
-                                                                          ),
-                                                                          Text(
-                                                                            documentSnapshotVideo.id,
-                                                                          ),
-                                                                        ],
-                                                                      ),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          documentSnapshotVideo[
+                                                                      'type'] ==
+                                                                  "Video"
+                                                              ? Icons
+                                                                  .movie_rounded
+                                                              : documentSnapshotVideo[
+                                                                          'type'] ==
+                                                                      "Audio Book"
+                                                                  ? Icons
+                                                                      .audio_file_rounded
+                                                                  : Icons
+                                                                      .description_rounded,
+                                                        ),
+                                                        const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 20),
+                                                        ),
+                                                        Text(
+                                                          documentSnapshotVideo[
+                                                              'title'],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            );
-                                          },
+                                                const SizedBox(width: 100),
+                                                SizedBox(
+                                                  width:
+                                                      displayWidth(context) / 3,
+                                                  height: documentSnapshotVideo[
+                                                              'type'] ==
+                                                          "Video"
+                                                      ? 200
+                                                      : documentSnapshotVideo[
+                                                                  'type'] ==
+                                                              "Document"
+                                                          ? 40
+                                                          : 120,
+                                                  child: documentSnapshotVideo[
+                                                              'type'] ==
+                                                          "Document"
+                                                      ? MaterialButton(
+                                                          color:
+                                                              greenShadeColor,
+                                                          onPressed: () =>
+                                                              Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ViewPdfScreen(
+                                                                pdfString:
+                                                                    '<iframe src="${documentSnapshotVideo['url']}" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          child: const Text(
+                                                              'View Document'),
+                                                        )
+                                                      : HtmlWidget(
+                                                          """<iframe src="${documentSnapshotVideo['url']}" title="" frameborder="0" allow="accelerometer; autoplay="false"; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen allow></iframe>""",
+                                                          buildAsync: true,
+                                                          enableCaching: true,
+                                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         );
-                                      }
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    },
-                                  ),
-                                ],
+                                      },
+                                    );
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               ),
-                            ),
-                          );
-                        }),
-                  ),
-                  // Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     _controller.value.isInitialized
-                  //         ? SizedBox(
-                  //             height: 300,
-                  //             width: displayWidth(context) / 3,
-                  //             child: InkWell(
-                  //               onTap: () {
-                  //                 setState(
-                  //                   () {
-                  //                     showControls = !showControls;
-                  //                   },
-                  //                 );
-                  //               },
-                  //               child: AspectRatio(
-                  //                 aspectRatio: _controller.value.aspectRatio,
-                  //                 child: Stack(
-                  //                   children: [
-                  //                     VideoPlayer(_controller),
-                  //                     showControls
-                  //                         ? Center(
-                  //                             child: InkWell(
-                  //                               onHover: (value) {
-                  //                                 showControls = value;
-                  //                               },
-                  //                               onTap: () {
-                  //                                 setState(() {
-                  //                                   _controller.value.isPlaying
-                  //                                       ? _controller.pause()
-                  //                                       : _controller.play();
-                  //                                   _controller.value.isPlaying
-                  //                                       ? showControls = false
-                  //                                       : showControls = true;
-                  //                                 });
-                  //                               },
-                  //                               child: Icon(
-                  //                                 _controller.value.isPlaying
-                  //                                     ? Icons.pause_rounded
-                  //                                     : Icons
-                  //                                         .play_arrow_rounded,
-                  //                                 size: 50,
-                  //                                 color: Colors.white
-                  //                                     .withOpacity(0.6),
-                  //                               ),
-                  //                             ),
-                  //                           )
-                  //                         : Container(),
-                  //                     showControls
-                  //                         ? Align(
-                  //                             alignment: Alignment.topLeft,
-                  //                             child: InkWell(
-                  //                               onTap: () =>
-                  //                                   Navigator.pop(context),
-                  //                               child: const Padding(
-                  //                                 padding: EdgeInsets.all(8.0),
-                  //                                 child: Icon(
-                  //                                   Icons.arrow_back,
-                  //                                   color: Colors.white,
-                  //                                 ),
-                  //                               ),
-                  //                             ),
-                  //                           )
-                  //                         : Container(),
-                  //                     showControls
-                  //                         ? Align(
-                  //                             alignment: Alignment.bottomCenter,
-                  //                             child: Container(
-                  //                               padding:
-                  //                                   const EdgeInsets.symmetric(
-                  //                                 vertical: 7,
-                  //                                 horizontal: 10,
-                  //                               ),
-                  //                               decoration: BoxDecoration(
-                  //                                 color: Colors.black
-                  //                                     .withOpacity(0.5),
-                  //                               ),
-                  //                               child: Row(
-                  //                                 crossAxisAlignment:
-                  //                                     CrossAxisAlignment.center,
-                  //                                 children: [
-                  //                                   Container(
-                  //                                     padding:
-                  //                                         const EdgeInsets.all(
-                  //                                             3),
-                  //                                     decoration: BoxDecoration(
-                  //                                       color: Colors.amber,
-                  //                                       borderRadius:
-                  //                                           BorderRadius
-                  //                                               .circular(5),
-                  //                                     ),
-                  //                                     child:
-                  //                                         ValueListenableBuilder(
-                  //                                       valueListenable:
-                  //                                           _controller,
-                  //                                       builder: (context,
-                  //                                           VideoPlayerValue
-                  //                                               value,
-                  //                                           child) {
-                  //                                         return Text(
-                  //                                           _videoDuration(
-                  //                                               value.position),
-                  //                                           style:
-                  //                                               const TextStyle(
-                  //                                             color:
-                  //                                                 Colors.white,
-                  //                                             fontSize: 14,
-                  //                                             fontWeight:
-                  //                                                 FontWeight
-                  //                                                     .bold,
-                  //                                           ),
-                  //                                         );
-                  //                                       },
-                  //                                     ),
-                  //                                   ),
-                  //                                   Expanded(
-                  //                                     child:
-                  //                                         VideoProgressIndicator(
-                  //                                       _controller,
-                  //                                       allowScrubbing: true,
-                  //                                       padding:
-                  //                                           const EdgeInsets
-                  //                                               .symmetric(
-                  //                                         horizontal: 10,
-                  //                                       ),
-                  //                                     ),
-                  //                                   ),
-                  //                                   Container(
-                  //                                     padding:
-                  //                                         const EdgeInsets.all(
-                  //                                             3),
-                  //                                     decoration: BoxDecoration(
-                  //                                       color: Colors.amber,
-                  //                                       borderRadius:
-                  //                                           BorderRadius
-                  //                                               .circular(5),
-                  //                                     ),
-                  //                                     child: Text(
-                  //                                       _videoDuration(
-                  //                                           _controller.value
-                  //                                               .duration),
-                  //                                       style: const TextStyle(
-                  //                                         color: Colors.white,
-                  //                                         fontSize: 14,
-                  //                                         fontWeight:
-                  //                                             FontWeight.bold,
-                  //                                       ),
-                  //                                     ),
-                  //                                   ),
-                  //                                 ],
-                  //                               ),
-                  //                             ),
-                  //                           )
-                  //                         : Container(),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           )
-                  //         : SizedBox(
-                  //             height: 500,
-                  //             width: 800,
-                  //             child: Center(
-                  //               child:
-                  //                   Lottie.asset('assets/json/buffering.json'),
-                  //             ),
-                  //           ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.symmetric(
-                  //           vertical: 18, horizontal: 10),
-                  //       child: Text(
-                  //         videoTitle,
-                  //         style: const TextStyle(
-                  //           fontWeight: FontWeight.bold,
-                  //           fontSize: 18,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  pickDocFileType == null
-                      ? InkWell(
-                          onTap: () {
-                            pickAnyFileFunction(FileType.any);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 50,
-                              vertical: 20,
-                            ),
-                            child: Container(
-                              height: 200,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey.withOpacity(0.3),
-                                border: Border.all(color: Colors.grey),
-                              ),
-                            ),
+                            ],
                           ),
-                        )
-                      : SizedBox(
-                          height: 200,
-                          width: 300,
-                          child: SfPdfViewer.memory(webDoc),
                         ),
-                ],
+                      );
+                    }),
               ),
             );
           }
@@ -690,7 +494,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
           builder: (context, setState) {
             return AlertDialog(
               content: SizedBox(
-                height: 240,
+                height: 200,
                 width: 300,
                 child: Column(
                   children: [
@@ -889,26 +693,6 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                         Row(
                           children: [
                             const Icon(
-                              Icons.remove_red_eye,
-                              color: Colors.green,
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                'Publish Unit',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
                               Icons.delete_forever,
                               color: Colors.blue,
                             ),
@@ -1098,264 +882,351 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: AlertDialog(
-            title: Container(
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    type == 'Document'
-                        ? 'New Lesson(File)Details '
-                        : type == "Video"
-                            ? 'New Lesson(Video)Details '
-                            : 'New Lesson(Audio)Details ',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                      fontSize: 23,
-                    ),
+              child: AlertDialog(
+                title: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 1,
-                    width: double.infinity,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Text(
-                              'LESSON NAME',
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.7),
-                                  fontSize: 13),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 300,
-                            child: TextField(
-                              controller: lessonNameController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'name of lesson',
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
-                            child: Text(
-                              'LESSON DESCRIPTION',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.7),
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: TextField(
-                                controller: lessoneDescriptionController,
-                                maxLines: 5,
-                                decoration:
-                                    const InputDecoration(hintText: 'passw'),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 25, 0, 12),
-                            child: Text(
-                              'WATERMARK POSITION',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.7),
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: TextField(
-                                controller: waterMarkPositionController,
-                                maxLines: 5,
-                                decoration:
-                                    const InputDecoration(hintText: 'passw'),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 15, 0, 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Radio(
-                                  value: 'Draft',
-                                  groupValue: draft,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      draft = value.toString();
-                                    });
-                                  },
-                                ),
-                                const Text('DRAFT'),
-                                const SizedBox(
-                                  width: 55,
-                                ),
-                                Radio(
-                                  value: 'Published',
-                                  groupValue: draft,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      draft = value.toString();
-                                    });
-                                  },
-                                ),
-                                const Text('PUBLISHED'),
-                              ],
-                            ),
-                          ),
-                        ],
+                      Text(
+                        type == 'Document'
+                            ? 'New Lesson(File)Details '
+                            : type == "Video"
+                                ? 'New Lesson(Video)Details '
+                                : 'New Lesson(Audio)Details ',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.7),
+                          fontSize: 23,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Container(
+                        height: 1,
+                        width: double.infinity,
+                        color: Colors.grey,
                       ),
                       const SizedBox(
-                        width: 50,
+                        height: 10,
                       ),
-                      Column(
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          pickDocFileType == null
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 50,
-                                    vertical: 20,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                child: Text(
+                                  'LESSON NAME',
+                                  style: TextStyle(
+                                      color: Colors.black.withOpacity(0.7),
+                                      fontSize: 13),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  controller: lessonNameController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Lesson',
                                   ),
-                                  child: Container(
-                                    height: 200,
-                                    width: 300,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.grey.withOpacity(0.3),
-                                      border: Border.all(color: Colors.grey),
-                                    ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                                child: Text(
+                                  'LESSON DESCRIPTION',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 13,
                                   ),
-                                )
-                              : SizedBox(
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  controller: lessoneDescriptionController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Description',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                                child: Text(
+                                  'WATERMARK POSITION',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  controller: waterMarkPositionController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Watermark',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 25, 0, 12),
+                                child: Text(
+                                  'Duration',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  controller: durationController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Duration of the Audio / Video',
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 50,
+                          ),
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 50,
+                                  vertical: 20,
+                                ),
+                                child: Container(
                                   height: 200,
                                   width: 300,
-                                  child: SfPdfViewer.memory(webDoc),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.grey.withOpacity(0.3),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  child: Center(
+                                    child: filename.isNotEmpty
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.movie,
+                                                size: 30,
+                                                color: Colors.blue[900],
+                                              ),
+                                              Text(
+                                                filename,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Text(
+                                            type == "Document"
+                                                ? "Pick Document by clicking below"
+                                                : type == "Video"
+                                                    ? "Pick Video by clicking below"
+                                                    : "Pick Audio by clicking below",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                  ),
                                 ),
-                          TextButton(
-                            onPressed: (() {
-                              pickAnyFileFunction(FileType.any);
-                            }),
-                            child: Text(
-                              type == "Document"
-                                  ? 'Upload New Document'
-                                  : type == "Video"
-                                      ? 'Upload New Video'
-                                      : 'Upload New Audio',
-                              style: const TextStyle(
-                                  color: Colors.blue, fontSize: 15),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              'You can upload Document, Video and Audio here',
-                              style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontSize: 14),
-                            ),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  log('doc type is $type');
+
+                                  if (type == "Document") {
+                                    FilePickerResult? result =
+                                        await FilePicker.platform.pickFiles(
+                                      type: FileType.custom,
+                                      allowedExtensions: ['pdf', 'doc', 'docx'],
+                                    );
+                                    if (result == null) return;
+
+                                    var selectedByte = result.files.first;
+                                    log('file byte is ${selectedByte.name}');
+                                    setState(() {
+                                      webDoc = selectedByte.bytes!;
+                                      filename = selectedByte.name;
+                                      fileType = "Document";
+                                      pickDocFileType = File('a');
+                                    });
+                                  } else if (type == "Video") {
+                                    FilePickerResult? result =
+                                        await FilePicker.platform.pickFiles(
+                                      type: FileType.video,
+                                    );
+                                    if (result == null) return;
+
+                                    var selectedByte = result.files.first;
+                                    log('file byte is ${selectedByte.name}');
+                                    setState(() {
+                                      webVideo = selectedByte.bytes!;
+                                      filename = selectedByte.name;
+                                      fileType = "Video";
+                                      pickVideoFileType = File('a');
+                                    });
+                                  } else {
+                                    FilePickerResult? result =
+                                        await FilePicker.platform.pickFiles(
+                                      type: FileType.audio,
+                                    );
+                                    if (result == null) return;
+
+                                    var selectedByte = result.files.first;
+                                    log('file byte is ${selectedByte.name}');
+                                    setState(() {
+                                      webAudio = selectedByte.bytes!;
+                                      filename = selectedByte.name;
+                                      fileType = "Audio Book";
+                                      pickAudioFileType = File('a');
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                  type == "Document"
+                                      ? 'Upload New Document'
+                                      : type == "Video"
+                                          ? 'Upload New Video'
+                                          : 'Upload New Audio',
+                                  style: const TextStyle(
+                                      color: Colors.blue, fontSize: 15),
+                                ),
+                              ),
+                              showWarning
+                                  ? const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        'Please fill all details to upload this course chapter data',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
                           ),
                         ],
                       ),
+                      Container(
+                        height: 1,
+                        width: double.infinity,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 5.0,
+                            minWidth: 70.0,
+                            height: 42,
+                            color: Colors.green,
+                            child: const Text(
+                              'SAVE',
+                              style: TextStyle(
+                                  fontSize: 13.0, color: Colors.white),
+                            ),
+                            onPressed: () {
+                              if (lessonNameController.text.isNotEmpty &&
+                                  lessoneDescriptionController
+                                      .text.isNotEmpty &&
+                                  durationController.text.isNotEmpty &&
+                                  fileType!.isNotEmpty &&
+                                  filename.isNotEmpty) {
+                                try {
+                                  type == "Document"
+                                      ? uploadAnyFileFunction(
+                                          FileType.custom, id)
+                                      : type == "Video"
+                                          ? uploadAnyFileFunction(
+                                              FileType.video, id)
+                                          : uploadAnyFileFunction(
+                                              FileType.audio, id);
+                                  for (var i = 0; i < 3; i++) {
+                                    Navigator.pop(context);
+                                  }
+                                  log('This is uploade file document id : $id');
+                                } catch (e) {
+                                  log('Error is : $e');
+                                }
+                                setState(() {
+                                  showWarning = false;
+                                });
+                              } else {
+                                setState(() {
+                                  showWarning = true;
+                                });
+                              }
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 5.0,
+                              minWidth: 70.0,
+                              height: 42,
+                              color: Colors.blue,
+                              child: const Text(
+                                'CLOSE',
+                                style: TextStyle(
+                                    fontSize: 13.0, color: Colors.white),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
-                  Container(
-                    height: 1,
-                    width: double.infinity,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 5.0,
-                        minWidth: 70.0,
-                        height: 42,
-                        color: Colors.green,
-                        child: const Text(
-                          'SAVE',
-                          style: TextStyle(fontSize: 13.0, color: Colors.white),
-                        ),
-                        onPressed: () {
-                          try {
-                            uploadFile(id);
-                            log('This is uploade file document id : $id');
-                          } catch (e) {
-                            log('Error is : $e');
-                          }
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 5.0,
-                          minWidth: 70.0,
-                          height: 42,
-                          color: Colors.blue,
-                          child: const Text(
-                            'CLOSE',
-                            style:
-                                TextStyle(fontSize: 13.0, color: Colors.white),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

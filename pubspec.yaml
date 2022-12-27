@@ -43,6 +43,8 @@ dependencies:
     sdk: flutter
   flutter_quill: ^6.1.6
   flutter_rating_bar: ^4.0.1
+  flutter_widget_from_html: ^0.9.0+2
+  flutter_widget_from_html_core: ^0.9.0+2
   font_awesome_flutter: ^10.1.0
   image_picker: ^0.8.5+3
   ionicons: ^0.2.1
