@@ -204,7 +204,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       );
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
         () {
-          for (var i = 0; i < 3; i++) {
+          for (var i = 0; i < 4; i++) {
             Navigator.pop(context);
           }
         },
@@ -225,7 +225,7 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
       );
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
         () {
-          for (var i = 0; i < 3; i++) {
+          for (var i = 0; i < 4; i++) {
             Navigator.pop(context);
           }
         },
