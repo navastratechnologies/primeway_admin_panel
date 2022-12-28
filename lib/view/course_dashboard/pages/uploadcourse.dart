@@ -181,13 +181,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
         webDoc,
         SettableMetadata(contentType: 'application/pdf'),
       );
-      TaskSnapshot taskSnapshot = await uploadTask
-          .whenComplete(
-            () => log('done'),
-          )
-          .catchError(
-            (error) => log('something went wrong'),
-          );
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
+        () {
+          for (var i = 0; i < 4; i++) {
+            Navigator.pop(context);
+          }
+        },
+      ).catchError(
+        (error) => log('something went wrong'),
+      );
       String url = await taskSnapshot.ref.getDownloadURL();
       setState(() {
         fileurl = url;
@@ -200,13 +202,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
         webVideo,
         SettableMetadata(contentType: 'video/mp4'),
       );
-      TaskSnapshot taskSnapshot = await uploadTask
-          .whenComplete(
-            () => log('done'),
-          )
-          .catchError(
-            (error) => log('something went wrong'),
-          );
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
+        () {
+          for (var i = 0; i < 3; i++) {
+            Navigator.pop(context);
+          }
+        },
+      ).catchError(
+        (error) => log('something went wrong'),
+      );
       String url = await taskSnapshot.ref.getDownloadURL();
       setState(() {
         fileurl = url;
@@ -219,13 +223,15 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
         webAudio,
         SettableMetadata(contentType: 'audio/mpeg'),
       );
-      TaskSnapshot taskSnapshot = await uploadTask
-          .whenComplete(
-            () => log('done'),
-          )
-          .catchError(
-            (error) => log('something went wrong'),
-          );
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
+        () {
+          for (var i = 0; i < 3; i++) {
+            Navigator.pop(context);
+          }
+        },
+      ).catchError(
+        (error) => log('something went wrong'),
+      );
       String url = await taskSnapshot.ref.getDownloadURL();
       setState(() {
         fileurl = url;
@@ -1182,9 +1188,31 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                                               FileType.video, id)
                                           : uploadAnyFileFunction(
                                               FileType.audio, id);
-                                  for (var i = 0; i < 3; i++) {
-                                    Navigator.pop(context);
-                                  }
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (_) {
+                                        return Dialog(
+                                          backgroundColor: Colors.white,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 20),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                CircularProgressIndicator(
+                                                  color: greenShadeColor,
+                                                ),
+                                                const SizedBox(
+                                                  height: 15,
+                                                ),
+                                                const Text(
+                                                    'Uploading! Please wait...')
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
                                   log('This is uploade file document id : $id');
                                 } catch (e) {
                                   log('Error is : $e');
