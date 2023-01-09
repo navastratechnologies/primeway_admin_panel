@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/edit_course_info.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/approve_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/courseinfo.dart';
@@ -19,6 +20,8 @@ class CoursesPage extends StatefulWidget {
 class _CoursesPageState extends State<CoursesPage> {
   final CollectionReference course =
       FirebaseFirestore.instance.collection('courses');
+
+  TextEditingController affiliatePriceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +105,71 @@ class _CoursesPageState extends State<CoursesPage> {
                                   SizedBox(
                                     height: 200,
                                     width: 200,
-                                    child: Image.network(
-                                      streamSnapshot.data!.docs[index]['image'],
-                                      fit: BoxFit.cover,
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
+                                          height: 200,
+                                          width: 200,
+                                          child: Image.network(
+                                            streamSnapshot.data!.docs[index]
+                                                ['image'],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        streamSnapshot.data!.docs[index]
+                                                    ['isInAffiliate'] ==
+                                                "false"
+                                            ? Container()
+                                            : Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      height: 32,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      decoration: BoxDecoration(
+                                                        color: purpleColor,
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                        ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/affiliate.png',
+                                                            height: 20,
+                                                            width: 20,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 5),
+                                                          Text(
+                                                            "Is In Affiliate",
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: whiteColor,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                      ],
                                     ),
                                   ),
                                   Padding(
@@ -166,6 +231,189 @@ class _CoursesPageState extends State<CoursesPage> {
                                                   fontSize: 12,
                                                   color: whiteColor,
                                                   fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            InkWell(
+                                              onTap: () {
+                                                if (streamSnapshot
+                                                            .data!.docs[index]
+                                                        ['isInAffiliate'] ==
+                                                    "false") {
+                                                  // course
+                                                  //     .doc(streamSnapshot
+                                                  //         .data!.docs[index].id)
+                                                  //     .update({
+                                                  //   'isInAffiliate': 'true',
+                                                  // });
+                                                  showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        content: SizedBox(
+                                                          width: 300,
+                                                          height: 400,
+                                                          child: Column(
+                                                            children: [
+                                                              Stack(
+                                                                children: [
+                                                                  Lottie.asset(
+                                                                      'assets/json/affiliate.json'),
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topRight,
+                                                                    child:
+                                                                        MaterialButton(
+                                                                      color:
+                                                                          mainColor,
+                                                                      shape:
+                                                                          const CircleBorder(),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              Navigator.pop(context),
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .close_rounded,
+                                                                        color:
+                                                                            whiteColor,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 1,
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color:
+                                                                      whiteColor,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: greenShadeColor
+                                                                          .withOpacity(
+                                                                              0.6),
+                                                                      blurRadius:
+                                                                          10,
+                                                                      spreadRadius:
+                                                                          1,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child:
+                                                                    TextFormField(
+                                                                  controller:
+                                                                      affiliatePriceController,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    border:
+                                                                        InputBorder
+                                                                            .none,
+                                                                    hintText:
+                                                                        'Enter Affiliate Price In %',
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 20),
+                                                              MaterialButton(
+                                                                color:
+                                                                    purpleColor,
+                                                                onPressed: () {
+                                                                  course
+                                                                      .doc(streamSnapshot
+                                                                          .data!
+                                                                          .docs[
+                                                                              index]
+                                                                          .id)
+                                                                      .update({
+                                                                    'isInAffiliate':
+                                                                        'true',
+                                                                    'affiliate_price':
+                                                                        affiliatePriceController
+                                                                            .text,
+                                                                  });
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: Text(
+                                                                  'Make It Affiliate',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        whiteColor,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                } else {
+                                                  course
+                                                      .doc(streamSnapshot
+                                                          .data!.docs[index].id)
+                                                      .update({
+                                                    'isInAffiliate': 'false',
+                                                  });
+                                                }
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                  horizontal: 10,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: mainShadeColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: mainColor
+                                                          .withOpacity(0.1),
+                                                      blurRadius: 10,
+                                                      spreadRadius: 1,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Text(
+                                                  streamSnapshot.data!
+                                                                  .docs[index][
+                                                              'isInAffiliate'] ==
+                                                          "false"
+                                                      ? 'Make This Course Affiliate'
+                                                      : 'Remove from Affiliate',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: whiteColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
                                             ),
