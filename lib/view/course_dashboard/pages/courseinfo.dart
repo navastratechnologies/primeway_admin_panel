@@ -105,6 +105,11 @@ class _CoursesInfoState extends State<CoursesInfo> {
       'deleted_by': '',
       'islive': 'false',
       'chapters': '0',
+      'isInAffiliate': 'false',
+    }).then((value) {
+      FirebaseFirestore.instance.collection('courses').doc(value.id).update({
+        "course_id": value.id.toString(),
+      });
     });
   }
 
