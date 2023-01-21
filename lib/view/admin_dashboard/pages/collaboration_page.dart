@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+
+import 'collaboration_detail.dart';
+import 'collaboration_detail_edit.dart';
 
 class CollaborationScreen extends StatefulWidget {
   const CollaborationScreen({super.key});
@@ -13,7 +17,15 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
   bool showApprovedUsers = false;
   bool showUnApprovedUsers = false;
   bool showRejectedUsers = false;
+  final CollectionReference collaboration =
+      FirebaseFirestore.instance.collection('collaboration');
+
   @override
+  void initState() {
+    // getuploadedFilefirebase();
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(40),
@@ -52,229 +64,450 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: elevationColor,
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: displayWidth(context) / 2,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: greenShadeColor,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: elevationColor,
+                        blurRadius: 10,
+                        spreadRadius: 1,
                       ),
-                      child: Text(
-                        'Collaborations :-',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: whiteColor,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 20,
-                            bottom: 10,
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: greenShadeColor,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
                           ),
-                          child: SizedBox(
-                            width: displayWidth(context) / 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  width: 80,
-                                  child: Center(
-                                    child: Text(
-                                      "Id",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Collaborations :-',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: whiteColor,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const collaborationDetailsscreen(),
+                                ),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.purple,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    'Add New Collaborations',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: whiteColor,
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 120,
-                                  child: Center(
-                                    child: Text(
-                                      "Collaboration",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 20,
+                              bottom: 10,
+                            ),
+                            child: SizedBox(
+                              // width: displayWidth(context) / 1.4,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 80,
+                                    child: Center(
+                                      child: Text(
+                                        "Id",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                  child: Center(
-                                    child: Text(
-                                      "Participated Users",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Brand logo",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 120,
-                                  child: Center(
-                                    child: Text(
-                                      "Status",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "logo",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Image",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Collaboration Title",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Required Followers",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Language",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Categories",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Collaboration type",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Collaboration type discription",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Discription",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Action",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          height: displayHeight(context) / 2.3,
-                          width: displayWidth(context) / 2,
-                          child: ScrollConfiguration(
-                            behavior: ScrollConfiguration.of(context)
-                                .copyWith(scrollbars: false),
-                            child: ListView.builder(
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: 80,
-                                            child: Center(
-                                              child: Text(
-                                                "${index.toString()}. ",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "ABC Company Promotion",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Text(
-                                                "1K",
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 120,
-                                            child: Center(
-                                              child: Container(
+                          Divider(),
+                          Container(
+                            height: displayHeight(context) / 1.95,
+                            child: ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(context)
+                                  .copyWith(scrollbars: false),
+                              child: StreamBuilder(
+                                  stream: collaboration.snapshots(),
+                                  builder: (context,
+                                      AsyncSnapshot<QuerySnapshot>
+                                          streamSnapshot) {
+                                    if (streamSnapshot.hasData) {
+                                      return ListView.builder(
+                                        itemCount:
+                                            streamSnapshot.data!.docs.length,
+                                        itemBuilder: (context, index) {
+                                          // log("lenght is ${streamSnapshot.data!.docs.length}");
+                                          final DocumentSnapshot
+                                              documentSnapshot =
+                                              streamSnapshot.data!.docs[index];
+                                          return Column(
+                                            children: [
+                                              Padding(
                                                 padding:
-                                                    const EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  color: index.isEven
-                                                      ? greenLightShadeColor
-                                                      : mainShadeColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Text(
-                                                  index.isEven
-                                                      ? "Approved"
-                                                      : "Pending",
-                                                  style: TextStyle(
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 80,
+                                                      child: Center(
+                                                        child: Text(
+                                                          "${index.toString()}. ",
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      height: 80,
+                                                      child: Center(
+                                                        child: Image.network(
+                                                          documentSnapshot[
+                                                              'image'],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      height: 80,
+                                                      child: Center(
+                                                        child: Image.network(
+                                                          documentSnapshot[
+                                                              'logo'],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      height: 80,
+                                                      child: Center(
+                                                        child: Image.network(
+                                                          documentSnapshot[
+                                                              'brand_logo'],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'titles'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'required_followers'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'language'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'categories'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'collaboration_type'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'collaboration_type_discription'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 150,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'descreption'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 50,
+                                                      child: InkWell(
+                                                        onTap: () =>
+                                                            Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CollaborationeditScreen(
+                                                              docId:
+                                                                  documentSnapshot
+                                                                      .id,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                greenShadeColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                          ),
+                                                          child: const Icon(
+                                                            Icons.edit,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 2),
-                                      const Divider(),
-                                    ],
-                                  ),
-                                );
-                              },
+                                              Divider(),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                    return Container();
+                                  }),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 200,
-                width: displayWidth(context) / 4,
-                decoration: BoxDecoration(
-                  color: Colors.purple,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add_box_rounded,
-                      size: 110,
-                      color: greenLightShadeColor,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Add New Collaborations',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: whiteColor,
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

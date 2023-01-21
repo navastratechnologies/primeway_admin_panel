@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/creator_programs_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/other_requests_page.dart';
@@ -603,7 +604,9 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                               ? const BannerScreen()
                               : showUsersPanel
                                   ? const UserScreen()
-                                  : const AdminPanelBody(),
+                                  : showCollaborationPanel
+                                      ? const CollaborationScreen()
+                                      : const AdminPanelBody(),
         ],
       ),
     );
