@@ -27,6 +27,8 @@ class collaborationDetailsscreen extends StatefulWidget {
 
 class _collaborationDetailsscreenState
     extends State<collaborationDetailsscreen> {
+  bool addguidline = false;
+  bool adddeliverable = false;
   String dropdownValue = list.first;
   TextEditingController titleNameController = TextEditingController();
   TextEditingController requiredfollowerfromController =
@@ -38,6 +40,7 @@ class _collaborationDetailsscreenState
   TextEditingController languageController = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
+  TextEditingController additionalrequirement = TextEditingController();
   String logoimage = "";
   String logo = "";
   String dmimage = "";
@@ -204,9 +207,11 @@ class _collaborationDetailsscreenState
       'descreption': collaborationDescriptionController.text,
       'language': languageController.text,
       'logo': logoimage,
-      'required_followers':
-          "${requiredfollowerfromController.text} to ${requiredfollowertoController.text}",
+      'required_followers_from': requiredfollowerfromController.text,
+      'required_followers_to': requiredfollowertoController.text,
       'titles': titleNameController.text,
+      'additional_requirements': additionalrequirement.text,
+      'status': '1',
     });
   }
 
@@ -221,66 +226,192 @@ class _collaborationDetailsscreenState
       appBar: AppBar(
         centerTitle: false,
         backgroundColor: greenShadeColor,
-        title: const Text(
-          'New Collaboration Details',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: addguidline
+            ? const Text(
+                'Add Guildlines for Collaboration',
+                style: TextStyle(color: Colors.white),
+              )
+            : adddeliverable
+                ? const Text(
+                    'Add Deliverable for Collaboration',
+                    style: TextStyle(color: Colors.white),
+                  )
+                : const Text('New Collaboration Details',
+                    style: TextStyle(color: Colors.white)),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
         ),
         actions: [
-          MaterialButton(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(0.0)),
-            ),
-            elevation: 5.0,
-            minWidth: 200.0,
-            height: 45,
-            color: purpleColor,
-            child: const Text(
-              'Save',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              if (categories.text.isNotEmpty &&
-                  collaborationtype.text.isNotEmpty &&
-                  collaborationtypediscription.text.isNotEmpty &&
-                  collaborationDescriptionController.text.isNotEmpty &&
-                  languageController.text.isNotEmpty &&
-                  requiredfollowerfromController.text.isNotEmpty &&
-                  requiredfollowertoController.text.isNotEmpty &&
-                  titleNameController.text.isNotEmpty &&
-                  pickedFile != null &&
-                  pickedlogoimage != null &&
-                  pickedlogo != null) {
-                uploadlogoimage();
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    clipBehavior: Clip.antiAlias,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    margin: const EdgeInsets.all(20),
-                    backgroundColor: mainColor,
-                    content: const Text(
-                      'Please fill all details to upload this course',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+          addguidline
+              ? MaterialButton(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                  ),
+                  elevation: 5.0,
+                  minWidth: 200.0,
+                  height: 45,
+                  color: purpleColor,
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              }
-            },
-          ),
+                  onPressed: () {
+                    if (categories.text.isNotEmpty &&
+                        collaborationtype.text.isNotEmpty &&
+                        collaborationtypediscription.text.isNotEmpty &&
+                        collaborationDescriptionController.text.isNotEmpty &&
+                        languageController.text.isNotEmpty &&
+                        requiredfollowerfromController.text.isNotEmpty &&
+                        requiredfollowertoController.text.isNotEmpty &&
+                        titleNameController.text.isNotEmpty &&
+                        pickedFile != null &&
+                        pickedlogoimage != null &&
+                        pickedlogo != null) {
+                      // uploadlogoimage();
+                      // Navigator.pop(context);
+                      setState(() {
+                        addguidline = false;
+                        adddeliverable = true;
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          clipBehavior: Clip.antiAlias,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          margin: const EdgeInsets.all(20),
+                          backgroundColor: mainColor,
+                          content: const Text(
+                            'Please fill all details to upload this course',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                )
+              : adddeliverable
+                  ? MaterialButton(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                      ),
+                      elevation: 5.0,
+                      minWidth: 200.0,
+                      height: 45,
+                      color: purpleColor,
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (categories.text.isNotEmpty &&
+                            collaborationtype.text.isNotEmpty &&
+                            collaborationtypediscription.text.isNotEmpty &&
+                            collaborationDescriptionController
+                                .text.isNotEmpty &&
+                            languageController.text.isNotEmpty &&
+                            requiredfollowerfromController.text.isNotEmpty &&
+                            requiredfollowertoController.text.isNotEmpty &&
+                            titleNameController.text.isNotEmpty &&
+                            pickedFile != null &&
+                            pickedlogoimage != null &&
+                            pickedlogo != null) {
+                          // uploadlogoimage();tertert
+                          Navigator.pop(context);
+                          setState(() {
+                            addguidline = false;
+                            adddeliverable = true;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              clipBehavior: Clip.antiAlias,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              margin: const EdgeInsets.all(20),
+                              backgroundColor: mainColor,
+                              content: const Text(
+                                'Please fill all details to upload this course',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : MaterialButton(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0.0)),
+                      ),
+                      elevation: 5.0,
+                      minWidth: 200.0,
+                      height: 45,
+                      color: purpleColor,
+                      child: const Text(
+                        'NEXTwweqewrewewewrewr',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (categories.text.isNotEmpty &&
+                            collaborationtype.text.isNotEmpty &&
+                            collaborationtypediscription.text.isNotEmpty &&
+                            collaborationDescriptionController
+                                .text.isNotEmpty &&
+                            languageController.text.isNotEmpty &&
+                            requiredfollowerfromController.text.isNotEmpty &&
+                            requiredfollowertoController.text.isNotEmpty &&
+                            titleNameController.text.isNotEmpty &&
+                            pickedFile != null &&
+                            pickedlogoimage != null &&
+                            pickedlogo != null) {
+                          uploadlogoimage();
+                          // Navigator.pop(context);
+                          setState(() {
+                            addguidline = true;
+                            adddeliverable = false;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              clipBehavior: Clip.antiAlias,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              margin: const EdgeInsets.all(20),
+                              backgroundColor: mainColor,
+                              content: const Text(
+                                'Please fill all details to upload this course',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    )
         ],
       ),
       body: Padding(
@@ -294,31 +425,43 @@ class _collaborationDetailsscreenState
   }
 
   desktopBody() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        textFieldWithData(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: VerticalDivider(
-            thickness: 1.2,
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.05),
-          ),
-        ),
-        Column(
-          children: [
-            imageUploadData(),
-            Row(
-              children: [
-                logoimageUploadData(),
-                brandimageUploadData(),
-              ],
-            ),
-          ],
-        ),
+        addguidline
+            ? Container(
+                child: Text("guildlines"),
+              )
+            : adddeliverable
+                ? Container(
+                    child: Text("delivery"),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textFieldWithData(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: VerticalDivider(
+                          thickness: 1.2,
+                          indent: 20,
+                          endIndent: 20,
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          imageUploadData(),
+                          Row(
+                            children: [
+                              logoimageUploadData(),
+                              brandimageUploadData(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
       ],
     );
   }
@@ -328,6 +471,16 @@ class _collaborationDetailsscreenState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         imageUploadData(),
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              logoimageUploadData(),
+              brandimageUploadData(),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: VerticalDivider(
@@ -704,9 +857,9 @@ class _collaborationDetailsscreenState
             ],
           ),
           textfieldWithLabelWidget(
-            'Description',
-            collaborationDescriptionController,
-            'Description of the Collaboration',
+            'Additional Requirements',
+            additionalrequirement,
+            'Additional Requirements',
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,6 +937,45 @@ class _collaborationDetailsscreenState
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Collaboration type discription",
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.2),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Description"),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  // vertical: 5,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  maxLines: 10,
+                  controller: collaborationDescriptionController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Description of the Collaboration",
                     hintStyle: TextStyle(
                       color: Colors.black.withOpacity(0.2),
                       fontWeight: FontWeight.w500,

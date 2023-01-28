@@ -40,7 +40,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   TextEditingController imageController = TextEditingController();
   TextEditingController brandlogoController = TextEditingController();
   TextEditingController logoController = TextEditingController();
-
+  TextEditingController additionalrequirement = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
 
@@ -213,8 +213,8 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
       'descreption': collaborationDescriptionController.text,
       'language': languageController.text,
       'logo': logoimage,
-      'required_followers':
-          "${requiredfollowerfromController.text} to ${requiredfollowertoController.text}",
+      'required_followers_from': requiredfollowerfromController.text,
+      'required_followers_to': requiredfollowertoController.text,
       'titles': titleNameController.text,
     });
   }
@@ -235,11 +235,11 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         collaborationDescriptionController.text = value.get("descreption");
         logoController.text = value.get("logo");
         requiredfollowerfromController.text =
-            value.get("required_followers").toString().split("to").elementAt(0);
-        requiredfollowertoController.text =
-            value.get("required_followers").toString().split("to").elementAt(1);
+            value.get("required_followers_from");
+        requiredfollowertoController.text = value.get("required_followers_to");
         languageController.text = value.get("language");
         titleNameController.text = value.get("titles");
+        additionalrequirement.text = value.get("additional_requirements");
       });
     });
   }
@@ -676,9 +676,9 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
             ],
           ),
           textfieldWithLabelWidget(
-            'Description',
-            collaborationDescriptionController,
-            'Description of the Collaboration',
+            'Additional Requirements',
+            additionalrequirement,
+            'Additional Requirements',
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -756,6 +756,45 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Collaboration type discription",
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.2),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Description"),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  // vertical: 5,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  maxLines: 10,
+                  controller: collaborationDescriptionController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Description of the Collaboration",
                     hintStyle: TextStyle(
                       color: Colors.black.withOpacity(0.2),
                       fontWeight: FontWeight.w500,

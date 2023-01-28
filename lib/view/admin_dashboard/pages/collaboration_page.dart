@@ -155,7 +155,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
                                     child: Center(
                                       child: Text(
                                         "Brand logo",
@@ -167,7 +167,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
                                     child: Center(
                                       child: Text(
                                         "logo",
@@ -179,7 +179,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 120,
+                                    width: 100,
                                     child: Center(
                                       child: Text(
                                         "Image",
@@ -263,7 +263,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 120,
+                                    width: 150,
                                     child: Center(
                                       child: Text(
                                         "Discription",
@@ -276,6 +276,18 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                   ),
                                   SizedBox(
                                     width: 120,
+                                    child: Center(
+                                      child: Text(
+                                        "Additional requirements",
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 60,
                                     child: Center(
                                       child: Text(
                                         "Action",
@@ -336,7 +348,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      width: 120,
+                                                      width: 100,
                                                       height: 80,
                                                       child: Center(
                                                         child: Image.network(
@@ -346,7 +358,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      width: 120,
+                                                      width: 100,
                                                       height: 80,
                                                       child: Center(
                                                         child: Image.network(
@@ -356,7 +368,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      width: 120,
+                                                      width: 100,
                                                       height: 80,
                                                       child: Center(
                                                         child: Image.network(
@@ -380,14 +392,54 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                     ),
                                                     SizedBox(
                                                       width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'required_followers'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              documentSnapshot[
+                                                                  'required_followers_from'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "to",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              documentSnapshot[
+                                                                  'required_followers_to'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ),
@@ -448,6 +500,19 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                       child: Text(
                                                         documentSnapshot[
                                                             'descreption'],
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Text(
+                                                        documentSnapshot[
+                                                            'additional_requirements'],
                                                         style: TextStyle(
                                                           color: Colors.black
                                                               .withOpacity(0.4),
