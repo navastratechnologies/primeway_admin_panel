@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/pages/collabsuser.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 import 'collaboration_detail.dart';
@@ -60,7 +61,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -104,7 +105,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const collaborationDetailsscreen(),
+                                      const CollaborationDetailsScreen(),
                                 ),
                               ),
                               child: Container(
@@ -133,8 +134,8 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(
-                              top: 20,
-                              bottom: 10,
+                              top: 10,
+                              bottom: 5,
                             ),
                             child: SizedBox(
                               // width: displayWidth(context) / 1.4,
@@ -327,16 +328,74 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 80,
-                                                      child: Center(
+                                                child: InkWell(
+                                                  onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CollabUserScreen(
+                                                        docId:
+                                                            documentSnapshot.id,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 80,
+                                                        child: Center(
+                                                          child: Text(
+                                                            "${index.toString()}. ",
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.4),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 100,
+                                                        height: 80,
+                                                        child: Center(
+                                                          child: Image.network(
+                                                            documentSnapshot[
+                                                                'image'],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 100,
+                                                        height: 80,
+                                                        child: Center(
+                                                          child: Image.network(
+                                                            documentSnapshot[
+                                                                'logo'],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 100,
+                                                        height: 80,
+                                                        child: Center(
+                                                          child: Image.network(
+                                                            documentSnapshot[
+                                                                'brand_logo'],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 120,
                                                         child: Text(
-                                                          "${index.toString()}. ",
+                                                          documentSnapshot[
+                                                              'titles'],
                                                           style: TextStyle(
                                                             color: Colors.black
                                                                 .withOpacity(
@@ -346,217 +405,185 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 100,
-                                                      height: 80,
-                                                      child: Center(
-                                                        child: Image.network(
-                                                          documentSnapshot[
-                                                              'image'],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 100,
-                                                      height: 80,
-                                                      child: Center(
-                                                        child: Image.network(
-                                                          documentSnapshot[
-                                                              'logo'],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 100,
-                                                      height: 80,
-                                                      child: Center(
-                                                        child: Image.network(
-                                                          documentSnapshot[
-                                                              'brand_logo'],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'titles'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(15),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              documentSnapshot[
-                                                                  'required_followers_from'],
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.4),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "to",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.4),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              documentSnapshot[
-                                                                  'required_followers_to'],
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.4),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'language'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'categories'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'collaboration_type'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'collaboration_type_discription'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 150,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'descreption'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                            'additional_requirements'],
-                                                        style: TextStyle(
-                                                          color: Colors.black
-                                                              .withOpacity(0.4),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 50,
-                                                      child: InkWell(
-                                                        onTap: () =>
-                                                            Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                CollaborationeditScreen(
-                                                              docId:
-                                                                  documentSnapshot
-                                                                      .id,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        child: Container(
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                   .all(5),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                greenShadeColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5),
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.edit,
-                                                            color: Colors.white,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                documentSnapshot[
+                                                                    'required_followers_from'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                "to",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                documentSnapshot[
+                                                                    'required_followers_to'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'language'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'categories'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'collaboration_type'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'collaboration_type_discription'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 150,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'descreption'],
+                                                          maxLines: 2,
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 120,
+                                                        child: Text(
+                                                          documentSnapshot[
+                                                              'additional_requirements'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 50,
+                                                        child: InkWell(
+                                                          onTap: () =>
+                                                              Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  CollaborationeditScreen(
+                                                                docId:
+                                                                    documentSnapshot
+                                                                        .id,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(5),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  greenShadeColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                            ),
+                                                            child: const Icon(
+                                                              Icons.edit,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               Divider(),

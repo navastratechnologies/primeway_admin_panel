@@ -14,6 +14,10 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 const List<String> list = <String>['paid', 'Barter'];
+List<String> languagelist = <String>['English', 'Hindi', 'Punjabi'];
+List<String> items = [];
+List selectedItems = [];
+List selectedItem = [];
 
 class CollaborationeditScreen extends StatefulWidget {
   final String docId;
@@ -207,11 +211,13 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         .update({
       'image': url.toString(),
       'brand_logo': logo,
-      'categories': categories.text,
+      'categories':
+          selectedItems.toString().replaceAll("[", '').replaceAll("]", ''),
       'collaboration_type': collaborationtype.text,
       'collaboration_type_discription': collaborationtypediscription.text,
       'descreption': collaborationDescriptionController.text,
-      'language': languageController.text,
+      'language':
+          languagelist.toString().replaceAll("[", '').replaceAll("]", ''),
       'logo': logoimage,
       'required_followers_from': requiredfollowerfromController.text,
       'required_followers_to': requiredfollowertoController.text,
@@ -228,7 +234,8 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
       setState(() {
         imageController.text = value.get("image");
         brandlogoController.text = value.get("brand_logo");
-        categories.text = value.get("categories");
+        selectedItems =
+            value.get("categories").toString().replaceAll(' ', '').split(",");
         collaborationtype.text = value.get("collaboration_type");
         collaborationtypediscription.text =
             value.get("collaboration_type_discription");
@@ -237,16 +244,35 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         requiredfollowerfromController.text =
             value.get("required_followers_from");
         requiredfollowertoController.text = value.get("required_followers_to");
-        languageController.text = value.get("language");
+        selectedItem =
+            value.get("language").toString().replaceAll(' ', '').split(",");
         titleNameController.text = value.get("titles");
         additionalrequirement.text = value.get("additional_requirements");
       });
     });
   }
 
+  Future getcatagory() async {
+    setState(() {
+      items.clear();
+    });
+
+    final productsRef =
+        FirebaseFirestore.instance.collection('creator_program_category');
+    final snapshot = await productsRef.get();
+    setState(() {
+      for (var doc in snapshot.docs) {
+        items.add(doc.data()['category']);
+      }
+
+      log(" messdadassaage $items ");
+    });
+  }
+
   @override
   void initState() {
     getuploadedFilefirebase();
+    getcatagory();
     super.initState();
   }
 
@@ -282,11 +308,9 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
               ),
             ),
             onPressed: () {
-              if (categories.text.isNotEmpty &&
-                  collaborationtype.text.isNotEmpty &&
+              if (collaborationtype.text.isNotEmpty &&
                   collaborationtypediscription.text.isNotEmpty &&
                   collaborationDescriptionController.text.isNotEmpty &&
-                  languageController.text.isNotEmpty &&
                   requiredfollowerfromController.text.isNotEmpty &&
                   requiredfollowertoController.text.isNotEmpty &&
                   titleNameController.text.isNotEmpty &&
@@ -570,6 +594,8 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   }
 
   textFieldWithData() {
+    String selectedvalue = items.first;
+    var selectedlanguagevalue = languagelist.first;
     return Expanded(
       child: ResponsiveGridList(
         horizontalGridSpacing: 30,
@@ -588,15 +614,153 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
             titleNameController,
             'Titles',
           ),
-          textfieldWithLabelWidget(
-            'Language',
-            languageController,
-            'Language of the Collaboration',
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Language"),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: DropdownButton<String>(
+                      value: selectedlanguagevalue,
+                      // isExpanded: true,
+                      items: languagelist.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Row(
+                            children: <Widget>[
+                              selectedItem.contains(item)
+                                  ? const Icon(Icons.check_box)
+                                  : const Icon(Icons.check_box_outline_blank),
+                              const SizedBox(width: 10),
+                              Text(item),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          if (selectedItem.contains(value)) {
+                            selectedItem.remove(value);
+                          } else {
+                            selectedItem.add(value);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      // vertical: 5,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "$selectedItem".replaceAll("[", '').replaceAll("]", ''),
+                        // ignore: prefer_const_constructors
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          textfieldWithLabelWidget(
-            'Collaboration Categories',
-            categories,
-            'Collaboration Categories',
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Collaboration Categories"),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: DropdownButton<String>(
+                      value: selectedvalue,
+                      // isExpanded: true,
+                      items: items.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Row(
+                            children: <Widget>[
+                              selectedItems.contains(item)
+                                  ? const Icon(Icons.check_box)
+                                  : const Icon(Icons.check_box_outline_blank),
+                              const SizedBox(width: 10),
+                              Text(item),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          if (selectedItems.contains(value)) {
+                            selectedItems.remove(value);
+                          } else {
+                            selectedItems.add(value);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      // vertical: 5,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "$selectedItems"
+                            .replaceAll("[", '')
+                            .replaceAll("]", ''),
+                        // ignore: prefer_const_constructors
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

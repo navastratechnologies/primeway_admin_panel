@@ -169,6 +169,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  decimal:
+    dependency: transitive
+    description:
+      name: decimal
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.2"
   device_info_plus:
     dependency: transitive
     description:
@@ -335,6 +342,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_charts:
+    dependency: "direct main"
+    description:
+      name: flutter_charts
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   flutter_colorpicker:
     dependency: transitive
     description:
@@ -513,6 +527,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  google_fonts:
+    dependency: transitive
+    description:
+      name: google_fonts
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.3"
   html:
     dependency: transitive
     description:
@@ -821,6 +842,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  rational:
+    dependency: transitive
+    description:
+      name: rational
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.2"
   responsive_builder:
     dependency: "direct main"
     description:
@@ -896,13 +924,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  syncfusion_flutter_charts:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_charts
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "20.4.48"
   syncfusion_flutter_core:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "20.4.38"
+    version: "20.4.48"
   syncfusion_flutter_pdf:
     dependency: transitive
     description:

@@ -14,22 +14,27 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 const List<String> list = <String>['paid', 'Barter'];
+const List<String> languagelist = <String>['English', 'Hindi', 'Punjabi'];
+List<String> items = [];
+List selectedItems = [];
+List selectedItem = [];
 
-class collaborationDetailsscreen extends StatefulWidget {
-  const collaborationDetailsscreen({
+class CollaborationDetailsScreen extends StatefulWidget {
+  const CollaborationDetailsScreen({
     super.key,
   });
 
   @override
-  State<collaborationDetailsscreen> createState() =>
-      _collaborationDetailsscreenState();
+  State<CollaborationDetailsScreen> createState() =>
+      _CollaborationDetailsScreenState();
 }
 
-class _collaborationDetailsscreenState
-    extends State<collaborationDetailsscreen> {
+class _CollaborationDetailsScreenState
+    extends State<CollaborationDetailsScreen> {
   bool addguidline = false;
   bool adddeliverable = false;
   String dropdownValue = list.first;
+
   TextEditingController titleNameController = TextEditingController();
   TextEditingController requiredfollowerfromController =
       TextEditingController();
@@ -41,10 +46,13 @@ class _collaborationDetailsscreenState
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
   TextEditingController additionalrequirement = TextEditingController();
+
   String logoimage = "";
   String logo = "";
   String dmimage = "";
   String draft = 'Draft';
+  // ignore: non_constant_identifier_names
+  String requirment_type = 'requirment_type';
   int total = 0;
   Uint8List webImage = Uint8List(8);
   Uint8List webImagelogoimage = Uint8List(8);
@@ -201,22 +209,43 @@ class _collaborationDetailsscreenState
     FirebaseFirestore.instance.collection('collaboration').add({
       'image': url.toString(),
       'brand_logo': logo,
-      'categories': categories.text,
+      'categories':
+          selectedItems.toString().replaceAll("[", '').replaceAll("]", ''),
       'collaboration_type': collaborationtype.text,
       'collaboration_type_discription': collaborationtypediscription.text,
       'descreption': collaborationDescriptionController.text,
-      'language': languageController.text,
+      'language':
+          languagelist.toString().replaceAll("[", '').replaceAll("]", ''),
       'logo': logoimage,
       'required_followers_from': requiredfollowerfromController.text,
       'required_followers_to': requiredfollowertoController.text,
       'titles': titleNameController.text,
       'additional_requirements': additionalrequirement.text,
-      'status': '1',
+      'status': draft,
+      'requirement_type': requirment_type,
+    });
+  }
+
+  Future getcatagory() async {
+    setState(() {
+      items.clear();
+    });
+
+    final productsRef =
+        FirebaseFirestore.instance.collection('creator_program_category');
+    final snapshot = await productsRef.get();
+    setState(() {
+      for (var doc in snapshot.docs) {
+        items.add(doc.data()['category']);
+      }
+
+      log(" messdadassaage $items ");
     });
   }
 
   @override
   void initState() {
+    getcatagory();
     super.initState();
   }
 
@@ -261,11 +290,9 @@ class _collaborationDetailsscreenState
                     ),
                   ),
                   onPressed: () {
-                    if (categories.text.isNotEmpty &&
-                        collaborationtype.text.isNotEmpty &&
+                    if (collaborationtype.text.isNotEmpty &&
                         collaborationtypediscription.text.isNotEmpty &&
                         collaborationDescriptionController.text.isNotEmpty &&
-                        languageController.text.isNotEmpty &&
                         requiredfollowerfromController.text.isNotEmpty &&
                         requiredfollowertoController.text.isNotEmpty &&
                         titleNameController.text.isNotEmpty &&
@@ -317,12 +344,10 @@ class _collaborationDetailsscreenState
                         ),
                       ),
                       onPressed: () {
-                        if (categories.text.isNotEmpty &&
-                            collaborationtype.text.isNotEmpty &&
+                        if (collaborationtype.text.isNotEmpty &&
                             collaborationtypediscription.text.isNotEmpty &&
                             collaborationDescriptionController
                                 .text.isNotEmpty &&
-                            languageController.text.isNotEmpty &&
                             requiredfollowerfromController.text.isNotEmpty &&
                             requiredfollowertoController.text.isNotEmpty &&
                             titleNameController.text.isNotEmpty &&
@@ -365,7 +390,7 @@ class _collaborationDetailsscreenState
                       height: 45,
                       color: purpleColor,
                       child: const Text(
-                        'NEXTwweqewrewewewrewr',
+                        'NEXT to delivery',
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
@@ -373,12 +398,12 @@ class _collaborationDetailsscreenState
                         ),
                       ),
                       onPressed: () {
-                        if (categories.text.isNotEmpty &&
+                        if (selectedItems.toString().isNotEmpty &&
+                            languagelist.toString().isNotEmpty &&
                             collaborationtype.text.isNotEmpty &&
                             collaborationtypediscription.text.isNotEmpty &&
                             collaborationDescriptionController
                                 .text.isNotEmpty &&
-                            languageController.text.isNotEmpty &&
                             requiredfollowerfromController.text.isNotEmpty &&
                             requiredfollowertoController.text.isNotEmpty &&
                             titleNameController.text.isNotEmpty &&
@@ -428,12 +453,13 @@ class _collaborationDetailsscreenState
     return Stack(
       children: [
         addguidline
+            // ignore: avoid_unnecessary_containers
             ? Container(
-                child: Text("guildlines"),
+                child: const Text("guildlines"),
               )
             : adddeliverable
                 ? Container(
-                    child: Text("delivery"),
+                    child: const Text("delivery"),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -751,6 +777,8 @@ class _collaborationDetailsscreenState
   }
 
   textFieldWithData() {
+    String selectedvalue = items.first;
+    var selectedlanguagevalue = languagelist.first;
     return Expanded(
       child: ResponsiveGridList(
         horizontalGridSpacing: 30,
@@ -769,15 +797,153 @@ class _collaborationDetailsscreenState
             titleNameController,
             'Titles',
           ),
-          textfieldWithLabelWidget(
-            'Language',
-            languageController,
-            'Language of the Collaboration',
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Language"),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: DropdownButton<String>(
+                      value: selectedlanguagevalue,
+                      // isExpanded: true,
+                      items: languagelist.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Row(
+                            children: <Widget>[
+                              selectedItem.contains(item)
+                                  ? const Icon(Icons.check_box)
+                                  : const Icon(Icons.check_box_outline_blank),
+                              const SizedBox(width: 10),
+                              Text(item),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          if (selectedItem.contains(value)) {
+                            selectedItem.remove(value);
+                          } else {
+                            selectedItem.add(value);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      // vertical: 5,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "$selectedItem".replaceAll("[", '').replaceAll("]", ''),
+                        // ignore: prefer_const_constructors
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          textfieldWithLabelWidget(
-            'Collaboration Categories',
-            categories,
-            'Collaboration Categories',
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Collaboration Categories"),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: DropdownButton<String>(
+                      value: selectedvalue,
+                      // isExpanded: true,
+                      items: items.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Row(
+                            children: <Widget>[
+                              selectedItems.contains(item)
+                                  ? const Icon(Icons.check_box)
+                                  : const Icon(Icons.check_box_outline_blank),
+                              const SizedBox(width: 10),
+                              Text(item),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          if (selectedItems.contains(value)) {
+                            selectedItems.remove(value);
+                          } else {
+                            selectedItems.add(value);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      // vertical: 5,
+                      horizontal: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "$selectedItems"
+                            .replaceAll("[", '')
+                            .replaceAll("]", ''),
+                        // ignore: prefer_const_constructors
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1001,7 +1167,7 @@ class _collaborationDetailsscreenState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Radio(
-                    value: 'Draft',
+                    value: '3',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1021,7 +1187,7 @@ class _collaborationDetailsscreenState
                     width: 55,
                   ),
                   Radio(
-                    value: 'Published',
+                    value: '1',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1031,6 +1197,60 @@ class _collaborationDetailsscreenState
                   ),
                   Text(
                     'Published',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Requirment type',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio(
+                    value: 'youtube',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'youtube',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 55,
+                  ),
+                  Radio(
+                    value: 'insta',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'Instagram',
                     style: TextStyle(
                       color: Colors.black.withOpacity(0.3),
                       fontWeight: FontWeight.bold,
