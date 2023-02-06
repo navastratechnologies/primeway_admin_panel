@@ -31,6 +31,8 @@ class CollabUserScreen extends StatefulWidget {
 class _CollabUserScreenState extends State<CollabUserScreen> {
   final CollectionReference collaboration =
       FirebaseFirestore.instance.collection('collaboration');
+  Future<AggregateQuerySnapshot> count =
+      FirebaseFirestore.instance.collection('collaboration').count().get();
 
   String dropdownValue = list.first;
   TextEditingController titleNameController = TextEditingController();
@@ -1371,7 +1373,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                         return ListView.builder(
                           itemCount: streamSnapshot.data!.docs.length,
                           itemBuilder: (context, index) {
-                            log("lenght isfdsfsd $index");
+                            log("lenght isfdsfsd $streamSnapshot.data!.docs.length");
                             final DocumentSnapshot documentSnapshot =
                                 streamSnapshot.data!.docs[index];
                             return Padding(
@@ -1484,7 +1486,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
       height: 500,
       decoration: BoxDecoration(
         color: whiteColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: mainColor.withOpacity(0.1),
@@ -1493,157 +1495,349 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            // width: displayWidth(context) / 1.4,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: greenShadeColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  const SizedBox(
-                    width: 100,
-                    child: Center(
-                      child: Text(
-                        "Task Status ",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              // width: displayWidth(context) / 1.4,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: greenShadeColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(20),
                   ),
-                ],
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 200,
-                height: displayHeight(context) / 2.75,
-                child: Column(
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
                     const SizedBox(
-                      height: 50,
-                    ),
-                    const SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: Text(
-                        'Total Participated User',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: Text(
-                        'Task Uploaded',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: Text(
-                        'Task Incomplete',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: Text(
-                        'Task Varified',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: Text(
-                        'Task unverified',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                      width: 100,
+                      child: Center(
+                        child: Text(
+                          "Task Status ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                width: 200,
-                height: displayHeight(context) / 2.75,
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(scrollbars: false),
-                  child: StreamBuilder(
-                      stream: collaboration
-                          .doc(widget.docId)
-                          .collection('users')
-                          .snapshots(),
-                      builder: (context,
-                          AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                        if (streamSnapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: streamSnapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const SizedBox(
-                                    height: 50,
-                                  ),
-                                  SizedBox(
-                                    width: 150,
-                                    height: 50,
-                                    child: Text(
-                                      '${streamSnapshot.data!.docs.length}',
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+            ),
+            SizedBox(
+              width: 400,
+              height: displayHeight(context) / 2.75,
+              child: Column(
+                // ignore: prefer_const_literals_to_create_immutables
+                children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Total Participated User',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("users")
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                        return Container();
-                      }),
-                ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Task completed',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("users")
+                                  .where('task_uploaded', isEqualTo: 'true')
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Task Incomplete',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("users")
+                                  .where('task_uploaded', isEqualTo: 'false')
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Task Varified',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("users")
+                                  .where('task_verified', isEqualTo: 'true')
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Task unverified',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("users")
+                                  .where('task_verified', isEqualTo: 'false')
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

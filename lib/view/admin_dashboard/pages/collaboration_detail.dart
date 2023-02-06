@@ -13,6 +13,9 @@ import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
+import '../../course_dashboard/text_editor.dart';
+import 'quill_test.dart';
+
 const List<String> list = <String>['paid', 'Barter'];
 const List<String> languagelist = <String>['English', 'Hindi', 'Punjabi'];
 List<String> items = [];
@@ -454,40 +457,38 @@ class _CollaborationDetailsScreenState
       children: [
         addguidline
             // ignore: avoid_unnecessary_containers
-            ? Container(
-                child: const Text("guildlines"),
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textFieldWithData(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: VerticalDivider(
+                      thickness: 1.2,
+                      indent: 20,
+                      endIndent: 20,
+                      color: Colors.black.withOpacity(0.05),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      imageUploadData(),
+                      Row(
+                        children: [
+                          logoimageUploadData(),
+                          brandimageUploadData(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               )
             : adddeliverable
                 ? Container(
                     child: const Text("delivery"),
                   )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      textFieldWithData(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: VerticalDivider(
-                          thickness: 1.2,
-                          indent: 20,
-                          endIndent: 20,
-                          color: Colors.black.withOpacity(0.05),
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          imageUploadData(),
-                          Row(
-                            children: [
-                              logoimageUploadData(),
-                              brandimageUploadData(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
+                : Container()
       ],
     );
   }
