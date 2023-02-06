@@ -1366,12 +1366,12 @@ class _UploadCoursesScreenState extends State<UploadCoursesScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const TextEditerPage(),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const TextEditerPage(),
+                          //   ),
+                          // );
                         },
                       ),
                       Padding(

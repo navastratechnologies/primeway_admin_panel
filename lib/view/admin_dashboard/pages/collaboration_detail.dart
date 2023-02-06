@@ -12,9 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-
-import '../../course_dashboard/text_editor.dart';
-import 'quill_test.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
+import '../../course_dashboard/pages/quil.dart';
 
 const List<String> list = <String>['paid', 'Barter'];
 const List<String> languagelist = <String>['English', 'Hindi', 'Punjabi'];
@@ -34,6 +33,15 @@ class CollaborationDetailsScreen extends StatefulWidget {
 
 class _CollaborationDetailsScreenState
     extends State<CollaborationDetailsScreen> {
+  ///[controller] create a QuillEditorController to access the editor methods
+  final QuillEditorController controller = QuillEditorController();
+
+  final customToolBarList = [
+    ToolBarStyle.bold,
+    ToolBarStyle.italic,
+    ToolBarStyle.align,
+    ToolBarStyle.color,
+  ];
   bool addguidline = false;
   bool adddeliverable = false;
   String dropdownValue = list.first;
@@ -49,6 +57,7 @@ class _CollaborationDetailsScreenState
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
   TextEditingController additionalrequirement = TextEditingController();
+  String instructionText = '';
 
   String logoimage = "";
   String logo = "";
@@ -226,6 +235,7 @@ class _CollaborationDetailsScreenState
       'additional_requirements': additionalrequirement.text,
       'status': draft,
       'requirement_type': requirment_type,
+      'instructions': instructionText,
     });
   }
 
@@ -249,7 +259,19 @@ class _CollaborationDetailsScreenState
   @override
   void initState() {
     getcatagory();
+    controller.onTextChanged((text) {
+      setState(() {
+        instructionText = text;
+      });
+      debugPrint('listening to $instructionText');
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -302,7 +324,7 @@ class _CollaborationDetailsScreenState
                         pickedFile != null &&
                         pickedlogoimage != null &&
                         pickedlogo != null) {
-                      // uploadlogoimage();
+                      uploadlogoimage();
                       // Navigator.pop(context);
                       setState(() {
                         addguidline = false;
@@ -413,7 +435,7 @@ class _CollaborationDetailsScreenState
                             pickedFile != null &&
                             pickedlogoimage != null &&
                             pickedlogo != null) {
-                          uploadlogoimage();
+                          // uploadlogoimage();
                           // Navigator.pop(context);
                           setState(() {
                             addguidline = true;
@@ -457,38 +479,36 @@ class _CollaborationDetailsScreenState
       children: [
         addguidline
             // ignore: avoid_unnecessary_containers
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textFieldWithData(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: VerticalDivider(
-                      thickness: 1.2,
-                      indent: 20,
-                      endIndent: 20,
-                      color: Colors.black.withOpacity(0.05),
-                    ),
-                  ),
-                  Column(
+            ? textguid()
+            : adddeliverable
+                ? textguid()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      imageUploadData(),
-                      Row(
+                      textFieldWithData(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: VerticalDivider(
+                          thickness: 1.2,
+                          indent: 20,
+                          endIndent: 20,
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                      ),
+                      Column(
                         children: [
-                          logoimageUploadData(),
-                          brandimageUploadData(),
+                          imageUploadData(),
+                          Row(
+                            children: [
+                              logoimageUploadData(),
+                              brandimageUploadData(),
+                            ],
+                          ),
                         ],
                       ),
                     ],
-                  ),
-                ],
-              )
-            : adddeliverable
-                ? Container(
-                    child: const Text("delivery"),
                   )
-                : Container()
       ],
     );
   }
@@ -1314,4 +1334,73 @@ class _CollaborationDetailsScreenState
       ],
     );
   }
+
+  textguid() {
+    return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(250), // Set this height
+          child: SafeArea(
+            child: ToolBar(
+              toolBarColor: Colors.cyan.shade50,
+              padding: const EdgeInsets.all(8),
+              iconSize: 20,
+              activeIconColor: Colors.green,
+              controller: controller,
+              customButtons: [
+                InkWell(
+                    onTap: () async {},
+                    child: const Icon(
+                      Icons.favorite,
+                    )),
+                InkWell(
+                    onTap: () {},
+                    child: const Icon(
+                      Icons.add_circle,
+                    )),
+              ],
+            ),
+          )),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.black45,
+                child: QuillHtmlEditor(
+                  hintText: 'Hint text goes here',
+                  controller: controller,
+                  height: MediaQuery.of(context).size.height,
+                  onTextChanged: (text) =>
+                      debugPrint('widget text change $text'),
+                  defaultFontSize: 18,
+                  defaultFontColor: Colors.black45,
+                  isEnabled: true,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// to get the html text from editor
+  void getHtmlText() async {
+    String? htmlText = await controller.getText();
+    debugPrint(htmlText.toString());
+  }
+
+  /// to set the html text to editor
+  void setHtmlText(String text) async {
+    await controller.setText(text);
+  }
+
+  /// to clear the editor
+  void clearEditor() => controller.clear();
+
+  /// to enable/disable the editor
+  void enableEditor(bool enable) => controller.enableEditor(enable);
 }

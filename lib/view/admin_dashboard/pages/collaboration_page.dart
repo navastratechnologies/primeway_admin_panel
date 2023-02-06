@@ -27,6 +27,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(40),
