@@ -13,7 +13,9 @@ import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
+
 import '../../course_dashboard/pages/quil.dart';
+import 'loader.dart';
 
 const List<String> list = <String>['paid', 'Barter'];
 const List<String> languagelist = <String>['English', 'Hindi', 'Punjabi'];
@@ -35,6 +37,7 @@ class _CollaborationDetailsScreenState
     extends State<CollaborationDetailsScreen> {
   ///[controller] create a QuillEditorController to access the editor methods
   final QuillEditorController controller = QuillEditorController();
+  bool loader = false;
 
   final customToolBarList = [
     ToolBarStyle.bold,
@@ -43,7 +46,7 @@ class _CollaborationDetailsScreenState
     ToolBarStyle.color,
   ];
   bool addguidline = false;
-  bool adddeliverable = false;
+
   String dropdownValue = list.first;
 
   TextEditingController titleNameController = TextEditingController();
@@ -236,6 +239,19 @@ class _CollaborationDetailsScreenState
       'status': draft,
       'requirement_type': requirment_type,
       'instructions': instructionText,
+    }).then((value) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return quilscreen(
+              docId: value.id,
+            );
+          },
+        ),
+      );
+
+      log("saSAsa  ${value.id}");
     });
   }
 
@@ -276,82 +292,25 @@ class _CollaborationDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        backgroundColor: greenShadeColor,
-        title: addguidline
-            ? const Text(
-                'Add Guildlines for Collaboration',
-                style: TextStyle(color: Colors.white),
-              )
-            : adddeliverable
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: false,
+            backgroundColor: greenShadeColor,
+            title: addguidline
                 ? const Text(
-                    'Add Deliverable for Collaboration',
+                    'Add Guildlines for Collaboration',
                     style: TextStyle(color: Colors.white),
                   )
                 : const Text('New Collaboration Details',
                     style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        actions: [
-          addguidline
-              ? MaterialButton(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(0.0)),
-                  ),
-                  elevation: 5.0,
-                  minWidth: 200.0,
-                  height: 45,
-                  color: purpleColor,
-                  child: const Text(
-                    'Next',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (collaborationtype.text.isNotEmpty &&
-                        collaborationtypediscription.text.isNotEmpty &&
-                        collaborationDescriptionController.text.isNotEmpty &&
-                        requiredfollowerfromController.text.isNotEmpty &&
-                        requiredfollowertoController.text.isNotEmpty &&
-                        titleNameController.text.isNotEmpty &&
-                        pickedFile != null &&
-                        pickedlogoimage != null &&
-                        pickedlogo != null) {
-                      uploadlogoimage();
-                      // Navigator.pop(context);
-                      setState(() {
-                        addguidline = false;
-                        adddeliverable = true;
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          clipBehavior: Clip.antiAlias,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: const EdgeInsets.all(20),
-                          backgroundColor: mainColor,
-                          content: const Text(
-                            'Please fill all details to upload this course',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                )
-              : adddeliverable
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back),
+            ),
+            actions: [
+              addguidline
                   ? MaterialButton(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(0.0)),
@@ -361,7 +320,7 @@ class _CollaborationDetailsScreenState
                       height: 45,
                       color: purpleColor,
                       child: const Text(
-                        'Save',
+                        'Next',
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
@@ -379,11 +338,11 @@ class _CollaborationDetailsScreenState
                             pickedFile != null &&
                             pickedlogoimage != null &&
                             pickedlogo != null) {
-                          // uploadlogoimage();tertert
-                          Navigator.pop(context);
+                          uploadlogoimage();
+                          // Navigator.pop(context);
                           setState(() {
                             addguidline = false;
-                            adddeliverable = true;
+                            loader = true;
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -439,7 +398,6 @@ class _CollaborationDetailsScreenState
                           // Navigator.pop(context);
                           setState(() {
                             addguidline = true;
-                            adddeliverable = false;
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -462,15 +420,18 @@ class _CollaborationDetailsScreenState
                         }
                       },
                     )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: ScreenTypeLayout(
-          mobile: mobileBody(),
-          desktop: desktopBody(),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: ScreenTypeLayout(
+              mobile: mobileBody(),
+              desktop: desktopBody(),
+            ),
+          ),
         ),
-      ),
+        loader ? const LoaderWidget() : Container(),
+      ],
     );
   }
 
@@ -480,35 +441,33 @@ class _CollaborationDetailsScreenState
         addguidline
             // ignore: avoid_unnecessary_containers
             ? textguid()
-            : adddeliverable
-                ? textguid()
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textFieldWithData(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: VerticalDivider(
+                      thickness: 1.2,
+                      indent: 20,
+                      endIndent: 20,
+                      color: Colors.black.withOpacity(0.05),
+                    ),
+                  ),
+                  Column(
                     children: [
-                      textFieldWithData(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: VerticalDivider(
-                          thickness: 1.2,
-                          indent: 20,
-                          endIndent: 20,
-                          color: Colors.black.withOpacity(0.05),
-                        ),
-                      ),
-                      Column(
+                      imageUploadData(),
+                      Row(
                         children: [
-                          imageUploadData(),
-                          Row(
-                            children: [
-                              logoimageUploadData(),
-                              brandimageUploadData(),
-                            ],
-                          ),
+                          logoimageUploadData(),
+                          brandimageUploadData(),
                         ],
                       ),
                     ],
-                  )
+                  ),
+                ],
+              )
       ],
     );
   }

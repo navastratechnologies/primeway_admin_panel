@@ -49,7 +49,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
   TextEditingController additionalrequirement = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
-
+  String requirment_type = 'requirment_type';
   String logoimage = "";
   String logo = "";
   String dmimage = "";
@@ -222,6 +222,8 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
       'required_followers_from': requiredfollowerfromController.text,
       'required_followers_to': requiredfollowertoController.text,
       'titles': titleNameController.text,
+      'status': draft,
+      'requirement_type': requirment_type,
     });
   }
 
@@ -246,6 +248,8 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
         languageController.text = value.get("language");
         titleNameController.text = value.get("titles");
         additionalrequirement.text = value.get("additional_requirements");
+        draft = value.get("status");
+        requirment_type = value.get("requirement_type");
       });
     });
   }
@@ -1066,7 +1070,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Radio(
-                    value: 'Draft',
+                    value: '3',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1086,7 +1090,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                     width: 55,
                   ),
                   Radio(
-                    value: 'Published',
+                    value: '1',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1096,6 +1100,57 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                   ),
                   Text(
                     'Published',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'Requirment type',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio(
+                    value: 'youtube',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'youtube',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 55,
+                  ),
+                  Radio(
+                    value: 'insta',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'Instagram',
                     style: TextStyle(
                       color: Colors.black.withOpacity(0.3),
                       fontWeight: FontWeight.bold,
@@ -1874,6 +1929,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
             ],
           ),
           child: TextField(
+            enabled: false,
             controller: controller,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
