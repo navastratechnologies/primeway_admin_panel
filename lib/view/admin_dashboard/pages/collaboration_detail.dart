@@ -61,6 +61,7 @@ class _CollaborationDetailsScreenState
   TextEditingController categories = TextEditingController();
   TextEditingController additionalrequirement = TextEditingController();
   String instructionText = '';
+  String instruction = 'text';
 
   String logoimage = "";
   String logo = "";
@@ -281,13 +282,15 @@ class _CollaborationDetailsScreenState
       });
       debugPrint('listening to $instructionText');
     });
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+    controller.onTextChanged((text) {
+      setState(() {
+        text = instruction;
+      });
+      debugPrint('listening to $instructionText');
+    });
+
+    super.initState();
   }
 
   @override
@@ -757,7 +760,7 @@ class _CollaborationDetailsScreenState
   }
 
   textFieldWithData() {
-    String selectedvalue = items.first;
+    // String selectedvalue = items.first;
     var selectedlanguagevalue = languagelist.first;
     return Expanded(
       child: ResponsiveGridList(
@@ -862,7 +865,15 @@ class _CollaborationDetailsScreenState
                 children: [
                   SizedBox(
                     child: DropdownButton<String>(
-                      value: selectedvalue,
+                      underline: const SizedBox(),
+                      icon: const Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: Icon(
+                          Icons.arrow_circle_down_outlined,
+                          size: 30,
+                        ),
+                      ),
+                      value: null,
                       // isExpanded: true,
                       items: items.map((item) {
                         return DropdownMenuItem<String>(

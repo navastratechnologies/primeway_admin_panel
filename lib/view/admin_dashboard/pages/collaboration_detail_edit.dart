@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
@@ -32,7 +33,10 @@ class CollaborationeditScreen extends StatefulWidget {
 }
 
 class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
+  ///[controller] create a QuillEditorController to access the editor methods
+  QuillEditorController controller = QuillEditorController();
   String dropdownValue = list.first;
+  QuillEditorController controllertext = QuillEditorController();
   TextEditingController titleNameController = TextEditingController();
   TextEditingController requiredfollowerfromController =
       TextEditingController();
@@ -47,7 +51,9 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   TextEditingController additionalrequirement = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
-
+  // ignore: non_constant_identifier_names
+  String requirment_type = 'requirment_type';
+  String instructionText = 'controllertext';
   String logoimage = "";
   String logo = "";
   String dmimage = "";
@@ -222,6 +228,9 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
       'required_followers_from': requiredfollowerfromController.text,
       'required_followers_to': requiredfollowertoController.text,
       'titles': titleNameController.text,
+      'status': draft,
+      'requirement_type': requirment_type,
+      'instructions': instructionText,
     });
   }
 
@@ -248,31 +257,52 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
             value.get("language").toString().replaceAll(' ', '').split(",");
         titleNameController.text = value.get("titles");
         additionalrequirement.text = value.get("additional_requirements");
+        requirment_type = value.get("requirement_type");
+        // instructionText = value.get("instructions");
+        draft = value.get("status");
+        setHtmlText(value.get('instructions'));
       });
     });
+
+    log("jakHSKJhs $instructionText");
   }
 
-  Future getcatagory() async {
+  Future getCatagory() async {
     setState(() {
       items.clear();
     });
 
-    final productsRef =
-        FirebaseFirestore.instance.collection('creator_program_category');
-    final snapshot = await productsRef.get();
-    setState(() {
-      for (var doc in snapshot.docs) {
-        items.add(doc.data()['category']);
-      }
+    try {
+      final productsRef =
+          FirebaseFirestore.instance.collection('creator_program_category');
+      final snapshot = await productsRef.get();
 
-      log(" messdadassaage $items ");
-    });
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          for (var doc in snapshot.docs) {
+            items.add(doc.data()['category']);
+          }
+        });
+        log("Message: $items ");
+      } else {
+        log("Error: Collection is empty");
+      }
+    } catch (e) {
+      log("Error: $e");
+    }
   }
 
   @override
   void initState() {
+    getCatagory();
     getuploadedFilefirebase();
-    getcatagory();
+    controller.onTextChanged((text) {
+      setState(() {
+        instructionText = text;
+      });
+      debugPrint('listening to $instructionText');
+    });
+
     super.initState();
   }
 
@@ -594,7 +624,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   }
 
   textFieldWithData() {
-    String selectedvalue = items.first;
+    // String selectedvalue = items.first;
     var selectedlanguagevalue = languagelist.first;
     return Expanded(
       child: ResponsiveGridList(
@@ -699,8 +729,15 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                 children: [
                   SizedBox(
                     child: DropdownButton<String>(
-                      value: selectedvalue,
-                      // isExpanded: true,
+                      underline: const SizedBox(),
+                      icon: const Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: Icon(
+                          Icons.arrow_circle_down_outlined,
+                          size: 30,
+                        ),
+                      ),
+                      value: null,
                       items: items.map((item) {
                         return DropdownMenuItem<String>(
                           value: item,
@@ -984,7 +1021,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Radio(
-                    value: 'Draft',
+                    value: '3',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1004,7 +1041,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                     width: 55,
                   ),
                   Radio(
-                    value: 'Published',
+                    value: '1',
                     groupValue: draft,
                     onChanged: (value) {
                       setState(() {
@@ -1018,6 +1055,118 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                       color: Colors.black.withOpacity(0.3),
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Requirment type',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio(
+                    value: 'youtube',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'youtube',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 55,
+                  ),
+                  Radio(
+                    value: 'insta',
+                    groupValue: requirment_type,
+                    onChanged: (value) {
+                      setState(() {
+                        requirment_type = value.toString();
+                      });
+                    },
+                  ),
+                  Text(
+                    'Instagram',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.3),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Additional Detail',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                // ignore: prefer_const_literals_to_create_immutables
+                children: [
+                  MaterialButton(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+
+                    color: purpleColor,
+                    // ignore: prefer_const_constructors
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: const Text(
+                        'View Guidelines',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      addUnit(context);
+                    },
+                  ),
+                  const SizedBox(
+                    width: 55,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        'view Deliverable',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -1076,4 +1225,165 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
       ],
     );
   }
+
+  addUnit(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Edit Guidelines',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 1.5,
+                            width: MediaQuery.of(context).size.width / 2,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                ToolBar(
+                                  toolBarColor: Colors.white,
+                                  padding: const EdgeInsets.all(8),
+                                  iconSize: 20,
+                                  activeIconColor: Colors.green,
+                                  controller: controller,
+                                  customButtons: [
+                                    InkWell(
+                                        onTap: () async {},
+                                        child: const Icon(
+                                          Icons.favorite,
+                                        )),
+                                    InkWell(
+                                        onTap: () {},
+                                        child: const Icon(
+                                          Icons.add_circle,
+                                        )),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    color: Colors.black45,
+                                    child: QuillHtmlEditor(
+                                      hintText: 'Hint text goes here',
+                                      controller: controller,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      onTextChanged: (text) => debugPrint(
+                                          'widget text change $text'),
+                                      defaultFontSize: 18,
+                                      defaultFontColor: Colors.black45,
+                                      isEnabled: true,
+                                      backgroundColor: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 80.0,
+                          height: 45,
+                          color: Colors.green,
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            // uploaddeliveryFile();
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 80.0,
+                          height: 45,
+                          color: Colors.blue,
+                          child: const Text(
+                            'Close',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// to get the html text from editor
+  void getHtmlText() async {
+    String? htmlText = await controller.getText();
+    debugPrint(htmlText.toString());
+  }
+
+  /// to set the html text to editor
+  void setHtmlText(String text) async {
+    await controller.setText(text);
+
+    log('dadghashgd ${controller.getText().then((value) => value)} $text ');
+  }
+
+  /// to clear the editor
+  void clearEditor() => controller.clear();
+
+  /// to enable/disable the editor
+  void enableEditor(bool enable) => controller.enableEditor(true);
 }

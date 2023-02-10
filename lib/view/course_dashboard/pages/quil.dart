@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_page.dart';
+
 import 'package:quill_html_editor/quill_html_editor.dart';
 
 import '../../helpers/app_constants.dart';
@@ -195,23 +195,6 @@ class _quilscreenState extends State<quilscreen> {
     );
   }
 
-  /// to get the html text from editor
-  void getHtmlText() async {
-    String? htmlText = await controller.getText();
-    debugPrint(htmlText.toString());
-  }
-
-  /// to set the html text to editor
-  void setHtmlText(String text) async {
-    await controller.setText(text);
-  }
-
-  /// to clear the editor
-  void clearEditor() => controller.clear();
-
-  /// to enable/disable the editor
-  void enableEditor(bool enable) => controller.enableEditor(enable);
-
   addUnit(BuildContext context) {
     showDialog(
       context: context,
@@ -400,4 +383,21 @@ class _quilscreenState extends State<quilscreen> {
       },
     );
   }
+
+  /// to get the html text from editor
+  void getHtmlText() async {
+    String? htmlText = await controller.getText();
+    debugPrint(htmlText.toString());
+  }
+
+  /// to set the html text to editor
+  void setHtmlText(String text) async {
+    await controller.setText(text);
+  }
+
+  /// to clear the editor
+  void clearEditor() => controller.clear();
+
+  /// to enable/disable the editor
+  void enableEditor(bool enable) => controller.enableEditor(enable);
 }

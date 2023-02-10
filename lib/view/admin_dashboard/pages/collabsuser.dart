@@ -252,6 +252,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
         requirment_type = value.get("requirement_type");
       });
     });
+    log("jakHSKJhs $draft");
   }
 
   @override
