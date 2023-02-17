@@ -8,6 +8,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart'
+    as htmlwidget;
+
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -33,6 +37,9 @@ class CollaborationeditScreen extends StatefulWidget {
 }
 
 class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
+  final CollectionReference collaboration =
+      FirebaseFirestore.instance.collection('collaboration');
+
   ///[controller] create a QuillEditorController to access the editor methods
   QuillEditorController controller = QuillEditorController();
   String dropdownValue = list.first;
@@ -53,7 +60,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   TextEditingController categories = TextEditingController();
   // ignore: non_constant_identifier_names
   String requirment_type = 'requirment_type';
-  String instructionText = 'controllertext';
+  String instructionText = '';
   String logoimage = "";
   String logo = "";
   String dmimage = "";
@@ -258,9 +265,9 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         titleNameController.text = value.get("titles");
         additionalrequirement.text = value.get("additional_requirements");
         requirment_type = value.get("requirement_type");
-        // instructionText = value.get("instructions");
+        instructionText = value.get("instructions");
         draft = value.get("status");
-        setHtmlText(value.get('instructions'));
+        // setHtmlText(value.get('instructions'));
       });
     });
 
@@ -1246,65 +1253,64 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Edit Guidelines',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                        Row(
+                          children: [
+                            const Text(
+                              'Edit Guidelines',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            InkWell(
+                                onTap: () {
+                                  Clipboard.setData(
+                                    ClipboardData(
+                                      text: instructionText,
+                                    ),
+                                  );
+
+                                  // .then(
+                                  //   (_) {
+                                  //     alertDialogWidget(
+                                  //       context,
+                                  //       primeColor2,
+                                  //       "Referral code copied to clipboard",
+                                  //     );
+                                  //   },
+                                  // );
+                                },
+                                child: const Icon(Icons.copy_all)),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Center(
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 1.5,
-                            width: MediaQuery.of(context).size.width / 2,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                ToolBar(
-                                  toolBarColor: Colors.white,
-                                  padding: const EdgeInsets.all(8),
-                                  iconSize: 20,
-                                  activeIconColor: Colors.green,
-                                  controller: controller,
-                                  customButtons: [
-                                    InkWell(
-                                        onTap: () async {},
-                                        child: const Icon(
-                                          Icons.favorite,
-                                        )),
-                                    InkWell(
-                                        onTap: () {},
-                                        child: const Icon(
-                                          Icons.add_circle,
-                                        )),
-                                  ],
+                          child: InkWell(
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                  text: instructionText,
                                 ),
-                                Expanded(
-                                  child: Container(
-                                    color: Colors.black45,
-                                    child: QuillHtmlEditor(
-                                      hintText: 'Hint text goes here',
-                                      controller: controller,
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      onTextChanged: (text) => debugPrint(
-                                          'widget text change $text'),
-                                      defaultFontSize: 18,
-                                      defaultFontColor: Colors.black45,
-                                      isEnabled: true,
-                                      backgroundColor: Colors.white,
-                                    ),
+                              );
+                            },
+                            child: SizedBox(
+                              height: displayHeight(context) / 1.5,
+                              width: displayWidth(context) / 1.5,
+                              child: Container(
+                                color: Colors.black45,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: htmlwidget.HtmlWidget(
+                                    instructionText,
+                                    buildAsync: true,
+                                    enableCaching: true,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -1375,10 +1381,10 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   }
 
   /// to set the html text to editor
-  void setHtmlText(String text) async {
-    await controller.setText(text);
+  void setHtmlText(String instructionText) async {
+    await controller.setText(instructionText);
 
-    log('dadghashgd ${controller.getText().then((value) => value)} $text ');
+    log('dadghashgd ${controller.getText().then((value) => value)} $instructionText ');
   }
 
   /// to clear the editor
