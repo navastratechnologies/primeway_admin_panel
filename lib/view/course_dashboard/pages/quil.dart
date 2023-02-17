@@ -3,25 +3,24 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-
 import 'package:quill_html_editor/quill_html_editor.dart';
 
 import '../../helpers/app_constants.dart';
 
 // ignore: camel_case_types
-class quilscreen extends StatefulWidget {
+class Quilscreen extends StatefulWidget {
   final String docId;
-  const quilscreen({
+  const Quilscreen({
     super.key,
     required this.docId,
   });
 
   @override
-  State<quilscreen> createState() => _quilscreenState();
+  State<Quilscreen> createState() => _QuilscreenState();
 }
 
 // ignore: camel_case_types
-class _quilscreenState extends State<quilscreen> {
+class _QuilscreenState extends State<Quilscreen> {
   final CollectionReference collaboration =
       FirebaseFirestore.instance.collection('collaboration');
 

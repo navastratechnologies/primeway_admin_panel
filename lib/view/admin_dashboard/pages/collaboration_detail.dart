@@ -10,9 +10,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'package:quill_html_editor/quill_html_editor.dart';
 
 import '../../course_dashboard/pages/quil.dart';
 import 'loader.dart';
@@ -245,7 +245,7 @@ class _CollaborationDetailsScreenState
         context,
         MaterialPageRoute(
           builder: (context) {
-            return quilscreen(
+            return Quilscreen(
               docId: value.id,
             );
           },

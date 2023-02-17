@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart'
     as htmlwidget;
-
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -267,7 +266,10 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         requirment_type = value.get("requirement_type");
         instructionText = value.get("instructions");
         draft = value.get("status");
-        // setHtmlText(value.get('instructions'));
+        controller.setText(
+          value.get('instructions'),
+        );
+        setHtmlText(value.get('instructions'));
       });
     });
 
@@ -1384,7 +1386,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   void setHtmlText(String instructionText) async {
     await controller.setText(instructionText);
 
-    log('dadghashgd ${controller.getText().then((value) => value)} $instructionText ');
+    log('dadghashgd ${controller.getText().then((value) => value)} $instructionText');
   }
 
   /// to clear the editor

@@ -304,8 +304,8 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                               ),
                             ),
                           ),
-                          Divider(),
-                          Container(
+                          const Divider(),
+                          SizedBox(
                             height: displayHeight(context) / 1.95,
                             child: ScrollConfiguration(
                               behavior: ScrollConfiguration.of(context)
@@ -587,7 +587,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              Divider(),
+                                              const Divider(),
                                             ],
                                           );
                                         },
