@@ -149,139 +149,136 @@ class _UserScreenState extends State<UserScreen> {
                         right: 20,
                         bottom: 10,
                       ),
-                      child: Expanded(
-                        child: displayWidth(context) < 600 ||
-                                displayWidth(context) < 1200
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SelectableText(
-                                    'All Users :-',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: whiteColor,
-                                    ),
+                      child: displayWidth(context) < 600 ||
+                              displayWidth(context) < 1200
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SelectableText(
+                                  'All Users :-',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: whiteColor,
                                   ),
-                                  const SizedBox(height: 10),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: whiteColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          blurRadius: 10,
-                                          spreadRadius: 1,
-                                        ),
-                                      ],
-                                    ),
-                                    child: TextFormField(
-                                      controller: searchController,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          searchId = searchController.text;
-                                        });
-                                      },
-                                      onEditingComplete: () {
-                                        setState(() {
-                                          searchId = searchController.text;
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: 'Enter user id to search',
-                                        hintStyle: TextStyle(
-                                          color: Colors.black.withOpacity(0.5),
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                ),
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 10,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextFormField(
+                                    controller: searchController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        searchId = searchController.text;
+                                      });
+                                    },
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        searchId = searchController.text;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Enter user id to search',
+                                      hintStyle: TextStyle(
+                                        color: Colors.black.withOpacity(0.5),
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),
-                                ],
-                              )
-                            : Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 80,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "User Id",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 80,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "User Id",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "UserName",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "UserName",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "Phone Number",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "Phone Number",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "Address",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "Address",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "Social Account",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "Social Account",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Center(
-                                      child: SelectableText(
-                                        "Status",
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Center(
+                                    child: SelectableText(
+                                      "Status",
+                                      style: TextStyle(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                      ),
+                                ),
+                              ],
+                            ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(10),
