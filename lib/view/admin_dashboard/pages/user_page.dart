@@ -544,7 +544,7 @@ class _UserScreenState extends State<UserScreen> {
                                                           ),
                                                         ),
                                                   documentSnapshot[
-                                                              'social_account'] !=
+                                                              'instagram_username'] !=
                                                           null
                                                       ? SizedBox(
                                                           width: 120,
@@ -552,7 +552,7 @@ class _UserScreenState extends State<UserScreen> {
                                                             child:
                                                                 SelectableText(
                                                               documentSnapshot[
-                                                                  'social_account'],
+                                                                  'instagram_username'],
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .black
