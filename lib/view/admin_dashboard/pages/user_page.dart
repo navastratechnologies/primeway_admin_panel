@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:primeway_admin_panel/view/helpers/helpers.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -17,541 +17,717 @@ class _UserScreenState extends State<UserScreen> {
   bool showUnApprovedUsers = false;
   bool showRejectedUsers = false;
 
-  String userCount = '';
-  String approvedUser = '';
-  String unapprovedUser = '';
-  String rejectedUser = '';
+  String searchId = '';
+  TextEditingController searchController = TextEditingController();
 
   final CollectionReference user =
       FirebaseFirestore.instance.collection('users');
 
-  Future<void> getUserCount() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      log('user id is ${snapshot.docs.length}');
-      setState(() {
-        userCount = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  Future<void> unapprovedUserCount() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .where('approval_status', isEqualTo: 'unapproved')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      log('unapproved user id is ${snapshot.docs.length}');
-      setState(() {
-        unapprovedUser = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  Future<void> approvedUserCount() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .where('approval_status', isEqualTo: 'approved')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      log('approved user id is ${snapshot.docs.length}');
-      setState(() {
-        approvedUser = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  Future<void> rejectedUserCount() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .where('approval_status', isEqualTo: 'rejected')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      log('rejected user id is ${snapshot.docs.length}');
-      setState(() {
-        rejectedUser = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    getUserCount();
-    rejectedUserCount();
-    approvedUserCount();
-    unapprovedUserCount();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(40),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              dashboardTile(
-                userCount,
-                'All Users',
-                Icons.groups,
-              ),
-              const SizedBox(width: 20),
-              dashboardTile(
-                approvedUser,
-                'Approved Users',
-                Icons.verified_user_sharp,
-              ),
-              const SizedBox(width: 20),
-              dashboardTile(
-                unapprovedUser,
-                'Un-Approved Users',
-                Icons.no_accounts,
-              ),
-              const SizedBox(width: 20),
-              dashboardTile(
-                rejectedUser,
-                'Rejected Users',
-                Icons.thumb_down,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: elevationColor,
-                  blurRadius: 10,
-                  spreadRadius: 1,
+              ResponsiveGridList(
+                horizontalGridSpacing: 10,
+                minItemWidth:
+                    displayWidth(context) < 600 || displayWidth(context) < 1200
+                        ? 200
+                        : 350,
+                listViewBuilderOptions: ListViewBuilderOptions(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                 ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: displayWidth(context) / 1.2,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: greenShadeColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
+                children: [
+                  dashboardTile(
+                    'all-users',
+                    'All Users',
+                    Icons.groups,
                   ),
-                  child: Text(
-                    'All Users :-',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: whiteColor,
-                    ),
+                  dashboardTile(
+                    'approved',
+                    'Approved Users',
+                    Icons.verified_user_sharp,
                   ),
+                  dashboardTile(
+                    'pending',
+                    'Un-Approved Users',
+                    Icons.no_accounts,
+                  ),
+                  dashboardTile(
+                    'rejected',
+                    'Rejected Users',
+                    Icons.thumb_down,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              displayWidth(context) < 600 || displayWidth(context) < 1200
+                  ? const SizedBox()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SelectableText(
+                          'All Users :-',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(0.4),
+                          ),
+                        ),
+                        Container(
+                          width: 400,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: TextFormField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              setState(() {
+                                searchId = searchController.text;
+                              });
+                            },
+                            onEditingComplete: () {
+                              setState(() {
+                                searchId = searchController.text;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Enter user id to search',
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
+                    Container(
+                      decoration: BoxDecoration(
+                        color: greenShadeColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
                       padding: const EdgeInsets.only(
                         top: 20,
                         left: 20,
                         right: 20,
                         bottom: 10,
                       ),
-                      child: SizedBox(
-                        width: displayWidth(context) / 1.2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: Center(
-                                child: Text(
-                                  "User Id",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                      child: Expanded(
+                        child: displayWidth(context) < 600 ||
+                                displayWidth(context) < 1200
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'All Users :-',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: whiteColor,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "UserName",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: whiteColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 10,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    child: TextFormField(
+                                      controller: searchController,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          searchId = searchController.text;
+                                        });
+                                      },
+                                      onEditingComplete: () {
+                                        setState(() {
+                                          searchId = searchController.text;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Enter user id to search',
+                                        hintStyle: TextStyle(
+                                          color: Colors.black.withOpacity(0.5),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Phone Number",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                                ],
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 80,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "User Id",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Address",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "UserName",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Social Account",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "Phone Number",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  "Status",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.4),
-                                    fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "Address",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "Social Account",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: Center(
+                                      child: SelectableText(
+                                        "Status",
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(10),
-                      height: displayHeight(context) / 2.3,
-                      width: displayWidth(context) / 1.2,
-                      child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context)
-                            .copyWith(scrollbars: false),
-                        child: StreamBuilder(
-                            stream: user.snapshots(),
-                            builder: (context,
-                                AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                              if (streamSnapshot.hasData) {
-                                return ListView.builder(
-                                  itemCount: streamSnapshot.data!.docs.length,
-                                  itemBuilder: (context, index) {
-                                    final DocumentSnapshot documentSnapshot =
-                                        streamSnapshot.data!.docs[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                      height: displayWidth(context) < 600 ||
+                              displayWidth(context) < 1200
+                          ? null
+                          : displayHeight(context) / 1.85,
+                      width: displayWidth(context) / 1.1,
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                      ),
+                      child: StreamBuilder(
+                          stream: searchController.text.isEmpty
+                              ? user.snapshots()
+                              : user
+                                  .where(
+                                    'phone_number',
+                                    isEqualTo: searchId,
+                                  )
+                                  .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                            if (streamSnapshot.hasData) {
+                              return ListView.builder(
+                                shrinkWrap: displayWidth(context) < 600 ||
+                                        displayWidth(context) < 1200
+                                    ? true
+                                    : false,
+                                physics: displayWidth(context) < 600 ||
+                                        displayWidth(context) < 1200
+                                    ? const NeverScrollableScrollPhysics()
+                                    : const AlwaysScrollableScrollPhysics(),
+                                itemCount: streamSnapshot.data!.docs.length,
+                                itemBuilder: (context, index) {
+                                  final DocumentSnapshot documentSnapshot =
+                                      streamSnapshot.data!.docs[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: displayWidth(context) < 600 ||
+                                            displayWidth(context) < 1200
+                                        ? Column(
                                             children: [
-                                              documentSnapshot['user_Id'] !=
-                                                      null
-                                                  ? SizedBox(
-                                                      width: 80,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'user_Id'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                              ExpansionTile(
+                                                childrenPadding:
+                                                    const EdgeInsets.all(10),
+                                                tilePadding:
+                                                    const EdgeInsets.all(6),
+                                                title: SelectableText(
+                                                  documentSnapshot[
+                                                      'phone_number'],
+                                                  style: TextStyle(
+                                                    color: Colors.black
+                                                        .withOpacity(0.4),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                children: [
+                                                  expansionTableData(
+                                                    'Name',
+                                                    documentSnapshot['name'],
+                                                  ),
+                                                  expansionTableData(
+                                                    'Phone Number',
+                                                    documentSnapshot[
+                                                        'phone_number'],
+                                                  ),
+                                                  expansionTableData(
+                                                    'Address',
+                                                    documentSnapshot['address'],
+                                                  ),
+                                                  expansionTableData(
+                                                    'Social Accounts',
+                                                    documentSnapshot[
+                                                                'instagram_username']
+                                                            .toString()
+                                                            .isNotEmpty
+                                                        ? documentSnapshot[
+                                                            'instagram_username']
+                                                        : documentSnapshot[
+                                                                    'youtube_username']
+                                                                .toString()
+                                                                .isNotEmpty
+                                                            ? documentSnapshot[
+                                                                'youtube_username']
+                                                            : 'No Account Linked Yet',
+                                                  ),
+                                                  expansionTableData(
+                                                    'Status',
+                                                    documentSnapshot[
+                                                        'approval_status'],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 2),
+                                              const Divider(),
+                                            ],
+                                          )
+                                        : Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  documentSnapshot['user_Id'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 80,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              documentSnapshot[
+                                                                  'user_Id'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 80,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 80,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                  documentSnapshot['name'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              documentSnapshot[
+                                                                  'name'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              documentSnapshot['name'] != null
-                                                  ? SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'name'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                  documentSnapshot[
+                                                              'phone_number'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              documentSnapshot[
+                                                                  'phone_number'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                  documentSnapshot['address'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              documentSnapshot[
+                                                                  'address'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                              documentSnapshot[
-                                                          'phone_number'] !=
-                                                      null
-                                                  ? SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'phone_number'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                  documentSnapshot[
+                                                              'social_account'] !=
+                                                          null
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              documentSnapshot[
+                                                                  'social_account'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child:
+                                                                SelectableText(
+                                                              '',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.4),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                              documentSnapshot['address'] !=
-                                                      null
-                                                  ? SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'address'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                              documentSnapshot[
-                                                          'social_account'] !=
-                                                      null
-                                                  ? SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          documentSnapshot[
-                                                              'social_account'],
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color: documentSnapshot[
-                                                                  'approval_status'] ==
-                                                              "approved"
-                                                          ? greenLightShadeColor
-                                                          : documentSnapshot[
+                                                  SizedBox(
+                                                    width: 120,
+                                                    child: Center(
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: documentSnapshot[
                                                                       'approval_status'] ==
-                                                                  "rejected"
-                                                              ? mainShadeColor
-                                                              : yellow,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                                  'approval_status'] ==
-                                                              "approved"
-                                                          ? "Approved"
-                                                          : documentSnapshot[
+                                                                  "approved"
+                                                              ? greenLightShadeColor
+                                                              : documentSnapshot[
+                                                                          'approval_status'] ==
+                                                                      "rejected"
+                                                                  ? mainShadeColor
+                                                                  : yellow,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                        child: SelectableText(
+                                                          documentSnapshot[
                                                                       'approval_status'] ==
-                                                                  "rejected"
-                                                              ? "Rejected"
-                                                              : "Unapproved",
-                                                      style: TextStyle(
-                                                        color: whiteColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                                  "approved"
+                                                              ? "Approved"
+                                                              : documentSnapshot[
+                                                                          'approval_status'] ==
+                                                                      "rejected"
+                                                                  ? "Rejected"
+                                                                  : "Unapproved",
+                                                          style: TextStyle(
+                                                            color: whiteColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
+                                              const SizedBox(height: 2),
+                                              const Divider(),
                                             ],
                                           ),
-                                          const SizedBox(height: 2),
-                                          const Divider(),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                                  );
+                                },
                               );
-                            }),
-                      ),
+                            }
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  dashboardTile(count, title, icon) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: greenShadeColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: greenLightShadeColor,
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                count,
-                style: TextStyle(
-                  fontSize: 50,
-                  color: whiteColor,
-                  fontWeight: FontWeight.bold,
+  dashboardTile(status, title, icon) {
+    return InkWell(
+      onTap: () {},
+      onHover: (value) {
+        if (value) {
+          setState(
+            () {},
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: greenShadeColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: greenLightShadeColor,
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StreamBuilder(
+                  stream: status == "all-users"
+                      ? FirebaseFirestore.instance
+                          .collection('users')
+                          .snapshots()
+                      : FirebaseFirestore.instance
+                          .collection('users')
+                          .where('approval_status', isEqualTo: status)
+                          .snapshots(),
+                  builder:
+                      (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                    if (streamSnapshot.hasData) {
+                      return SelectableText(
+                        streamSnapshot.data!.docs.length.toString(),
+                        style: TextStyle(
+                          fontSize: 50,
+                          color: whiteColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                    return SelectableText(
+                      '0',
+                      style: TextStyle(
+                        fontSize: 50,
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
+                const SizedBox(height: 10),
+                SelectableText(
                   title,
                   style: TextStyle(
                     color: whiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Icon(
+              ],
+            ),
+            Icon(
               icon,
               color: greenLightShadeColor,
-              size: 100,
+              size: 130,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
