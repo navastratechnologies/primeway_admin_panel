@@ -99,121 +99,118 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
       width: displayWidth(context) < 600 || displayWidth(context) < 1200
           ? displayWidth(context)
           : displayWidth(context) / 6,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: mainColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: elevationColor,
-                blurRadius: 10,
-                spreadRadius: 1,
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(14),
-                child: SelectableText(
-                  "Update :-",
-                  style: TextStyle(
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: mainColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: elevationColor,
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: SelectableText(
+                "Update :-",
+                style: TextStyle(
+                  color: whiteColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const Divider(),
-              SizedBox(
-                height:
-                    displayWidth(context) < 600 || displayWidth(context) < 1200
-                        ? null
-                        : displayHeight(context) / 1.3,
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('notifications')
-                      .snapshots(),
-                  builder:
-                      (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                    if (streamSnapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: streamSnapshot.data!.docs.length,
-                        shrinkWrap: displayWidth(context) < 600 ||
-                                displayWidth(context) < 1200
-                            ? true
-                            : false,
-                        physics: displayWidth(context) < 600 ||
-                                displayWidth(context) < 1200
-                            ? const NeverScrollableScrollPhysics()
-                            : const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot documentSnapshot =
-                              streamSnapshot.data!.docs[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                    documentSnapshot['pic'],
+            ),
+            const Divider(),
+            SizedBox(
+              height:
+                  displayWidth(context) < 600 || displayWidth(context) < 1200
+                      ? null
+                      : displayHeight(context) / 1.3,
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('notifications')
+                    .snapshots(),
+                builder:
+                    (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                  if (streamSnapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: streamSnapshot.data!.docs.length,
+                      shrinkWrap: displayWidth(context) < 600 ||
+                              displayWidth(context) < 1200
+                          ? true
+                          : false,
+                      physics: displayWidth(context) < 600 ||
+                              displayWidth(context) < 1200
+                          ? const NeverScrollableScrollPhysics()
+                          : const AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot documentSnapshot =
+                            streamSnapshot.data!.docs[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                  documentSnapshot['pic'],
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: displayWidth(context) < 600 ||
+                                            displayWidth(context) < 1200
+                                        ? displayWidth(context) / 2
+                                        : displayWidth(context) / 9,
+                                    child: SelectableText.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                "${documentSnapshot['name']} ",
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: documentSnapshot['message'],
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: displayWidth(context) < 600 ||
-                                              displayWidth(context) < 1200
-                                          ? displayWidth(context) / 2
-                                          : displayWidth(context) / 9,
-                                      child: SelectableText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  "${documentSnapshot['name']} ",
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: documentSnapshot['message'],
-                                              style: TextStyle(
-                                                color: whiteColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                  const SizedBox(height: 5),
+                                  SelectableText(
+                                    documentSnapshot['date_time'],
+                                    style: TextStyle(
+                                      color: whiteColor.withOpacity(0.6),
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                    const SizedBox(height: 5),
-                                    SelectableText(
-                                      documentSnapshot['date_time'],
-                                      style: TextStyle(
-                                        color: whiteColor.withOpacity(0.6),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return Container();
-                  },
-                ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return Container();
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -224,7 +221,6 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
       width: displayWidth(context) < 600 || displayWidth(context) < 1200
           ? displayWidth(context)
           : displayWidth(context) / 1.5,
-      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: whiteColor,
       ),
@@ -500,7 +496,7 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
             padding: const EdgeInsets.all(10),
             height: displayWidth(context) < 600 || displayWidth(context) < 1200
                 ? null
-                : displayHeight(context) / 1.85,
+                : displayHeight(context) / 1.65,
             child: StreamBuilder(
                 stream: searchController.text.isEmpty
                     ? withDrawal.snapshots()
@@ -546,22 +542,27 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                                         expansionTableData(
                                           'User Id',
                                           documentSnapshot['user_Id'],
+                                          context,
                                         ),
                                         expansionTableData(
                                           'Name',
                                           documentSnapshot['user_name'],
+                                          context,
                                         ),
                                         expansionTableData(
                                           'Wallet Balance',
                                           documentSnapshot['wallet_balance'],
+                                          context,
                                         ),
                                         expansionTableData(
                                           'Requested For',
                                           documentSnapshot['requested_for'],
+                                          context,
                                         ),
                                         expansionTableData(
                                           'Status',
                                           documentSnapshot['status'],
+                                          context,
                                         ),
                                       ],
                                     ),
@@ -863,11 +864,14 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                   },
                 ),
                 const SizedBox(height: 10),
-                SelectableText(
-                  title,
-                  style: TextStyle(
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: 120,
+                  child: SelectableText(
+                    title,
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -875,7 +879,7 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
             Icon(
               icon,
               color: greenLightShadeColor,
-              size: 130,
+              size: 120,
             ),
           ],
         ),

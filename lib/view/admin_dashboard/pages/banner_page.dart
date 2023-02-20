@@ -190,18 +190,20 @@ class _BannerScreenState extends State<BannerScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 120,
-                                  child: Center(
-                                    child: Text(
-                                      "Action",
-                                      style: TextStyle(
-                                        color: whiteColor,
-                                        fontWeight: FontWeight.bold,
+                                displayWidth(context) < 600
+                                    ? const SizedBox()
+                                    : SizedBox(
+                                        width: 120,
+                                        child: Center(
+                                          child: Text(
+                                            "Action",
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -240,7 +242,7 @@ class _BannerScreenState extends State<BannerScreen> {
                                                 width: 120,
                                                 child: Center(
                                                   child: Text(
-                                                    index.toString(),
+                                                    documentSnapshot.id,
                                                     style: TextStyle(
                                                       color: Colors.black
                                                           .withOpacity(0.4),
@@ -250,49 +252,103 @@ class _BannerScreenState extends State<BannerScreen> {
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 120,
-                                                height: 100,
-                                                child: Center(
-                                                  child: Image.network(
-                                                    documentSnapshot[
-                                                        'Banner_image'],
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      deleteBannerData(
-                                                        documentSnapshot.id,
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 120,
+                                                    height: 100,
+                                                    child: Center(
+                                                      child: Image.network(
                                                         documentSnapshot[
                                                             'Banner_image'],
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        color: mainShadeColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        "Delete",
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
+                                                  displayWidth(context) < 600
+                                                      ? SizedBox(
+                                                          width: 120,
+                                                          child: Center(
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                deleteBannerData(
+                                                                  documentSnapshot
+                                                                      .id,
+                                                                  documentSnapshot[
+                                                                      'Banner_image'],
+                                                                );
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(5),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color:
+                                                                      mainShadeColor,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                ),
+                                                                child: Text(
+                                                                  "Delete",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : const SizedBox(),
+                                                ],
                                               ),
+                                              displayWidth(context) < 600
+                                                  ? const SizedBox()
+                                                  : SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            deleteBannerData(
+                                                              documentSnapshot
+                                                                  .id,
+                                                              documentSnapshot[
+                                                                  'Banner_image'],
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(5),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  mainShadeColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                            ),
+                                                            child: Text(
+                                                              "Delete",
+                                                              style: TextStyle(
+                                                                color:
+                                                                    whiteColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
                                             ],
                                           ),
                                           const SizedBox(height: 2),

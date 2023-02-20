@@ -315,68 +315,71 @@ class _UserScreenState extends State<UserScreen> {
                                 itemBuilder: (context, index) {
                                   final DocumentSnapshot documentSnapshot =
                                       streamSnapshot.data!.docs[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: displayWidth(context) < 600 ||
-                                            displayWidth(context) < 1200
-                                        ? Column(
-                                            children: [
-                                              ExpansionTile(
-                                                childrenPadding:
-                                                    const EdgeInsets.all(10),
-                                                tilePadding:
-                                                    const EdgeInsets.all(6),
-                                                title: SelectableText(
+                                  return displayWidth(context) < 600 ||
+                                          displayWidth(context) < 1200
+                                      ? Column(
+                                          children: [
+                                            ExpansionTile(
+                                              tilePadding:
+                                                  const EdgeInsets.all(6),
+                                              title: SelectableText(
+                                                documentSnapshot[
+                                                    'phone_number'],
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.4),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              children: [
+                                                expansionTableData(
+                                                  'Name',
+                                                  documentSnapshot['name'],
+                                                  context,
+                                                ),
+                                                expansionTableData(
+                                                  'Phone Number',
                                                   documentSnapshot[
                                                       'phone_number'],
-                                                  style: TextStyle(
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                                  context,
                                                 ),
-                                                children: [
-                                                  expansionTableData(
-                                                    'Name',
-                                                    documentSnapshot['name'],
-                                                  ),
-                                                  expansionTableData(
-                                                    'Phone Number',
-                                                    documentSnapshot[
-                                                        'phone_number'],
-                                                  ),
-                                                  expansionTableData(
-                                                    'Address',
-                                                    documentSnapshot['address'],
-                                                  ),
-                                                  expansionTableData(
-                                                    'Social Accounts',
-                                                    documentSnapshot[
-                                                                'instagram_username']
-                                                            .toString()
-                                                            .isNotEmpty
-                                                        ? documentSnapshot[
-                                                            'instagram_username']
-                                                        : documentSnapshot[
-                                                                    'youtube_username']
-                                                                .toString()
-                                                                .isNotEmpty
-                                                            ? documentSnapshot[
-                                                                'youtube_username']
-                                                            : 'No Account Linked Yet',
-                                                  ),
-                                                  expansionTableData(
-                                                    'Status',
-                                                    documentSnapshot[
-                                                        'approval_status'],
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 2),
-                                              const Divider(),
-                                            ],
-                                          )
-                                        : Column(
+                                                expansionTableData(
+                                                  'Address',
+                                                  documentSnapshot['address'],
+                                                  context,
+                                                ),
+                                                expansionTableData(
+                                                  'Social Accounts',
+                                                  documentSnapshot[
+                                                              'instagram_username']
+                                                          .toString()
+                                                          .isNotEmpty
+                                                      ? documentSnapshot[
+                                                          'instagram_username']
+                                                      : documentSnapshot[
+                                                                  'youtube_username']
+                                                              .toString()
+                                                              .isNotEmpty
+                                                          ? documentSnapshot[
+                                                              'youtube_username']
+                                                          : 'No Account Linked Yet',
+                                                  context,
+                                                ),
+                                                expansionTableData(
+                                                  'Status',
+                                                  documentSnapshot[
+                                                      'approval_status'],
+                                                  context,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 2),
+                                            const Divider(),
+                                          ],
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
@@ -627,7 +630,7 @@ class _UserScreenState extends State<UserScreen> {
                                               const Divider(),
                                             ],
                                           ),
-                                  );
+                                        );
                                 },
                               );
                             }
@@ -709,11 +712,14 @@ class _UserScreenState extends State<UserScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
-                SelectableText(
-                  title,
-                  style: TextStyle(
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: 120,
+                  child: SelectableText(
+                    title,
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -721,7 +727,7 @@ class _UserScreenState extends State<UserScreen> {
             Icon(
               icon,
               color: greenLightShadeColor,
-              size: 130,
+              size: 120,
             ),
           ],
         ),

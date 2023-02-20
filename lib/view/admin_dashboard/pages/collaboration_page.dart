@@ -76,6 +76,37 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                 ],
               ),
               const SizedBox(height: 15),
+              displayWidth(context) < 600
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const CollaborationDetailsScreen(),
+                          ),
+                        ),
+                        child: Container(
+                          width: displayWidth(context) / 1.1,
+                          decoration: BoxDecoration(
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(18),
+                            child: SelectableText(
+                              'Add New Collaborations',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -125,32 +156,38 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                         displayWidth(context) < 600
                                             ? Container()
                                             : const SizedBox(width: 10),
-                                        InkWell(
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CollaborationDetailsScreen(),
-                                            ),
-                                          ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.purple,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(18),
-                                              child: SelectableText(
-                                                'Add New Collaborations',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: whiteColor,
+                                        displayWidth(context) < 600
+                                            ? const SizedBox()
+                                            : InkWell(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const CollaborationDetailsScreen(),
+                                                  ),
+                                                ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.purple,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            18),
+                                                    child: SelectableText(
+                                                      'Add New Collaborations',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: whiteColor,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ],
@@ -420,26 +457,31 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                             'User Id',
                                                             documentSnapshot[
                                                                 'id'],
+                                                            context,
                                                           ),
                                                           expansionTableData(
                                                             'Name',
                                                             documentSnapshot[
                                                                 'id'],
+                                                            context,
                                                           ),
                                                           expansionTableData(
                                                             'Wallet Balance',
                                                             documentSnapshot[
                                                                 'id'],
+                                                            context,
                                                           ),
                                                           expansionTableData(
                                                             'Requested For',
                                                             documentSnapshot[
                                                                 'id'],
+                                                            context,
                                                           ),
                                                           expansionTableData(
                                                             'Status',
                                                             documentSnapshot[
                                                                 'id'],
+                                                            context,
                                                           ),
                                                         ],
                                                       ),
@@ -875,7 +917,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: 150,
+                  width: 120,
                   child: SelectableText(
                     title,
                     style: TextStyle(
@@ -889,7 +931,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
             Icon(
               icon,
               color: greenLightShadeColor,
-              size: 130,
+              size: 120,
             ),
           ],
         ),

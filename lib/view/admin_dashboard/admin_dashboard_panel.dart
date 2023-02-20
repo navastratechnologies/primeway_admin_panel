@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/creator_programs_page.dart';
@@ -634,13 +635,19 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       onPressed: () {},
-                      child: Text(
-                        'Admin Panel',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: whiteColor,
-                        ),
-                      ),
+                      child: displayWidth(context) < 600
+                          ? FaIcon(
+                              FontAwesomeIcons.userGear,
+                              color: whiteColor,
+                              size: 14,
+                            )
+                          : Text(
+                              'Admin Panel',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: whiteColor,
+                              ),
+                            ),
                     ),
                     const SizedBox(width: 16),
                     MaterialButton(
@@ -656,13 +663,19 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           ),
                         );
                       },
-                      child: const Text(
-                        'Course Panel',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
+                      child: displayWidth(context) < 600
+                          ? const FaIcon(
+                              FontAwesomeIcons.book,
+                              color: Colors.black,
+                              size: 14,
+                            )
+                          : const Text(
+                              'Course Panel',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
                     ),
                   ],
                 ),
