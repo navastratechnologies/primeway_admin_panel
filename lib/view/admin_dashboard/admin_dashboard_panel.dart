@@ -206,453 +206,456 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    mainShadeColor,
+                    mainColor,
+                  ],
+                ),
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  mainShadeColor,
-                  mainColor,
-                ],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
               child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: elevationColor,
-                            blurRadius: 5,
-                            spreadRadius: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: elevationColor,
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              mainColor,
+                              mainShadeColor,
+                            ],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: const Image(
+                          image: AssetImage('assets/primeway-logo.png'),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Primeway',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: whiteColor,
+                              fontSize: 26,
+                            ),
+                          ),
+                          Text(
+                            'Skills Pvt. Ltd.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: whiteColor,
+                            ),
                           ),
                         ],
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            mainColor,
-                            mainShadeColor,
-                          ],
-                        ),
                       ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Image(
-                        image: AssetImage('assets/primeway-logo.png'),
-                        fit: BoxFit.contain,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 70),
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  MaterialButton(
+                    elevation: 0,
+                    color: showDashboardPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = true;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
                       children: [
-                        Text(
-                          'Primeway',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: whiteColor,
-                            fontSize: 26,
-                          ),
+                        Icon(
+                          Icons.home_rounded,
+                          color: showDashboardPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
                         ),
+                        const SizedBox(width: 10),
                         Text(
-                          'Skills Pvt. Ltd.',
+                          'Dashboard',
                           style: TextStyle(
-                            fontWeight: FontWeight.w500,
                             color: whiteColor,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showUsersPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = true;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.person_rounded,
+                          color: showUsersPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Users',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showWalletPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = true;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.wallet,
+                          color: showWalletPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Wallet',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showBannerPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = true;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.photo_library,
+                          color: showBannerPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Banners',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showCollaborationPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = true;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.groups,
+                          color: showCollaborationPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Collabs',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color:
+                        showCreatorProgramPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = true;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.design_services,
+                          color: showCreatorProgramPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Categories',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showFeedbackPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = true;
+                        showOtherRequestPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.question_answer_rounded,
+                          color: showFeedbackPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Feedbacks',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showOtherRequestPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.help_outline_rounded,
+                          color: showOtherRequestPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Requests',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 70),
-          Padding(
-            padding: const EdgeInsets.only(left: 6),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                MaterialButton(
-                  elevation: 0,
-                  color: showDashboardPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = true;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.home_rounded,
-                        color: showDashboardPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Dashboard',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showUsersPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = true;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.person_rounded,
-                        color: showUsersPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Users',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showWalletPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = true;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.wallet,
-                        color: showWalletPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Wallet',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showBannerPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = true;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.photo_library,
-                        color: showBannerPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Banners',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showCollaborationPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = true;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.groups,
-                        color: showCollaborationPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Collabs',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showCreatorProgramPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = true;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.design_services,
-                        color: showCreatorProgramPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Categories',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showFeedbackPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = true;
-                      showOtherRequestPanel = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.question_answer_rounded,
-                        color: showFeedbackPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Feedbacks',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                MaterialButton(
-                  elevation: 0,
-                  color: showOtherRequestPanel ? greenShadeColor : mainColor,
-                  hoverColor: greenShadeColor,
-                  padding: const EdgeInsets.all(20),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (displayWidth(context) < 1200) {
-                        Navigator.pop(context);
-                      }
-                      showDashboardPanel = false;
-                      showBannerPanel = false;
-                      showCollaborationPanel = false;
-                      showCreatorProgramPanel = false;
-                      showUsersPanel = false;
-                      showWalletPanel = false;
-                      showFeedbackPanel = false;
-                      showOtherRequestPanel = true;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.help_outline_rounded,
-                        color: showOtherRequestPanel
-                            ? greenSelectedColor
-                            : mainShadeColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Requests',
-                        style: TextStyle(
-                          color: whiteColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
