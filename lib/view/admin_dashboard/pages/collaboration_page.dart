@@ -95,7 +95,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(18),
-                            child: SelectableText(
+                            child: Text(
                               'Add New Collaborations',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -177,7 +177,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                     padding:
                                                         const EdgeInsets.all(
                                                             18),
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       'Add New Collaborations',
                                                       style: TextStyle(
                                                         fontWeight:

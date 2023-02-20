@@ -19,6 +19,12 @@ class BannerScreen extends StatefulWidget {
 }
 
 class _BannerScreenState extends State<BannerScreen> {
+  bool editButton = false;
+  String imageUrl = '';
+  String baseImage = '';
+  String bannerId = '';
+  bool showUploader = false;
+
   File? pickedFile;
   UploadTask? uploadTask;
   Uint8List webImage = Uint8List(8);
@@ -35,6 +41,7 @@ class _BannerScreenState extends State<BannerScreen> {
       if (image != null) {
         var selected = File(image.path);
         setState(() {
+          imageUrl = '';
           pickedFile = selected;
         });
       } else {
@@ -46,6 +53,7 @@ class _BannerScreenState extends State<BannerScreen> {
       if (image != null) {
         var selectedByte = await image.readAsBytes();
         setState(() {
+          imageUrl = '';
           webImage = selectedByte;
           pickedFile = File('a');
         });
@@ -77,7 +85,18 @@ class _BannerScreenState extends State<BannerScreen> {
       'Banner_image': url.toString(),
       'Banner_link': 'google.com',
       'Banner_name': 'Banner',
-    });
+    }).whenComplete(
+      () {
+        setState(() {
+          editButton = false;
+          showUploader = false;
+          imageUrl = '';
+          baseImage = '';
+          bannerId = '';
+          pickedFile = null;
+        });
+      },
+    );
   }
 
   Future<void> deleteBannerData(bannerId, bannerImage) async {
@@ -86,6 +105,40 @@ class _BannerScreenState extends State<BannerScreen> {
     FirebaseStorage.instance.refFromURL(bannerImage).delete().then(
           (value) => log('image deleted from server'),
         );
+  }
+
+  Future updateFile(id) async {
+    Reference ref =
+        FirebaseStorage.instance.ref().child('Banner/${DateTime.now()}.png');
+    UploadTask uploadTask = ref.putData(
+      webImage,
+      SettableMetadata(contentType: 'image/png'),
+    );
+    TaskSnapshot taskSnapshot = await uploadTask
+        .whenComplete(
+          () => print('done'),
+        )
+        .catchError(
+          (error) => print('something went wrong'),
+        );
+    String url = await taskSnapshot.ref.getDownloadURL();
+
+    banner.doc(id).update({
+      'Banner_image': url.toString(),
+      'Banner_link': 'google.com',
+      'Banner_name': 'Banner',
+    }).whenComplete(
+      () {
+        setState(() {
+          editButton = false;
+          showUploader = false;
+          imageUrl = '';
+          baseImage = '';
+          bannerId = '';
+          pickedFile = null;
+        });
+      },
+    );
   }
 
   @override
@@ -265,90 +318,14 @@ class _BannerScreenState extends State<BannerScreen> {
                                                     ),
                                                   ),
                                                   displayWidth(context) < 600
-                                                      ? SizedBox(
-                                                          width: 120,
-                                                          child: Center(
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                deleteBannerData(
-                                                                  documentSnapshot
-                                                                      .id,
-                                                                  documentSnapshot[
-                                                                      'Banner_image'],
-                                                                );
-                                                              },
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(5),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color:
-                                                                      mainShadeColor,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              5),
-                                                                ),
-                                                                child: Text(
-                                                                  "Delete",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        whiteColor,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        )
+                                                      ? buttons(
+                                                          documentSnapshot)
                                                       : const SizedBox(),
                                                 ],
                                               ),
                                               displayWidth(context) < 600
                                                   ? const SizedBox()
-                                                  : SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            deleteBannerData(
-                                                              documentSnapshot
-                                                                  .id,
-                                                              documentSnapshot[
-                                                                  'Banner_image'],
-                                                            );
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(5),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  mainShadeColor,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                            ),
-                                                            child: Text(
-                                                              "Delete",
-                                                              style: TextStyle(
-                                                                color:
-                                                                    whiteColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                  : buttons(documentSnapshot),
                                             ],
                                           ),
                                           const SizedBox(height: 2),
@@ -399,34 +376,75 @@ class _BannerScreenState extends State<BannerScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                ? displayWidth(context)
-                : displayWidth(context) / 4,
-            height: 200,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
+          MaterialButton(
+            color: mainShadeColor,
+            onPressed: () {
+              setState(
+                () {
+                  editButton = false;
+                  showUploader = false;
+                  imageUrl = '';
+                  baseImage = '';
+                  bannerId = '';
+                  pickedFile = null;
+                },
+              );
+            },
+            child: Text(
+              'Clear',
+              style: TextStyle(
+                color: whiteColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            child: pickedFile == null
-                ? Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.camera,
-                      size: 100,
-                      color: Colors.black.withOpacity(0.2),
-                    ),
-                  )
-                : kIsWeb
-                    ? Image.memory(webImage)
-                    : Image.file(pickedFile!),
+          ),
+          const SizedBox(height: 10),
+          InkWell(
+            onTap: pickImage,
+            child: Container(
+              width: displayWidth(context) < 600 || displayWidth(context) < 1200
+                  ? displayWidth(context)
+                  : displayWidth(context) / 4,
+              height: 200,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Stack(
+                children: [
+                  imageUrl.isNotEmpty
+                      ? Image.network(imageUrl)
+                      : pickedFile == null
+                          ? Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.camera,
+                                size: 100,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            )
+                          : kIsWeb
+                              ? Image.memory(webImage)
+                              : Image.file(pickedFile!),
+                  showUploader
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: greenShadeColor,
+                            strokeWidth: 5,
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 20),
           MaterialButton(
@@ -435,37 +453,46 @@ class _BannerScreenState extends State<BannerScreen> {
                     ? displayWidth(context)
                     : displayWidth(context) / 4,
             height: 40,
-            color: greenLightShadeColor,
+            color: editButton ? purpleColor : greenShadeColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            onPressed: () {
-              pickImage();
-            },
+            onPressed: editButton
+                ? () {
+                    setState(() {
+                      showUploader = true;
+                    });
+                    updateFile(bannerId);
+                  }
+                : () {
+                    if (pickedFile != null) {
+                      setState(() {
+                        showUploader = true;
+                      });
+                      uploadFile();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Please select image to upload',
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.only(
+                            left: displayWidth(context) / 1.3,
+                            right: 50,
+                            bottom: 100,
+                          ),
+                          backgroundColor: mainColor,
+                        ),
+                      );
+                    }
+                  },
             child: Text(
-              "Pick Image",
-              style: TextStyle(
-                color: whiteColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          MaterialButton(
-            minWidth:
-                displayWidth(context) < 600 || displayWidth(context) < 1200
-                    ? displayWidth(context)
-                    : displayWidth(context) / 4,
-            height: 40,
-            color: mainColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            onPressed: () {
-              uploadFile();
-            },
-            child: Text(
-              "Upload Image",
+              editButton ? "Update Image" : "Upload Image",
               style: TextStyle(
                 color: whiteColor,
                 fontWeight: FontWeight.bold,
@@ -473,6 +500,59 @@ class _BannerScreenState extends State<BannerScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  buttons(DocumentSnapshot<Object?> documentSnapshot) {
+    return SizedBox(
+      width: 120,
+      child: Center(
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () {
+                deleteBannerData(
+                  documentSnapshot.id,
+                  documentSnapshot['Banner_image'],
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: mainShadeColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: FaIcon(
+                  FontAwesomeIcons.trashCan,
+                  color: whiteColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  editButton = true;
+                  imageUrl = documentSnapshot['Banner_image'];
+                  baseImage = documentSnapshot['Banner_image'];
+                  bannerId = documentSnapshot.id;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: greenShadeColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: FaIcon(
+                  FontAwesomeIcons.pen,
+                  color: whiteColor,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

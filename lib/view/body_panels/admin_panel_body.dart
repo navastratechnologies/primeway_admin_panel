@@ -24,50 +24,6 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
   final CollectionReference withDrawal =
       FirebaseFirestore.instance.collection('withdrawal_request');
 
-  Future<void> getUserCount() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      // log('user id is ${snapshot.docs.length}');
-      setState(() {
-        userCount = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  Future<void> getCoursesCount() async {
-    FirebaseFirestore.instance
-        .collection('courses')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      // log('user id is ${snapshot.docs.length}');
-      setState(() {
-        coursesCount = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  Future<void> getCollaborationCount() async {
-    FirebaseFirestore.instance
-        .collection('collaboration')
-        .get()
-        .then((QuerySnapshot snapshot) {
-      // log('user id is ${snapshot.docs.length}');
-      setState(() {
-        collaborationCount = '${snapshot.docs.length}';
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    getUserCount();
-    getCoursesCount();
-    getCollaborationCount();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -78,6 +34,7 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                 child: Column(
                   children: [
                     mainBody(),
+                    const SizedBox(height: 20),
                     secondaryBody(context),
                   ],
                 ),
@@ -879,7 +836,7 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
             Icon(
               icon,
               color: greenLightShadeColor,
-              size: 120,
+              size: displayWidth(context) < 1200 ? 80 : 120,
             ),
           ],
         ),

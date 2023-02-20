@@ -605,7 +605,7 @@ class _UserScreenState extends State<UserScreen> {
                                                               BorderRadius
                                                                   .circular(5),
                                                         ),
-                                                        child: SelectableText(
+                                                        child: Text(
                                                           documentSnapshot[
                                                                       'approval_status'] ==
                                                                   "approved"

@@ -86,7 +86,6 @@ class _CoursesPageState extends State<CoursesPage> {
                           ),
                         ),
                         child: Container(
-                          width: 300,
                           decoration: BoxDecoration(
                             color: whiteColor,
                             borderRadius: BorderRadius.circular(10),
@@ -102,76 +101,85 @@ class _CoursesPageState extends State<CoursesPage> {
                             children: [
                               Row(
                                 children: [
-                                  SizedBox(
-                                    height: 200,
-                                    width: 200,
-                                    child: Stack(
-                                      children: [
-                                        SizedBox(
+                                  displayWidth(context) < 600
+                                      ? const SizedBox()
+                                      : SizedBox(
                                           height: 200,
                                           width: 200,
-                                          child: Image.network(
-                                            streamSnapshot.data!.docs[index]
-                                                ['image'],
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        streamSnapshot.data!.docs[index]
-                                                    ['isInAffiliate'] ==
-                                                "false"
-                                            ? Container()
-                                            : Align(
-                                                alignment: Alignment.bottomLeft,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Container(
-                                                      height: 32,
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        color: purpleColor,
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                        ),
-                                                      ),
+                                          child: Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: 200,
+                                                width: 200,
+                                                child: Image.network(
+                                                  streamSnapshot.data!
+                                                      .docs[index]['image'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              streamSnapshot.data!.docs[index]
+                                                          ['isInAffiliate'] ==
+                                                      "false"
+                                                  ? Container()
+                                                  : Align(
+                                                      alignment:
+                                                          Alignment.bottomLeft,
                                                       child: Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
-                                                                .spaceAround,
+                                                                .end,
                                                         children: [
-                                                          Image.asset(
-                                                            'assets/affiliate.png',
-                                                            height: 20,
-                                                            width: 20,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 5),
-                                                          Text(
-                                                            "Is In Affiliate",
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: whiteColor,
+                                                          Container(
+                                                            height: 32,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(5),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  purpleColor,
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/affiliate.png',
+                                                                  height: 20,
+                                                                  width: 20,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 5),
+                                                                Text(
+                                                                  "Is In Affiliate",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        whiteColor,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                      ],
-                                    ),
-                                  ),
+                                            ],
+                                          ),
+                                        ),
                                   Padding(
                                     padding: const EdgeInsets.all(10),
                                     child: Column(
@@ -184,6 +192,86 @@ class _CoursesPageState extends State<CoursesPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            displayWidth(context) < 600
+                                                ? SizedBox(
+                                                    height: 200,
+                                                    width: 200,
+                                                    child: Stack(
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 200,
+                                                          width: 200,
+                                                          child: Image.network(
+                                                            streamSnapshot.data!
+                                                                    .docs[index]
+                                                                ['image'],
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                        streamSnapshot.data!.docs[
+                                                                        index][
+                                                                    'isInAffiliate'] ==
+                                                                "false"
+                                                            ? Container()
+                                                            : Align(
+                                                                alignment: Alignment
+                                                                    .bottomLeft,
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Container(
+                                                                      height:
+                                                                          32,
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              5),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color:
+                                                                            purpleColor,
+                                                                        borderRadius:
+                                                                            const BorderRadius.only(
+                                                                          topLeft:
+                                                                              Radius.circular(10),
+                                                                        ),
+                                                                      ),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceAround,
+                                                                        children: [
+                                                                          Image
+                                                                              .asset(
+                                                                            'assets/affiliate.png',
+                                                                            height:
+                                                                                20,
+                                                                            width:
+                                                                                20,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 5),
+                                                                          Text(
+                                                                            "Is In Affiliate",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: whiteColor,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
                                             Text(
                                               '${streamSnapshot.data!.docs[index]['name']}',
                                               style: const TextStyle(
@@ -419,8 +507,11 @@ class _CoursesPageState extends State<CoursesPage> {
                                             ),
                                           ],
                                         ),
+                                        const SizedBox(height: 10),
                                         Container(
-                                          width: 300,
+                                          width: displayWidth(context) < 600
+                                              ? 200
+                                              : 300,
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 10,
                                             horizontal: 20,
@@ -438,96 +529,144 @@ class _CoursesPageState extends State<CoursesPage> {
                                               ),
                                             ],
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EditCourseInfo(
-                                                        courseId: streamSnapshot
-                                                            .data!
-                                                            .docs[index]
-                                                            .id,
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              EditCourseInfo(
+                                                            courseId:
+                                                                streamSnapshot
+                                                                    .data!
+                                                                    .docs[index]
+                                                                    .id,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      'Edit',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
-                                                  );
-                                                },
-                                                child: Text(
-                                                  'Edit',
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 30,
-                                                width: 1,
-                                                decoration: BoxDecoration(
-                                                  color: whiteColor
-                                                      .withOpacity(0.4),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          UploadCoursesScreen(
-                                                        courseId: streamSnapshot
-                                                            .data!
-                                                            .docs[index]
-                                                            .id,
-                                                      ),
+                                                  Container(
+                                                    height: 30,
+                                                    width: 1,
+                                                    decoration: BoxDecoration(
+                                                      color: whiteColor
+                                                          .withOpacity(0.4),
                                                     ),
-                                                  );
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              UploadCoursesScreen(
+                                                            courseId:
+                                                                streamSnapshot
+                                                                    .data!
+                                                                    .docs[index]
+                                                                    .id,
+                                                          ),
+                                                        ),
+                                                      );
 
-                                                  log('Course id is : ${streamSnapshot.data!.docs[index].id}');
-                                                },
-                                                child: Text(
-                                                  'Chapters',
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: purpleColor,
-                                                    fontWeight: FontWeight.bold,
+                                                      log('Course id is : ${streamSnapshot.data!.docs[index].id}');
+                                                    },
+                                                    child: Text(
+                                                      'Chapters',
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: purpleColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 30,
-                                                width: 1,
-                                                decoration: BoxDecoration(
-                                                  color: whiteColor
-                                                      .withOpacity(0.4),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  course
-                                                      .doc(streamSnapshot
-                                                          .data!.docs[index].id)
-                                                      .update({
-                                                    'status': 'delete',
-                                                  });
-                                                },
-                                                child: const Text(
-                                                  'Delete',
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.bold,
+                                                  Container(
+                                                    height: 30,
+                                                    width: 1,
+                                                    decoration: BoxDecoration(
+                                                      color: whiteColor
+                                                          .withOpacity(0.4),
+                                                    ),
                                                   ),
-                                                ),
+                                                  displayWidth(context) < 600
+                                                      ? const SizedBox()
+                                                      : TextButton(
+                                                          onPressed: () {
+                                                            course
+                                                                .doc(streamSnapshot
+                                                                    .data!
+                                                                    .docs[index]
+                                                                    .id)
+                                                                .update({
+                                                              'status':
+                                                                  'delete',
+                                                            });
+                                                          },
+                                                          child: const Text(
+                                                            'Delete',
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                              color: Colors.red,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                ],
                                               ),
+                                              displayWidth(context) < 600
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          course
+                                                              .doc(
+                                                                  streamSnapshot
+                                                                      .data!
+                                                                      .docs[
+                                                                          index]
+                                                                      .id)
+                                                              .update({
+                                                            'status': 'delete',
+                                                          });
+                                                        },
+                                                        child: const Text(
+                                                          'Delete',
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors.red,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
                                             ],
                                           ),
                                         ),
