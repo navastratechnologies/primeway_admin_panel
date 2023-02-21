@@ -968,7 +968,11 @@ class _WalletScreenState extends State<WalletScreen> {
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
-                          width: displayWidth(context) / 3,
+                          width: displayWidth(context) < 600
+                              ? displayWidth(context) / 1.2
+                              : displayWidth(context) < 1200
+                                  ? displayWidth(context) / 3
+                                  : displayWidth(context) / 5,
                           child: Column(
                             children: [
                               Column(
@@ -977,7 +981,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Row(
                                     children: [
                                       const SizedBox(
-                                        width: 180,
+                                        width: 120,
                                         child: SelectableText(
                                           'User Id :',
                                           style: TextStyle(
@@ -987,7 +991,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       ),
                                       const SizedBox(width: 40),
                                       SizedBox(
-                                        width: 200,
+                                        width: 160,
                                         child: SelectableText(
                                           documentSnapshot['user_id'],
                                           style: TextStyle(
@@ -1008,7 +1012,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Row(
                                     children: [
                                       const SizedBox(
-                                        width: 180,
+                                        width: 120,
                                         child: SelectableText(
                                           'Username :',
                                           style: TextStyle(
@@ -1018,7 +1022,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       ),
                                       const SizedBox(width: 40),
                                       SizedBox(
-                                        width: 200,
+                                        width: 160,
                                         child: SelectableText(
                                           documentSnapshot['user_name'],
                                           style: TextStyle(
@@ -1039,7 +1043,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Row(
                                     children: [
                                       const SizedBox(
-                                        width: 180,
+                                        width: 120,
                                         child: SelectableText(
                                           'Available Wallet Balance :',
                                           style: TextStyle(
@@ -1051,7 +1055,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       '${documentSnapshot['wallet_balance']}'
                                               .isNotEmpty
                                           ? SizedBox(
-                                              width: 200,
+                                              width: 160,
                                               child: SelectableText(
                                                 '${documentSnapshot['wallet_balance']} P Coins',
                                                 style: TextStyle(
@@ -1062,7 +1066,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                               ),
                                             )
                                           : SizedBox(
-                                              width: 200,
+                                              width: 160,
                                               child: SelectableText(
                                                 '0 P Coins',
                                                 style: TextStyle(
@@ -1083,7 +1087,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Row(
                                     children: [
                                       const SizedBox(
-                                        width: 180,
+                                        width: 120,
                                         child: Text(
                                           'Add P Coin :',
                                           style: TextStyle(
@@ -1093,7 +1097,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       ),
                                       const SizedBox(width: 40),
                                       Container(
-                                        width: 200,
+                                        width: 160,
                                         height: 40,
                                         alignment: Alignment.centerLeft,
                                         padding: const EdgeInsets.symmetric(
