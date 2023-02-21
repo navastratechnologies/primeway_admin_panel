@@ -677,7 +677,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SelectableText(
-                            "All User's Wallet",
+                            "All transactions",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black.withOpacity(0.4),
@@ -716,7 +716,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Enter user id to search',
+                                hintText: 'Enter transaction id to search',
                                 hintStyle: TextStyle(
                                   color: Colors.black.withOpacity(0.5),
                                   fontWeight: FontWeight.w500,
@@ -734,7 +734,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             width: 120,
                             child: Center(
                               child: SelectableText(
-                                "User Id",
+                                "Transaction Id",
                                 style: TextStyle(
                                   color: whiteColor,
                                   fontWeight: FontWeight.bold,
@@ -800,7 +800,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     : FirebaseFirestore.instance
                         .collection('withdrawal_request')
                         .where(
-                          'user_id',
+                          'transaction_Id',
                           isEqualTo: transactionSearchId,
                         )
                         .snapshots(),
@@ -828,7 +828,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   ExpansionTile(
                                     tilePadding: const EdgeInsets.all(6),
                                     title: SelectableText(
-                                      documentSnapshot['user_Id'],
+                                      documentSnapshot['transaction_Id'],
                                       style: TextStyle(
                                         color: Colors.black.withOpacity(0.4),
                                         fontWeight: FontWeight.bold,
@@ -875,7 +875,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                           width: 120,
                                           child: Center(
                                             child: SelectableText(
-                                              documentSnapshot['user_id'],
+                                              documentSnapshot[
+                                                  'transaction_Id'],
                                               style: TextStyle(
                                                 color: Colors.black
                                                     .withOpacity(0.4),
@@ -901,8 +902,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                           width: 120,
                                           child: Center(
                                             child: SelectableText(
-                                              documentSnapshot[
-                                                  'wallet_balance'],
+                                              documentSnapshot['requested_for'],
                                               style: TextStyle(
                                                 color: Colors.black
                                                     .withOpacity(0.4),
