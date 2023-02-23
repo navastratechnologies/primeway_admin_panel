@@ -41,7 +41,6 @@ dependencies:
   firebase_storage:
   flutter:
     sdk: flutter
-  # flutter_charts:
   flutter_localizations:
     sdk: flutter
   flutter_rating_bar:

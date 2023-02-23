@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!--
+
+<head>
+  <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -14,65 +15,68 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-    <base href="$FLUTTER_BASE_HREF" />
+  <base href="$FLUTTER_BASE_HREF" />
 
-    <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta name="description" content="A new Flutter project." />
+  <meta charset="UTF-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta name="description" content="A new Flutter project." />
 
-    <!-- iOS meta tags & icons -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="primeway_admin_panel" />
-    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="primeway_admin_panel" />
+  <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
 
-    <title>primeway_admin_panel</title>
-    <link rel="manifest" href="manifest.json" />
+  <title>primeway_admin_panel</title>
+  <link rel="manifest" href="manifest.json" />
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script>
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
 
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBptZzJ5pzf26E5iEDGoL2Lr1SZpRXmXcM",
-        authDomain: "primeway-fa5e5.firebaseapp.com",
-        projectId: "primeway-fa5e5",
-        storageBucket: "primeway-fa5e5.appspot.com",
-        messagingSenderId: "782580474549",
-        appId: "1:782580474549:web:5398232848943852b7d4fc",
-        measurementId: "G-TM1G56MF74",
-      };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYjuZa-xQtcTX83kDatHuJNPTmDZGIyVg",
+      authDomain: "primeway-e0f3f.firebaseapp.com",
+      projectId: "primeway-e0f3f",
+      storageBucket: "primeway-e0f3f.appspot.com",
+      messagingSenderId: "836225855666",
+      appId: "1:836225855666:web:706ef5407b807571a3d9ab",
+      measurementId: "G-433C740BYM"
+    };
 
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-    </script>
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 
-    <script>
-      // The value below is injected by flutter build, do not touch.
-      var serviceWorkerVersion = null;
-    </script>
-    <!-- This script adds the flutter initialization JS code -->
-    <script src="flutter.js" defer></script>
-  </head>
-  <body>
-    <script>
-      window.addEventListener("load", function (ev) {
-        // Download main.dart.js
-        _flutter.loader
-          .loadEntrypoint({
-            serviceWorker: {
-              serviceWorkerVersion: serviceWorkerVersion,
-            },
-          })
-          .then(function (engineInitializer) {
-            return engineInitializer.initializeEngine();
-          })
-          .then(function (appRunner) {
-            return appRunner.runApp();
-          });
-      });
-    </script>
-  </body>
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = null;
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+
+<body>
+  <script>
+    window.addEventListener("load", function (ev) {
+      // Download main.dart.js
+      _flutter.loader
+        .loadEntrypoint({
+          serviceWorker: {
+            serviceWorkerVersion: serviceWorkerVersion,
+          },
+        })
+        .then(function (engineInitializer) {
+          return engineInitializer.initializeEngine();
+        })
+        .then(function (appRunner) {
+          return appRunner.runApp();
+        });
+    });
+  </script>
+</body>
+
 </html>
