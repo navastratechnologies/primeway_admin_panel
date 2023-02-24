@@ -1,39 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
-import 'package:primeway_admin_panel/view/affiliate_dashboard/affiliate_dashboard_panel.dart';
-import 'package:primeway_admin_panel/view/body_panels/course_panel_body.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/approved_course_screen.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/courses2.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/deleted_course_screen.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/live_course_screen.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/rejected_course_screen.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/unapproved_course_screen.dart';
+import 'package:primeway_admin_panel/view/body_panels/affiliate_panel_body.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
-class CourseDashboard extends StatefulWidget {
-  const CourseDashboard({super.key});
+class AffiliateDashboard extends StatefulWidget {
+  const AffiliateDashboard({super.key});
 
   @override
-  State<CourseDashboard> createState() => _CourseDashboardState();
+  State<AffiliateDashboard> createState() => _AffiliateDashboardState();
 }
 
-class _CourseDashboardState extends State<CourseDashboard> {
-  bool showDashboardPanel = true;
-  bool showLiveCourses = false;
-  bool showPendingCourses = false;
-  bool showApprovedCourses = false;
-  bool showRejectedCourses = false;
-  bool showUploadCourses = false;
-  bool showDeleteCourses = false;
+class _AffiliateDashboardState extends State<AffiliateDashboard> {
+  final CollectionReference user =
+      FirebaseFirestore.instance.collection('users');
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool showDashboardPanel = true;
+  bool showUsersPanel = false;
+  bool showWalletPanel = false;
+  bool showBannerPanel = false;
+  bool showCollaborationPanel = false;
+  bool showCreatorProgramPanel = false;
+  bool showFeedbackPanel = false;
+  bool showOtherRequestPanel = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: whiteColor,
+      // backgroundColor: whiteColor,
       drawer: Theme(
         data: Theme.of(context).copyWith(
           canvasColor: Colors.transparent,
@@ -128,28 +126,6 @@ class _CourseDashboardState extends State<CourseDashboard> {
                                 ),
                                 const SizedBox(width: 16),
                                 MaterialButton(
-                                  color: greenShadeColor,
-                                  minWidth: 50,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  onPressed: () {},
-                                  child: displayWidth(context) < 600
-                                      ? FaIcon(
-                                          FontAwesomeIcons.book,
-                                          color: whiteColor,
-                                          size: 14,
-                                        )
-                                      : Text(
-                                          'Course Panel',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: whiteColor,
-                                          ),
-                                        ),
-                                ),
-                                const SizedBox(width: 16),
-                                MaterialButton(
                                   color: whiteColor,
                                   minWidth: 50,
                                   shape: RoundedRectangleBorder(
@@ -160,27 +136,50 @@ class _CourseDashboardState extends State<CourseDashboard> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const AffiliateDashboard(),
+                                            const CourseDashboard(),
                                       ),
                                     );
                                   },
                                   child: displayWidth(context) < 600
                                       ? const FaIcon(
-                                          FontAwesomeIcons.usersGear,
+                                          FontAwesomeIcons.book,
                                           color: Colors.black,
                                           size: 14,
                                         )
                                       : const Text(
-                                          'Affiliate Panel',
+                                          'Course Panel',
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             color: Colors.black,
                                           ),
                                         ),
                                 ),
+                                const SizedBox(width: 16),
+                                MaterialButton(
+                                  color: greenShadeColor,
+                                  minWidth: 50,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  onPressed: () {},
+                                  child: displayWidth(context) < 600
+                                      ? FaIcon(
+                                          FontAwesomeIcons.usersGear,
+                                          color: whiteColor,
+                                          size: 14,
+                                        )
+                                      : Text(
+                                          'Affiliate Panel',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: whiteColor,
+                                          ),
+                                        ),
+                                ),
                               ],
                             ),
                           ),
+                          // const TopBar(),
                           MaterialButton(
                             onPressed: displayWidth(context) > 1200
                                 ? () {}
@@ -195,19 +194,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         ],
                       ),
                     ),
-                    showDeleteCourses
-                        ? const DeletedCourseScreen()
-                        : showUploadCourses
-                            ? const CoursesPage()
-                            : showRejectedCourses
-                                ? const RejectedCourseScreen()
-                                : showApprovedCourses
-                                    ? const ApprovedCourseScreen()
-                                    : showPendingCourses
-                                        ? const UnApprovedCourseScreen()
-                                        : showLiveCourses
-                                            ? const LiveCourseScreen()
-                                            : const CoursePanelBody(),
+                    const AffiliatePanelBody(),
                   ],
                 ),
               ),
@@ -234,6 +221,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
       ),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
@@ -311,7 +299,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
             ),
             const SizedBox(height: 70),
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.only(left: 6),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -333,12 +321,13 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = true;
-                        showApprovedCourses = false;
-                        showRejectedCourses = false;
-                        showUploadCourses = false;
-                        showLiveCourses = false;
-                        showPendingCourses = false;
-                        showDeleteCourses = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
@@ -362,7 +351,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showLiveCourses ? greenShadeColor : mainColor,
+                    color: showUsersPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -377,25 +366,26 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = false;
-                        showRejectedCourses = false;
-                        showUploadCourses = false;
-                        showLiveCourses = true;
-                        showPendingCourses = false;
-                        showDeleteCourses = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = true;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.stream,
-                          color: showLiveCourses
+                          Icons.person_rounded,
+                          color: showUsersPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Live Courses',
+                          'Users',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -406,7 +396,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showPendingCourses ? greenShadeColor : mainColor,
+                    color: showWalletPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -421,25 +411,26 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = false;
-                        showRejectedCourses = false;
-                        showUploadCourses = false;
-                        showLiveCourses = false;
-                        showPendingCourses = true;
-                        showDeleteCourses = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = true;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.pending_actions_outlined,
-                          color: showPendingCourses
+                          Icons.wallet,
+                          color: showWalletPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Un-Approved Courses',
+                          'Wallet',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -450,7 +441,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showApprovedCourses ? greenShadeColor : mainColor,
+                    color: showBannerPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -465,25 +456,26 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = true;
-                        showRejectedCourses = false;
-                        showUploadCourses = false;
-                        showLiveCourses = false;
-                        showPendingCourses = false;
-                        showDeleteCourses = false;
+                        showBannerPanel = true;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.thumb_up_alt,
-                          color: showApprovedCourses
+                          Icons.photo_library,
+                          color: showBannerPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Approved Courses',
+                          'Banners',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -494,7 +486,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showRejectedCourses ? greenShadeColor : mainColor,
+                    color: showCollaborationPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -509,25 +501,26 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = false;
-                        showRejectedCourses = true;
-                        showUploadCourses = false;
-                        showLiveCourses = false;
-                        showPendingCourses = false;
-                        showDeleteCourses = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = true;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.thumb_down_alt,
-                          color: showRejectedCourses
+                          Icons.groups,
+                          color: showCollaborationPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Rejected Courses',
+                          'Collabs',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -538,7 +531,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showUploadCourses ? greenShadeColor : mainColor,
+                    color:
+                        showCreatorProgramPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -553,25 +547,26 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = false;
-                        showRejectedCourses = false;
-                        showUploadCourses = true;
-                        showLiveCourses = false;
-                        showPendingCourses = false;
-                        showDeleteCourses = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = true;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.cloud_upload_rounded,
-                          color: showUploadCourses
+                          Icons.design_services,
+                          color: showCreatorProgramPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Upload Courses',
+                          'Categories',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -582,7 +577,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showDeleteCourses ? greenShadeColor : mainColor,
+                    color: showFeedbackPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -597,25 +592,71 @@ class _CourseDashboardState extends State<CourseDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showApprovedCourses = false;
-                        showRejectedCourses = false;
-                        showUploadCourses = false;
-                        showLiveCourses = false;
-                        showPendingCourses = false;
-                        showDeleteCourses = true;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = true;
+                        showOtherRequestPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.delete_rounded,
-                          color: showDeleteCourses
+                          Icons.question_answer_rounded,
+                          color: showFeedbackPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Delete Courses',
+                          'Feedbacks',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showOtherRequestPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.help_outline_rounded,
+                          color: showOtherRequestPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Requests',
                           style: TextStyle(
                             color: whiteColor,
                           ),

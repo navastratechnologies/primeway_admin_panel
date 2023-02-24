@@ -8,6 +8,7 @@ import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.da
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/other_requests_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/user_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/wallet_page.dart';
+import 'package:primeway_admin_panel/view/affiliate_dashboard/affiliate_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/body_panels/admin_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
@@ -103,8 +104,9 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                               children: [
                                 MaterialButton(
                                   color: greenShadeColor,
+                                  minWidth: 50,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   onPressed: () {},
                                   child: displayWidth(context) < 600
@@ -124,8 +126,9 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                                 const SizedBox(width: 16),
                                 MaterialButton(
                                   color: whiteColor,
+                                  minWidth: 50,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   onPressed: () {
                                     Navigator.push(
@@ -144,6 +147,36 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                                         )
                                       : const Text(
                                           'Course Panel',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                ),
+                                const SizedBox(width: 16),
+                                MaterialButton(
+                                  color: whiteColor,
+                                  minWidth: 50,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AffiliateDashboard(),
+                                      ),
+                                    );
+                                  },
+                                  child: displayWidth(context) < 600
+                                      ? const FaIcon(
+                                          FontAwesomeIcons.usersGear,
+                                          color: Colors.black,
+                                          size: 14,
+                                        )
+                                      : const Text(
+                                          'Affiliate Panel',
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             color: Colors.black,
