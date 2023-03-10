@@ -385,7 +385,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Users',
+                          'Affiliate Courses',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -430,7 +430,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Wallet',
+                          'Affiliate Users',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -451,19 +451,21 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                       ),
                     ),
                     onPressed: () {
-                      setState(() {
-                        if (displayWidth(context) < 1200) {
-                          Navigator.pop(context);
-                        }
-                        showDashboardPanel = false;
-                        showBannerPanel = true;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
-                        showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
-                      });
+                      setState(
+                        () {
+                          if (displayWidth(context) < 1200) {
+                            Navigator.pop(context);
+                          }
+                          showDashboardPanel = false;
+                          showBannerPanel = true;
+                          showCollaborationPanel = false;
+                          showCreatorProgramPanel = false;
+                          showUsersPanel = false;
+                          showWalletPanel = false;
+                          showFeedbackPanel = false;
+                          showOtherRequestPanel = false;
+                        },
+                      );
                     },
                     child: Row(
                       children: [
