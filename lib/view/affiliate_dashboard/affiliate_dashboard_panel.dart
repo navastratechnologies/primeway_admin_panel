@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
+import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_ranking_screen.dart';
 import 'package:primeway_admin_panel/view/body_panels/affiliate_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
@@ -21,12 +22,9 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
 
   bool showDashboardPanel = true;
   bool showUsersPanel = false;
-  bool showWalletPanel = false;
-  bool showBannerPanel = false;
-  bool showCollaborationPanel = false;
-  bool showCreatorProgramPanel = false;
-  bool showFeedbackPanel = false;
-  bool showOtherRequestPanel = false;
+  bool showCoursesPanel = false;
+  bool showEarningsPanel = false;
+  bool showRankingsPanel = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,7 +192,9 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ],
                       ),
                     ),
-                    const AffiliatePanelBody(),
+                    showRankingsPanel
+                        ? const AffiliateRankingScreen()
+                        : const AffiliatePanelBody(),
                   ],
                 ),
               ),
@@ -321,13 +321,10 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = true;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
                         showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
+                        showCoursesPanel = false;
+                        showEarningsPanel = false;
+                        showRankingsPanel = false;
                       });
                     },
                     child: Row(
@@ -366,13 +363,10 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
                         showUsersPanel = true;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
+                        showCoursesPanel = false;
+                        showEarningsPanel = false;
+                        showRankingsPanel = false;
                       });
                     },
                     child: Row(
@@ -385,7 +379,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Affiliate Courses',
+                          'Users',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -396,7 +390,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showWalletPanel ? greenShadeColor : mainColor,
+                    color: showCoursesPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -411,26 +405,23 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
                         showUsersPanel = false;
-                        showWalletPanel = true;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
+                        showCoursesPanel = true;
+                        showEarningsPanel = false;
+                        showRankingsPanel = false;
                       });
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.wallet,
-                          color: showWalletPanel
+                          Icons.book_rounded,
+                          color: showCoursesPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Affiliate Users',
+                          'Courses',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -441,7 +432,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showBannerPanel ? greenShadeColor : mainColor,
+                    color: showEarningsPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -457,27 +448,24 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                             Navigator.pop(context);
                           }
                           showDashboardPanel = false;
-                          showBannerPanel = true;
-                          showCollaborationPanel = false;
-                          showCreatorProgramPanel = false;
                           showUsersPanel = false;
-                          showWalletPanel = false;
-                          showFeedbackPanel = false;
-                          showOtherRequestPanel = false;
+                          showCoursesPanel = false;
+                          showEarningsPanel = true;
+                          showRankingsPanel = false;
                         },
                       );
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.photo_library,
-                          color: showBannerPanel
+                          Icons.currency_rupee_rounded,
+                          color: showEarningsPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Banners',
+                          'Earnings',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -488,7 +476,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showCollaborationPanel ? greenShadeColor : mainColor,
+                    color: showRankingsPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -498,167 +486,30 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                       ),
                     ),
                     onPressed: () {
-                      setState(() {
-                        if (displayWidth(context) < 1200) {
-                          Navigator.pop(context);
-                        }
-                        showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = true;
-                        showCreatorProgramPanel = false;
-                        showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
-                      });
+                      setState(
+                        () {
+                          if (displayWidth(context) < 1200) {
+                            Navigator.pop(context);
+                          }
+                          showDashboardPanel = false;
+                          showUsersPanel = false;
+                          showCoursesPanel = false;
+                          showEarningsPanel = false;
+                          showRankingsPanel = true;
+                        },
+                      );
                     },
                     child: Row(
                       children: [
                         Icon(
-                          Icons.groups,
-                          color: showCollaborationPanel
+                          Icons.military_tech_rounded,
+                          color: showRankingsPanel
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Collabs',
-                          style: TextStyle(
-                            color: whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  MaterialButton(
-                    elevation: 0,
-                    color:
-                        showCreatorProgramPanel ? greenShadeColor : mainColor,
-                    hoverColor: greenShadeColor,
-                    padding: const EdgeInsets.all(20),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        bottomLeft: Radius.circular(30),
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (displayWidth(context) < 1200) {
-                          Navigator.pop(context);
-                        }
-                        showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = true;
-                        showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = false;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.design_services,
-                          color: showCreatorProgramPanel
-                              ? greenSelectedColor
-                              : mainShadeColor,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Categories',
-                          style: TextStyle(
-                            color: whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  MaterialButton(
-                    elevation: 0,
-                    color: showFeedbackPanel ? greenShadeColor : mainColor,
-                    hoverColor: greenShadeColor,
-                    padding: const EdgeInsets.all(20),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        bottomLeft: Radius.circular(30),
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (displayWidth(context) < 1200) {
-                          Navigator.pop(context);
-                        }
-                        showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
-                        showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = true;
-                        showOtherRequestPanel = false;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.question_answer_rounded,
-                          color: showFeedbackPanel
-                              ? greenSelectedColor
-                              : mainShadeColor,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Feedbacks',
-                          style: TextStyle(
-                            color: whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  MaterialButton(
-                    elevation: 0,
-                    color: showOtherRequestPanel ? greenShadeColor : mainColor,
-                    hoverColor: greenShadeColor,
-                    padding: const EdgeInsets.all(20),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        bottomLeft: Radius.circular(30),
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (displayWidth(context) < 1200) {
-                          Navigator.pop(context);
-                        }
-                        showDashboardPanel = false;
-                        showBannerPanel = false;
-                        showCollaborationPanel = false;
-                        showCreatorProgramPanel = false;
-                        showUsersPanel = false;
-                        showWalletPanel = false;
-                        showFeedbackPanel = false;
-                        showOtherRequestPanel = true;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.help_outline_rounded,
-                          color: showOtherRequestPanel
-                              ? greenSelectedColor
-                              : mainShadeColor,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Requests',
+                          'Rankings',
                           style: TextStyle(
                             color: whiteColor,
                           ),

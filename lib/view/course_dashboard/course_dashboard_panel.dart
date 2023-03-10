@@ -623,6 +623,50 @@ class _CourseDashboardState extends State<CourseDashboard> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showDeleteCourses ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showApprovedCourses = false;
+                        showRejectedCourses = false;
+                        showUploadCourses = false;
+                        showLiveCourses = false;
+                        showPendingCourses = false;
+                        showDeleteCourses = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_rounded,
+                          color: showDeleteCourses
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Rankings',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
