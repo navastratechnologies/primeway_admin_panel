@@ -1,22 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:primeway_admin_panel/view/affiliate_dashboard/chart.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
-class AffiliatePanelBody extends StatefulWidget {
-  const AffiliatePanelBody({super.key});
+class AffiliatePanelBodyCourses extends StatefulWidget {
+  const AffiliatePanelBodyCourses({super.key});
 
   @override
-  State<AffiliatePanelBody> createState() => _AffiliatePanelBodyState();
+  State<AffiliatePanelBodyCourses> createState() =>
+      _AffiliatePanelBodyCoursesState();
 }
 
-class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
-  List<TransactionData> _transactions = [];
-
+class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
   var data = {};
   String userCount = '';
   String coursesCount = '';
@@ -43,27 +39,18 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
                   ],
                 ),
               )
-            : SingleChildScrollView(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    mainBody(),
-                  ],
-                ),
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  mainBody(),
+                ],
               ),
       ),
     );
   }
 
   mainBody() {
-    List<_SalesData> data = [
-      _SalesData('Jan', 35),
-      _SalesData('Feb', 28),
-      _SalesData('Mar', 34),
-      _SalesData('Apr', 32),
-      _SalesData('May', 40)
-    ];
     return Container(
       width: displayWidth(context) < 600 || displayWidth(context) < 1200
           ? displayWidth(context)
@@ -74,11 +61,8 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 30,
-          ),
           ResponsiveGridList(
-            horizontalGridSpacing: 15,
+            horizontalGridSpacing: 10,
             minItemWidth:
                 displayWidth(context) < 600 || displayWidth(context) < 1200
                     ? 200
@@ -89,100 +73,88 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
             ),
             children: [
               dashboardTile(
-                'users',
-                'All Affiliate Users',
-                Icons.person_pin,
-              ),
-              dashboardTile(
-                'courses',
-                'Affiliate Courses',
+                'All Affiliate Courses',
+                'All Affiliate Courses',
                 Icons.menu_book_rounded,
               ),
               dashboardTile(
-                'Earnings',
-                "Member's Earnings",
-                Icons.currency_rupee_rounded,
+                'Live Affiliate Courses',
+                'Live Affiliate Courses',
+                Icons.menu_book_rounded,
+              ),
+              dashboardTile(
+                'Paused Affiliate Courses',
+                "Paused Affiliate Courses",
+                Icons.menu_book_rounded,
               ),
             ],
           ),
           const SizedBox(height: 40),
           SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title: ChartTitle(text: 'Monthly User Ragistration'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'Affiliate Users',
-                          // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
-          SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title:
-                        ChartTitle(text: 'Monthly Affiliate Courses Uploded'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'affiliate Course upload',
-                          // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
-          SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title:
-                        ChartTitle(text: 'Monthly Affiliate members Earnings'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'P Coins Earn',
-                          // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
+            width: displayWidth(context) < 600 || displayWidth(context) < 1200
+                ? displayWidth(context)
+                : displayWidth(context) / 1.5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                displayWidth(context) < 600 || displayWidth(context) < 1200
+                    ? const SizedBox()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SelectableText(
+                            'Affiliate Courses :-',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black.withOpacity(0.4),
+                            ),
+                          ),
+                          Container(
+                            width: 400,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: TextFormField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                setState(() {
+                                  searchId = searchController.text;
+                                });
+                              },
+                              onEditingComplete: () {
+                                setState(() {
+                                  searchId = searchController.text;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter transaction id to search',
+                                hintStyle: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                const SizedBox(height: 10),
+                adminTabel(context),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -219,83 +191,147 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
               right: 20,
               bottom: 10,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: Center(
-                    child: SelectableText(
-                      "User Id",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+            child: displayWidth(context) < 600 || displayWidth(context) < 1200
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SelectableText(
+                        'Affiliate Courses :-',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: whiteColor,
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Center(
-                    child: SelectableText(
-                      "UserName",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: TextFormField(
+                          controller: searchController,
+                          onChanged: (value) {
+                            setState(() {
+                              searchId = searchController.text;
+                            });
+                          },
+                          onEditingComplete: () {
+                            setState(() {
+                              searchId = searchController.text;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Enter transaction id to search',
+                            hintStyle: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Center(
-                    child: SelectableText(
-                      "Transaction Id",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        child: Center(
+                          child: SelectableText(
+                            "Course Id",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Center(
-                    child: SelectableText(
-                      "Wallet Balance",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: SelectableText(
+                            "Course Name",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Center(
-                    child: SelectableText(
-                      "Requested For",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: SelectableText(
+                            "Uploaded By",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Center(
-                    child: SelectableText(
-                      "Status",
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: SelectableText(
+                            "Course Purchased",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: SelectableText(
+                            "Course Shared",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: SelectableText(
+                            "Affiliate Status",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 210,
+                        child: Center(
+                          child: SelectableText(
+                            "Action",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
           Container(
             padding: const EdgeInsets.all(10),
@@ -585,6 +621,71 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
                                                   ),
                                                 ),
                                               ),
+                                        SizedBox(
+                                          width: 210,
+                                          child: Center(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    color: greenLightShadeColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: SelectableText(
+                                                    "Make Live",
+                                                    style: TextStyle(
+                                                      color: whiteColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: SelectableText(
+                                                    "Paused",
+                                                    style: TextStyle(
+                                                      color: whiteColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    color: mainColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  child: SelectableText(
+                                                    "Remove",
+                                                    style: TextStyle(
+                                                      color: whiteColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
                                       ],
                                     ),
                                     const SizedBox(height: 2),
@@ -691,11 +792,4 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
       ),
     );
   }
-}
-
-class _SalesData {
-  _SalesData(this.year, this.sales);
-
-  final String year;
-  final double sales;
 }

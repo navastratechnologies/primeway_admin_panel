@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
+import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_courses.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_ranking_screen.dart';
 import 'package:primeway_admin_panel/view/body_panels/affiliate_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+
+import 'pages/affiliate_earning.dart';
+import 'pages/affiliate_users.dart';
 
 class AffiliateDashboard extends StatefulWidget {
   const AffiliateDashboard({super.key});
@@ -194,7 +198,13 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                     ),
                     showRankingsPanel
                         ? const AffiliateRankingScreen()
-                        : const AffiliatePanelBody(),
+                        : showCoursesPanel
+                            ? const AffiliatePanelBodyCourses()
+                            : showUsersPanel
+                                ? const AffiliatePanelBodyUsers()
+                                : showEarningsPanel
+                                    ? const AffiliatePanelBodyEarnings()
+                                    : const AffiliatePanelBody(),
                   ],
                 ),
               ),
@@ -379,7 +389,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Users',
+                          'Affiliate Users',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -421,7 +431,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Courses',
+                          'Affiliate Courses',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -465,7 +475,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Earnings',
+                          'Affiliate Earnings',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -509,7 +519,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Rankings',
+                          'Affiliate Rankings',
                           style: TextStyle(
                             color: whiteColor,
                           ),
