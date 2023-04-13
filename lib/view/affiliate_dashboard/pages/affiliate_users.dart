@@ -423,280 +423,502 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                 )
                               : Column(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                          width: 80,
-                                          child: Center(
-                                            child: documentSnapshot[
-                                                        'user_Id'] !=
-                                                    null
-                                                ? SelectableText(
-                                                    documentSnapshot['user_Id'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  )
-                                                : SelectableText(
-                                                    '',
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: const [
+                                                    Text("Earning Details"),
+                                                    Text("Rohit Rai"),
+                                                  ],
+                                                ),
+                                                content: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: const [
+                                                          SizedBox(
+                                                            width: 80,
+                                                            child:
+                                                                SelectableText(
+                                                              "Date",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child:
+                                                                  SelectableText(
+                                                                "Course Name",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child:
+                                                                  SelectableText(
+                                                                "Course Shared",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child:
+                                                                  SelectableText(
+                                                                "Amount credit",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 120,
+                                                            child: Center(
+                                                              child:
+                                                                  SelectableText(
+                                                                "Total Earnings",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      StreamBuilder<Object>(
+                                                          stream: null,
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            return Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 80,
+                                                                  child: Center(
+                                                                    child:
+                                                                        SelectableText(
+                                                                      "2/03/2023",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(0.4),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 120,
+                                                                  child: Center(
+                                                                    child:
+                                                                        SelectableText(
+                                                                      "insta users",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(0.4),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 120,
+                                                                  child: Center(
+                                                                    child:
+                                                                        SelectableText(
+                                                                      "100",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(0.4),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 120,
+                                                                  child: Center(
+                                                                    child:
+                                                                        SelectableText(
+                                                                      "2000",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(0.4),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 120,
+                                                                  child: Center(
+                                                                    child:
+                                                                        SelectableText(
+                                                                      "2000",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(0.4),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          }),
+                                                    ],
                                                   ),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: 80,
+                                            child: Center(
+                                              child: documentSnapshot[
+                                                          'user_Id'] !=
+                                                      null
+                                                  ? SelectableText(
+                                                      documentSnapshot[
+                                                          'user_Id'],
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                  : SelectableText(
+                                                      '',
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                            ),
                                           ),
-                                        ),
-                                        documentSnapshot['user_name'] != null
-                                            ? SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    documentSnapshot[
-                                                        'user_name'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    '',
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                        documentSnapshot['wallet_balance'] !=
-                                                null
-                                            ? SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    documentSnapshot[
-                                                        'wallet_balance'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    '',
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                        documentSnapshot['wallet_balance'] !=
-                                                null
-                                            ? SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    documentSnapshot[
-                                                        'wallet_balance'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    '',
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                        documentSnapshot['wallet_balance'] !=
-                                                null
-                                            ? SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    documentSnapshot[
-                                                        'wallet_balance'],
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: SelectableText(
-                                                    '',
-                                                    style: TextStyle(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                        documentSnapshot['status'] != null
-                                            ? SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color: documentSnapshot[
-                                                                  'status'] ==
-                                                              'approved'
-                                                          ? greenLightShadeColor
-                                                          : mainShadeColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
+                                          documentSnapshot['user_name'] != null
+                                              ? SizedBox(
+                                                  width: 120,
+                                                  child: Center(
                                                     child: SelectableText(
                                                       documentSnapshot[
-                                                                  'status'] ==
-                                                              'approved'
-                                                          ? "Approved"
-                                                          : "Pending",
+                                                          'user_name'],
                                                       style: TextStyle(
-                                                        color: whiteColor,
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              )
-                                            : SizedBox(
-                                                width: 120,
-                                                child: Center(
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
+                                                )
+                                              : SizedBox(
+                                                  width: 120,
+                                                  child: Center(
                                                     child: SelectableText(
                                                       '',
                                                       style: TextStyle(
-                                                        color: whiteColor,
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
+                                          documentSnapshot['wallet_balance'] !=
+                                                  null
+                                              ? SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      documentSnapshot[
+                                                          'wallet_balance'],
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      '',
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          documentSnapshot['wallet_balance'] !=
+                                                  null
+                                              ? SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      documentSnapshot[
+                                                          'wallet_balance'],
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      '',
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          documentSnapshot['wallet_balance'] !=
+                                                  null
+                                              ? SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      documentSnapshot[
+                                                          'wallet_balance'],
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: SelectableText(
+                                                      '',
+                                                      style: TextStyle(
+                                                        color: Colors.black
+                                                            .withOpacity(0.4),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          documentSnapshot['status'] != null
+                                              ? SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      decoration: BoxDecoration(
+                                                        color: documentSnapshot[
+                                                                    'status'] ==
+                                                                'approved'
+                                                            ? greenLightShadeColor
+                                                            : mainShadeColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child: SelectableText(
+                                                        documentSnapshot[
+                                                                    'status'] ==
+                                                                'approved'
+                                                            ? "Approved"
+                                                            : "Pending",
+                                                        style: TextStyle(
+                                                          color: whiteColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  width: 120,
+                                                  child: Center(
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child: SelectableText(
+                                                        '',
+                                                        style: TextStyle(
+                                                          color: whiteColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          SizedBox(
+                                            width: 170,
+                                            child: Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          greenLightShadeColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: SelectableText(
+                                                      "Approve",
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: SelectableText(
+                                                      "Reject",
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: mainColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: SelectableText(
+                                                      "Ban",
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                        SizedBox(
-                                          width: 170,
-                                          child: Center(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: greenLightShadeColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: SelectableText(
-                                                    "Approve",
-                                                    style: TextStyle(
-                                                      color: whiteColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.red,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: SelectableText(
-                                                    "Reject",
-                                                    style: TextStyle(
-                                                      color: whiteColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: mainColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: SelectableText(
-                                                    "Ban",
-                                                    style: TextStyle(
-                                                      color: whiteColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(height: 2),
                                     const Divider(),
