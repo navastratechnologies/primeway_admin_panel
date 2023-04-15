@@ -269,7 +269,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
         centerTitle: false,
         backgroundColor: greenShadeColor,
         title: const Text(
-          'Collaboration Details',
+          'Collaboration User Details',
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -292,27 +292,9 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            imageUploadData(),
-            logoimageUploadData(),
-            brandimageUploadData(),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: VerticalDivider(
-            thickness: 1.2,
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.05),
-          ),
-        ),
         Expanded(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            textFieldWithData(),
-            const SizedBox(height: 20),
             Expanded(
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -334,7 +316,6 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        imageUploadData(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: VerticalDivider(
@@ -347,937 +328,13 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
         Expanded(
           child: Column(
             children: [
-              textFieldWithData(),
+              datacount(),
               const SizedBox(height: 20),
-              textFieldWithData(),
+              dataofuser(),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  imageUploadData() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 10,
-        right: 10,
-      ),
-      child: Column(
-        children: [
-          DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(12),
-            padding: const EdgeInsets.all(6),
-            color: greenShadeColor,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        imageController.text,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
-                )),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Collabration Image',
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.4),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  brandimageUploadData() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 10,
-        right: 10,
-      ),
-      child: Column(
-        children: [
-          DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(12),
-            padding: const EdgeInsets.all(6),
-            color: greenShadeColor,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        brandlogoController.text,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
-                )),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Collabration Brand Logo',
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.4),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  logoimageUploadData() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 10,
-        right: 10,
-      ),
-      child: Column(
-        children: [
-          DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(12),
-            padding: const EdgeInsets.all(6),
-            color: greenShadeColor,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        logoController.text,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
-                )),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Collabration Logo',
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.4),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  userdetail() {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: whiteColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: elevationColor,
-              blurRadius: 10,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: greenShadeColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Collaborations :-',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: whiteColor,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const CollaborationDetailsScreen(),
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.purple,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Text(
-                          'Add New Collaborations',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: whiteColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    bottom: 10,
-                  ),
-                  child: SizedBox(
-                    // width: displayWidth(context) / 1.4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              "Id",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Center(
-                            child: Text(
-                              "Brand logo",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Center(
-                            child: Text(
-                              "logo",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Center(
-                            child: Text(
-                              "Image",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Collaboration Title",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Required Followers",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Language",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Categories",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Collaboration type",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: Center(
-                            child: Text(
-                              "Collaboration type discription",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.4),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Divider(),
-                SizedBox(
-                  height: displayHeight(context) / 1.95,
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context)
-                        .copyWith(scrollbars: false),
-                    child: StreamBuilder(
-                        stream: collaboration.snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                          if (streamSnapshot.hasData) {
-                            return ListView.builder(
-                              itemCount: streamSnapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                // log("lenght is ${streamSnapshot.data!.docs.length}");
-                                final DocumentSnapshot documentSnapshot =
-                                    streamSnapshot.data!.docs[index];
-                                return Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: InkWell(
-                                        onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                CollabUserScreen(
-                                              docId: documentSnapshot.id,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              width: 80,
-                                              child: Center(
-                                                child: Text(
-                                                  "${index.toString()}. ",
-                                                  style: TextStyle(
-                                                    color: Colors.black
-                                                        .withOpacity(0.4),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              height: 80,
-                                              child: Center(
-                                                child: Image.network(
-                                                  documentSnapshot['image'],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              height: 80,
-                                              child: Center(
-                                                child: Image.network(
-                                                  documentSnapshot['logo'],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              height: 80,
-                                              child: Center(
-                                                child: Image.network(
-                                                  documentSnapshot[
-                                                      'brand_logo'],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Text(
-                                                documentSnapshot['titles'],
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      documentSnapshot[
-                                                          'required_followers_from'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "to",
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      documentSnapshot[
-                                                          'required_followers_to'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Text(
-                                                documentSnapshot['language'],
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Text(
-                                                documentSnapshot['categories'],
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Text(
-                                                documentSnapshot[
-                                                    'collaboration_type'],
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 120,
-                                              child: Text(
-                                                documentSnapshot[
-                                                    'collaboration_type_discription'],
-                                                style: TextStyle(
-                                                  color: Colors.black
-                                                      .withOpacity(0.4),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const Divider(),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                          return Container();
-                        }),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  textFieldWithData() {
-    return Container(
-      decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: mainColor.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: ResponsiveGridList(
-        horizontalGridSpacing: 30,
-        horizontalGridMargin: 10,
-        verticalGridMargin: 20,
-        verticalGridSpacing: 30,
-        minItemWidth: 200,
-        maxItemsPerRow: 5,
-        listViewBuilderOptions: ListViewBuilderOptions(
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-        ),
-        children: [
-          textfieldWithLabelWidget(
-            'Collaboration Title',
-            titleNameController,
-            'Titles',
-          ),
-          textfieldWithLabelWidget(
-            'Language',
-            languageController,
-            'Language of the Collaboration',
-          ),
-          textfieldWithLabelWidget(
-            'Collaboration Categories',
-            categories,
-            'Collaboration Categories',
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Required Followers"),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        // vertical: 5,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: mainColor.withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: requiredfollowerfromController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "From",
-                          hintStyle: TextStyle(
-                            color: Colors.black.withOpacity(0.2),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        // vertical: 5,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: whiteColor,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: mainColor.withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: requiredfollowertoController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "To",
-                          hintStyle: TextStyle(
-                            color: Colors.black.withOpacity(0.2),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          textfieldWithLabelWidget(
-            'Additional Requirements',
-            additionalrequirement,
-            'Additional Requirements',
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Collaboration type"),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                ),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainColor.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: DropdownButton<String>(
-                  underline: Container(),
-                  isExpanded: true,
-                  borderRadius: BorderRadius.circular(10),
-                  value: dropdownValue,
-                  onChanged: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dropdownValue = value!;
-                      collaborationtype.text = value;
-                    });
-                  },
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Publish Collaboration ?',
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Radio(
-                    value: '3',
-                    groupValue: draft,
-                    onChanged: (value) {
-                      setState(() {
-                        draft = value.toString();
-                      });
-                    },
-                  ),
-                  Text(
-                    'Draft',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 55,
-                  ),
-                  Radio(
-                    value: '1',
-                    groupValue: draft,
-                    onChanged: (value) {
-                      setState(() {
-                        draft = value.toString();
-                      });
-                    },
-                  ),
-                  Text(
-                    'Published',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                'Requirment type',
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Radio(
-                    value: 'youtube',
-                    groupValue: requirment_type,
-                    onChanged: (value) {
-                      setState(() {
-                        requirment_type = value.toString();
-                      });
-                    },
-                  ),
-                  Text(
-                    'youtube',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 55,
-                  ),
-                  Radio(
-                    value: 'insta',
-                    groupValue: requirment_type,
-                    onChanged: (value) {
-                      setState(() {
-                        requirment_type = value.toString();
-                      });
-                    },
-                  ),
-                  Text(
-                    'Instagram',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.3),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Additional Detail',
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.5),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'view Guidelines',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 55,
-                  ),
-                  Text(
-                    'view Deliverable',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Collaboration type discription"),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  // vertical: 5,
-                  horizontal: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainColor.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  maxLines: 5,
-                  controller: collaborationtypediscription,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Collaboration type discription",
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Description"),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  // vertical: 5,
-                  horizontal: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: mainColor.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  maxLines: 5,
-                  controller: collaborationDescriptionController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Description of the Collaboration",
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.2),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
@@ -1315,97 +372,81 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                   children: [
                     const SizedBox(
                       width: 80,
-                      child: Center(
-                        child: Text(
-                          "Id",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "Id",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 100,
-                      child: Center(
-                        child: Text(
-                          "Image",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 100,
-                      child: Center(
-                        child: Text(
-                          "Name",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 100,
-                      child: Center(
-                        child: Text(
-                          "Number",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "Image",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 120,
-                      child: Center(
-                        child: Text(
-                          "Task Uploaded",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "User Name",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 120,
-                      child: Center(
-                        child: Text(
-                          "Task verified",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "Mobile Number",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 120,
-                      child: Center(
-                        child: Text(
-                          "View_brief",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "Task Uploaded",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(
                       width: 120,
-                      child: Center(
-                        child: Text(
-                          "Date And Time",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        "Task verified",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 120,
+                      child: Text(
+                        "View_brief",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 120,
+                      child: Text(
+                        "Date And Time",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -1434,93 +475,191 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                                 streamSnapshot.data!.docs[index];
                             return Padding(
                               padding: const EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 80,
-                                    child: Center(
+                              child: InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: const [
+                                              Text("Tast Details"),
+                                              Text("Rohit Rai"),
+                                            ],
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: const [
+                                                    SizedBox(
+                                                      width: 80,
+                                                      child: SelectableText(
+                                                        "Date",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: SelectableText(
+                                                          "Course Name",
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: SelectableText(
+                                                          "Course Shared",
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: SelectableText(
+                                                          "Amount credit",
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: Center(
+                                                        child: SelectableText(
+                                                          "Total Earnings",
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Center(
+                                        child: Text(
+                                          "${index.toString()}. ",
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.4),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      height: 80,
+                                      child: Center(
+                                        child: Image.network(
+                                          documentSnapshot['profile_pic'],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 120,
                                       child: Text(
-                                        "${index.toString()}. ",
+                                        documentSnapshot['name'],
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.4),
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 100,
-                                    height: 80,
-                                    child: Center(
-                                      child: Image.network(
-                                        documentSnapshot['profile_pic'],
+                                    SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        documentSnapshot['number'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['name'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        documentSnapshot['task_uploaded'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['number'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        documentSnapshot['task_verified'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['task_uploaded'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        documentSnapshot['view_brief'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['task_verified'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 120,
+                                      child: Text(
+                                        documentSnapshot['date_time'],
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.4),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['view_brief'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 120,
-                                    child: Text(
-                                      documentSnapshot['date_time'],
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.4),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const Divider(),
-                                ],
+                                    const Divider(),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -1539,7 +678,6 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
   datacount() {
     return Container(
       width: 400,
-      height: 500,
       decoration: BoxDecoration(
         color: whiteColor,
         borderRadius: BorderRadius.circular(20),
@@ -1588,12 +726,69 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
             ),
             SizedBox(
               width: 400,
-              height: displayHeight(context) / 2.75,
               child: Column(
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
                   const SizedBox(
                     height: 50,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          'Total Task',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("collaboration")
+                                  .doc(widget.docId)
+                                  .collection("deliverables")
+                                  .snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                                if (streamSnapshot.hasData) {
+                                  return Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${streamSnapshot.data!.docs.length}',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const SizedBox(
+                                  width: 150,
+                                  height: 50,
+                                  child: Text(
+                                    ' 0',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     children: [
