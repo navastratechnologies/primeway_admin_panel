@@ -8,6 +8,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -60,6 +61,7 @@ class _CollaborationDetailsScreenState
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
   TextEditingController additionalrequirement = TextEditingController();
+  TextEditingController duration = TextEditingController();
   String instructionText = '';
   String instruction = 'text';
 
@@ -240,6 +242,7 @@ class _CollaborationDetailsScreenState
       'status': draft,
       'requirement_type': requirment_type,
       'instructions': instructionText,
+      'duration': duration.text,
     }).then((value) {
       Navigator.push(
         context,
@@ -1249,6 +1252,45 @@ class _CollaborationDetailsScreenState
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Duration"),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  // vertical: 5,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: duration,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "In Days",
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.2),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

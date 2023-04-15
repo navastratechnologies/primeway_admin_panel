@@ -569,8 +569,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'titles'],
                                                                   style:
@@ -596,7 +595,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                                         MainAxisAlignment
                                                                             .spaceBetween,
                                                                     children: [
-                                                                      SelectableText(
+                                                                      Text(
                                                                         documentSnapshot[
                                                                             'required_followers_from'],
                                                                         style:
@@ -608,7 +607,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                                               FontWeight.bold,
                                                                         ),
                                                                       ),
-                                                                      SelectableText(
+                                                                      Text(
                                                                         "to",
                                                                         style:
                                                                             TextStyle(
@@ -619,7 +618,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                                               FontWeight.bold,
                                                                         ),
                                                                       ),
-                                                                      SelectableText(
+                                                                      Text(
                                                                         documentSnapshot[
                                                                             'required_followers_to'],
                                                                         style:
@@ -637,8 +636,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'language'],
                                                                   style:
@@ -655,8 +653,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'categories'],
                                                                   style:
@@ -673,8 +670,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'collaboration_type'],
                                                                   style:
@@ -691,8 +687,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'collaboration_type_discription'],
                                                                   style:
@@ -709,8 +704,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 150,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'descreption'],
                                                                   maxLines: 2,
@@ -728,8 +722,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                                                               ),
                                                               SizedBox(
                                                                 width: 120,
-                                                                child:
-                                                                    SelectableText(
+                                                                child: Text(
                                                                   documentSnapshot[
                                                                       'additional_requirements'],
                                                                   style:
@@ -896,7 +889,7 @@ class _CollaborationScreenState extends State<CollaborationScreen> {
                   builder:
                       (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                     if (streamSnapshot.hasData) {
-                      return SelectableText(
+                      return Text(
                         streamSnapshot.data!.docs.length.toString(),
                         style: TextStyle(
                           fontSize: 50,

@@ -39,14 +39,14 @@ class _ApprovedCourseScreenState extends State<ApprovedCourseScreen> {
     FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
-        .update({'status': 'live'});
+        .update({'islive': 'true'});
   }
 
   Future<void> deleteCoursesStatus(courseId) async {
     FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
-        .update({'status': 'delete'});
+        .update({'status': 'delete', "islive": "false"});
   }
 
   @override
@@ -471,19 +471,29 @@ class _ApprovedCourseScreenState extends State<ApprovedCourseScreen> {
   Row buttons(DocumentSnapshot<Object?> documentSnapshot) {
     return Row(
       children: [
-        MaterialButton(
-          color: greenShadeColor,
-          onPressed: () {
-            liveCoursesStatus(documentSnapshot.id);
-          },
-          child: Text(
-            'Live This ',
-            style: TextStyle(
-              color: whiteColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        documentSnapshot['islive'] == 'true'
+            ? SizedBox(
+                child: Text(
+                  'Live This cc',
+                  style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : MaterialButton(
+                color: greenShadeColor,
+                onPressed: () {
+                  liveCoursesStatus(documentSnapshot.id);
+                },
+                child: Text(
+                  'Live This ',
+                  style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
         const SizedBox(width: 5),
         IconButton(
           padding: EdgeInsets.zero,

@@ -17,8 +17,9 @@ class _LiveCourseScreenState extends State<LiveCourseScreen> {
   TextEditingController searchController = TextEditingController();
   String searchId = '';
 
-  Query<Map<String, dynamic>> courses =
-      FirebaseFirestore.instance.collection('courses');
+  Query<Map<String, dynamic>> courses = FirebaseFirestore.instance
+      .collection('courses')
+      .where('islive', isEqualTo: 'true');
 
   updateCoursesStatus(courseId, status) async {
     if (courseId != null && status != null) {

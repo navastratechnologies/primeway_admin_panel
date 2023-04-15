@@ -49,26 +49,32 @@ class _WalletScreenState extends State<WalletScreen> {
         .update({'status': 'completed'});
   }
 
-  Future<void> addPcoins(id, walletBalance) async {
-    int totalPCoins = int.parse(addPcoin.text) + int.parse(walletBalance);
-    FirebaseFirestore.instance.collection('wallet').doc(id).update(
-      {
-        'wallet_balance': totalPCoins.toString(),
-      },
-    );
+  Future<void> addPcoins(
+    id,
+    walletBalance,
+  ) async {
+    double totalPCoins =
+        double.parse(addPcoin.text) + double.parse(walletBalance);
+    await FirebaseFirestore.instance.collection('wallet').doc(id).update({
+      'wallet_balance': totalPCoins.toStringAsFixed(2),
+    });
     setState(() {
       addPcoin.clear();
     });
   }
 
-  Future<void> minPcoins(id, walletBalance) async {
-    if (int.parse(walletBalance) > int.parse(minPcoin.text)) {
-      int totalPCoins = int.parse(walletBalance) - int.parse(minPcoin.text);
-      FirebaseFirestore.instance.collection('wallet').doc(id).update(
-        {
-          'wallet_balance': totalPCoins.toString(),
-        },
-      );
+  Future<void> minPcoins(
+    String id,
+    String walletBalance,
+  ) async {
+    double walletBalanceValue = double.parse(walletBalance);
+    double minPcoinValueValue = double.parse(minPcoin.text);
+
+    if (walletBalanceValue >= minPcoinValueValue) {
+      double totalPCoins = walletBalanceValue - minPcoinValueValue;
+      await FirebaseFirestore.instance.collection('wallet').doc(id).update({
+        'wallet_balance': totalPCoins.toStringAsFixed(2),
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -76,6 +82,7 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
       );
     }
+
     setState(() {
       minPcoin.clear();
     });
@@ -1339,7 +1346,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                       documentSnapshot['wallet_balance']);
                                   Navigator.pop(context);
                                 },
-                                child: SelectableText(
+                                child: Text(
                                   'Deduct P Coins',
                                   style: TextStyle(
                                     color: whiteColor,

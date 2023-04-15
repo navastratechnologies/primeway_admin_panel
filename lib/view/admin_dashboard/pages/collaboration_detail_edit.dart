@@ -57,6 +57,8 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
   TextEditingController additionalrequirement = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
+  TextEditingController duration = TextEditingController();
+
   // ignore: non_constant_identifier_names
   String requirment_type = 'requirment_type';
   String instructionText = '';
@@ -221,8 +223,8 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         .collection('collaboration')
         .doc(widget.docId)
         .update({
-      'image': url.toString(),
-      'brand_logo': logo,
+      'image': pickedFile != null ? url.toString() : imageController.text,
+      'brand_logo': pickedlogo != null ? logo : brandlogoController.text,
       'categories':
           selectedItems.toString().replaceAll("[", '').replaceAll("]", ''),
       'collaboration_type': collaborationtype.text,
@@ -237,6 +239,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
       'status': draft,
       'requirement_type': requirment_type,
       'instructions': instructionText,
+      'duration': duration.text,
     });
   }
 
@@ -265,6 +268,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
         additionalrequirement.text = value.get("additional_requirements");
         requirment_type = value.get("requirement_type");
         instructionText = value.get("instructions");
+        duration.text = value.get("duration");
         draft = value.get("status");
         controller.setText(
           value.get('instructions'),
@@ -352,10 +356,7 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                   collaborationDescriptionController.text.isNotEmpty &&
                   requiredfollowerfromController.text.isNotEmpty &&
                   requiredfollowertoController.text.isNotEmpty &&
-                  titleNameController.text.isNotEmpty &&
-                  pickedFile != null &&
-                  pickedlogoimage != null &&
-                  pickedlogo != null) {
+                  titleNameController.text.isNotEmpty) {
                 uploadlogoimage();
                 Navigator.pop(context);
               } else {
@@ -1179,6 +1180,45 @@ class _CollaborationeditScreenState extends State<CollaborationeditScreen> {
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Duration"),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  // vertical: 5,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainColor.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: duration,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "In Days",
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.2),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
