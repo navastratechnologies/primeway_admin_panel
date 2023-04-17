@@ -62,6 +62,8 @@ class _CollaborationDetailsScreenState
   TextEditingController categories = TextEditingController();
   TextEditingController additionalrequirement = TextEditingController();
   TextEditingController duration = TextEditingController();
+  TextEditingController collaborationPayoutController =
+      TextEditingController(text: '0');
   String instructionText = '';
   String instruction = 'text';
 
@@ -243,6 +245,7 @@ class _CollaborationDetailsScreenState
       'requirement_type': requirment_type,
       'instructions': instructionText,
       'duration': duration.text,
+      'payout': collaborationPayoutController.text,
     }).then((value) {
       Navigator.push(
         context,
@@ -863,8 +866,9 @@ class _CollaborationDetailsScreenState
               const SizedBox(
                 height: 10,
               ),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     child: DropdownButton<String>(
@@ -1065,6 +1069,40 @@ class _CollaborationDetailsScreenState
                   }).toList(),
                 ),
               ),
+              const SizedBox(height: 10),
+              collaborationtype.text == 'paid'
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        // vertical: 5,
+                        horizontal: 30,
+                      ),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: mainColor.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: TextFormField(
+                        controller: collaborationPayoutController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter Payout Amount Here',
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.2),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
           Column(
