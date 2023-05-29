@@ -2,18 +2,18 @@
 
 import 'dart:developer';
 import 'dart:io';
+
 // import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:primeway_admin_panel/controller/send_notification_controller.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'collaboration_detail.dart';
 
 const List<String> list = <String>['paid', 'Barter'];
 
@@ -49,6 +49,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
   TextEditingController additionalrequirement = TextEditingController();
   TextEditingController collaborationtype = TextEditingController(text: "paid");
   TextEditingController categories = TextEditingController();
+  TextEditingController payoutController = TextEditingController();
   String requirment_type = 'requirment_type';
   String logoimage = "";
   String logo = "";
@@ -477,99 +478,11 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                               padding: const EdgeInsets.all(16),
                               child: InkWell(
                                 onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: const [
-                                              Text("Tast Details"),
-                                              Text("Rohit Rai"),
-                                            ],
-                                          ),
-                                          content: SingleChildScrollView(
-                                            child: Column(
-                                              children: [
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: const [
-                                                    SizedBox(
-                                                      width: 80,
-                                                      child: SelectableText(
-                                                        "Date",
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: SelectableText(
-                                                          "Course Name",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: SelectableText(
-                                                          "Course Shared",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: SelectableText(
-                                                          "Amount credit",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: Center(
-                                                        child: SelectableText(
-                                                          "Total Earnings",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      });
+                                  internalCollabUserDetails(
+                                    context,
+                                    documentSnapshot['number'],
+                                    documentSnapshot['name'],
+                                  );
                                 },
                                 child: Row(
                                   mainAxisAlignment:
@@ -657,7 +570,6 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                                         ),
                                       ),
                                     ),
-                                    const Divider(),
                                   ],
                                 ),
                               ),
@@ -673,6 +585,564 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
         ),
       ),
     );
+  }
+
+  internalCollabUserDetails(context, userNumber, userName) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              contentPadding: const EdgeInsets.all(10),
+              content: SizedBox(
+                width: displayWidth(context) / 2,
+                height: displayHeight(context),
+                child: Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: greenLightShadeColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Total Tasks',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: whiteColor,
+                                          ),
+                                        ),
+                                        StreamBuilder(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('collaboration')
+                                              .doc(widget.docId)
+                                              .collection('deliverables')
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Text(
+                                                snapshot.data!.docs.length
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: whiteColor,
+                                                  fontSize: 70,
+                                                ),
+                                              );
+                                            }
+                                            return Text(
+                                              '0',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: whiteColor,
+                                                fontSize: 70,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: greenLightShadeColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Tasks Completed',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: whiteColor,
+                                          ),
+                                        ),
+                                        StreamBuilder(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('collaboration')
+                                              .doc(widget.docId)
+                                              .collection('users')
+                                              .doc(userNumber)
+                                              .collection('tasks')
+                                              .where('status',
+                                                  isEqualTo: 'uploaded')
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Text(
+                                                snapshot.data!.docs.length
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: whiteColor,
+                                                  fontSize: 70,
+                                                ),
+                                              );
+                                            }
+                                            return Text(
+                                              '0',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: whiteColor,
+                                                fontSize: 70,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 600,
+                              child: StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection('collaboration')
+                                    .doc(widget.docId)
+                                    .collection('users')
+                                    .doc(userNumber)
+                                    .collection('tasks')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ListView.builder(
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        DocumentSnapshot taskSnapshot =
+                                            snapshot.data!.docs[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ExpansionTile(
+                                            title: Text(
+                                              taskSnapshot['title'],
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      height: 200,
+                                                      width: 200,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10),
+                                                      decoration: BoxDecoration(
+                                                        color: whiteColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: mainColor
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius: 10,
+                                                            spreadRadius: 1,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child:
+                                                          taskSnapshot['task']
+                                                                  .toString()
+                                                                  .isEmpty
+                                                              ? const Center(
+                                                                  child: Text(
+                                                                    'Task Not Uploaded yet',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              : Image.network(
+                                                                  taskSnapshot[
+                                                                      'task'],
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                    ),
+                                                    const SizedBox(width: 20),
+                                                    MaterialButton(
+                                                      onPressed: () {
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'collaboration')
+                                                            .doc(widget.docId)
+                                                            .collection('users')
+                                                            .doc(userNumber)
+                                                            .collection('tasks')
+                                                            .doc(
+                                                                taskSnapshot.id)
+                                                            .update(
+                                                          {
+                                                            'status':
+                                                                'verified',
+                                                          },
+                                                        );
+                                                      },
+                                                      color:
+                                                          greenLightShadeColor,
+                                                      child: Text(
+                                                        'Approve Task',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: whiteColor,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 20),
+                                                    MaterialButton(
+                                                      onPressed: () {
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'collaboration')
+                                                            .doc(widget.docId)
+                                                            .collection('users')
+                                                            .doc(userNumber)
+                                                            .collection('tasks')
+                                                            .doc(
+                                                                taskSnapshot.id)
+                                                            .update(
+                                                          {
+                                                            'status':
+                                                                'rejected',
+                                                            'task': '',
+                                                          },
+                                                        );
+                                                      },
+                                                      color: mainColor,
+                                                      child: Text(
+                                                        'Reject Task',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: whiteColor,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MaterialButton(
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('collaboration')
+                                    .doc(widget.docId)
+                                    .get()
+                                    .then(
+                                  (value) {
+                                    log('payment is ${value.get('payout')}');
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(userNumber)
+                                        .get()
+                                        .then(
+                                      (value1) {
+                                        FirebaseFirestore.instance
+                                            .collection('notifications')
+                                            .add(
+                                          {
+                                            'date_time': '',
+                                            'message':
+                                                'Congrats! You have successfully completed all the tasks of the collaboration that you applied and received Rs.${value.get('payout')} in your wallet',
+                                            'number': userNumber.toString(),
+                                            'name': userName.toString(),
+                                            'pic': value1.get('profile_pic'),
+                                          },
+                                        );
+                                        FirebaseFirestore.instance
+                                            .collection('wallet')
+                                            .doc(userNumber)
+                                            .get()
+                                            .then(
+                                          (value3) {
+                                            var wBal = double.parse(value3
+                                                .get('wallet_balance')
+                                                .toString());
+                                            var totalWBal = wBal +
+                                                double.parse(
+                                                  value.get('payout'),
+                                                );
+                                            log('wal bal is $wBal $totalWBal');
+                                            FirebaseFirestore.instance
+                                                .collection('wallet')
+                                                .doc(userNumber)
+                                                .update(
+                                              {
+                                                'wallet_balance':
+                                                    totalWBal.toString(),
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+
+                                    FirebaseFirestore.instance
+                                        .collection('user_token')
+                                        .doc(userNumber)
+                                        .get()
+                                        .then(
+                                      (value2) {
+                                        sendPushMessage(
+                                          value2.get('token'),
+                                          'You have successfully completed all the tasks of the collaboration that you applied and received Rs.${value.get('payout')} in your wallet',
+                                          'Congrats!',
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              color: greenLightShadeColor,
+                              padding: const EdgeInsets.all(20),
+                              child: Text(
+                                'Approve and Send Payment',
+                                style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 30),
+                            MaterialButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return AlertDialog(
+                                          title: Container(
+                                            width: displayWidth(context) / 3,
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: greenLightShadeColor,
+                                            ),
+                                            child: Text(
+                                              'Send Custom Payment',
+                                              style: TextStyle(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          titlePadding: EdgeInsets.zero,
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 40,
+                                          ),
+                                          content: TextFormField(
+                                            controller: payoutController,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                            ],
+                                            decoration: const InputDecoration(
+                                              hintText:
+                                                  'Enter Custom Payout Here',
+                                            ),
+                                          ),
+                                          actions: [
+                                            MaterialButton(
+                                              color: mainColor,
+                                              onPressed: () => setState(
+                                                () => payoutController.clear(),
+                                              ),
+                                              child: Text(
+                                                'Clear',
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            MaterialButton(
+                                              color: purpleColor,
+                                              onPressed: () {
+                                                double payoutControllerText =
+                                                    double.parse(
+                                                        payoutController.text);
+                                                log('payment is $payoutControllerText');
+                                                FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(userNumber)
+                                                    .get()
+                                                    .then(
+                                                  (value1) {
+                                                    FirebaseFirestore.instance
+                                                        .collection(
+                                                            'notifications')
+                                                        .add(
+                                                      {
+                                                        'date_time': '',
+                                                        'message':
+                                                            'Congrats! You have successfully completed all the tasks of the collaboration that you applied and received Rs.${payoutController.text} in your wallet',
+                                                        'number': userNumber
+                                                            .toString(),
+                                                        'name':
+                                                            userName.toString(),
+                                                        'pic': value1
+                                                            .get('profile_pic'),
+                                                      },
+                                                    );
+                                                    log('user number is $userNumber');
+                                                    FirebaseFirestore.instance
+                                                        .collection('wallet')
+                                                        .doc(userNumber)
+                                                        .get()
+                                                        .then(
+                                                      (value3) {
+                                                        var wBal = double.parse(
+                                                            value3
+                                                                .get(
+                                                                    'wallet_balance')
+                                                                .toString());
+                                                        var totalWBal = wBal +
+                                                            payoutControllerText;
+                                                        log('wal bal is $wBal $payoutControllerText');
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'wallet')
+                                                            .doc(userNumber)
+                                                            .update(
+                                                          {
+                                                            'wallet_balance':
+                                                                totalWBal
+                                                                    .toString(),
+                                                          },
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                );
+
+                                                FirebaseFirestore.instance
+                                                    .collection('user_token')
+                                                    .doc(userNumber)
+                                                    .get()
+                                                    .then(
+                                                  (value2) {
+                                                    sendPushMessage(
+                                                      value2.get('token'),
+                                                      'You have successfully completed all the tasks of the collaboration that you applied and received Rs.$payoutControllerText in your wallet',
+                                                      'Congrats!',
+                                                    );
+                                                  },
+                                                );
+                                                setState(
+                                                  () =>
+                                                      payoutController.clear(),
+                                                );
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Send Payout',
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              color: purpleColor,
+                              padding: const EdgeInsets.all(20),
+                              child: Text(
+                                'Approve and Send Custom Payment',
+                                style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: MaterialButton(
+                          color: purpleColor,
+                          shape: const CircleBorder(),
+                          minWidth: 0,
+                          onPressed: () => Navigator.pop(context),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.close_rounded,
+                              color: whiteColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
   }
 
   datacount() {
@@ -712,7 +1182,7 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                       width: 100,
                       child: Center(
                         child: Text(
-                          "Task Status ",
+                          "Task Status",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -1045,44 +1515,101 @@ class _CollabUserScreenState extends State<CollabUserScreen> {
                           behavior: ScrollConfiguration.of(context)
                               .copyWith(scrollbars: false),
                           child: StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection("collaboration")
-                                  .doc(widget.docId)
-                                  .collection("users")
-                                  .where('task_verified', isEqualTo: 'false')
-                                  .snapshots(),
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                                if (streamSnapshot.hasData) {
-                                  return Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${streamSnapshot.data!.docs.length}',
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                            stream: FirebaseFirestore.instance
+                                .collection("collaboration")
+                                .doc(widget.docId)
+                                .collection("users")
+                                .where('task_verified', isEqualTo: 'false')
+                                .snapshots(),
+                            builder: (context,
+                                AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                              if (streamSnapshot.hasData) {
+                                return Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${streamSnapshot.data!.docs.length}',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ],
-                                  );
-                                }
-                                return const SizedBox(
-                                  width: 150,
-                                  height: 50,
-                                  child: Text(
-                                    ' 0',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ),
+                                  ],
                                 );
-                              }),
+                              }
+                              return const SizedBox(
+                                width: 150,
+                                height: 50,
+                                child: Text(
+                                  ' 0',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
+                  ),
+                  MaterialButton(
+                    color: purpleColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    onPressed: () {
+                      FirebaseFirestore.instance
+                          .collection('collaboration')
+                          .doc(widget.docId)
+                          .collection('users')
+                          .get()
+                          .then(
+                        (value) {
+                          if (value.docs.isNotEmpty) {
+                            FirebaseFirestore.instance
+                                .collection('collaboration')
+                                .doc(widget.docId)
+                                .collection('users')
+                                .where('task_uploaded', isNotEqualTo: 'true')
+                                .get()
+                                .then(
+                              (value) {
+                                log('total task users ${value.docs.length} ${value.docs[1]['name']}');
+                                for (var i = 0; i < value.docs.length; i++) {
+                                  FirebaseFirestore.instance
+                                      .collection('user_token')
+                                      .doc(value.docs[i]['number'])
+                                      .get()
+                                      .then(
+                                    (value1) {
+                                      sendPushMessage(
+                                        value1.get('token'),
+                                        'Complete your tasks to get the payout',
+                                        'Payout is waiting for you',
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            );
+                          } else {
+                            log('no one applied for collaboration');
+                          }
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Send Notification to Users to Complete tasks',
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ],
               ),
