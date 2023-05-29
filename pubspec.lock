@@ -501,6 +501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  image_network:
+    dependency: "direct main"
+    description:
+      name: image_network
+      sha256: "0e1f927385af35954f93d18f2240cf6c87a3f5840caa1bb80b2c4714dc5f0460"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.2"
   image_picker:
     dependency: "direct main"
     description:
@@ -1186,6 +1194,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.5"
+  webviewimage:
+    dependency: transitive
+    description:
+      name: webviewimage
+      sha256: "937bef362098c1b4b76cb15b68ba83a990a2801c336d0d26d41820dd21410d25"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   webviewx_plus:
     dependency: transitive
     description:

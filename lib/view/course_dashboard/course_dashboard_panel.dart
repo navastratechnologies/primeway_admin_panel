@@ -4,7 +4,9 @@ import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.
 import 'package:primeway_admin_panel/view/affiliate_dashboard/affiliate_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/body_panels/course_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/approved_course_screen.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/pages/comboscreen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/courses2.dart';
+import 'package:primeway_admin_panel/view/course_dashboard/pages/delete_combo.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/deleted_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/live_course_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/rejected_course_screen.dart';
@@ -26,6 +28,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
   bool showRejectedCourses = false;
   bool showUploadCourses = false;
   bool showDeleteCourses = false;
+  bool showCombo = false;
+  bool showdeletecombo = false;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -207,7 +211,11 @@ class _CourseDashboardState extends State<CourseDashboard> {
                                         ? const UnApprovedCourseScreen()
                                         : showLiveCourses
                                             ? const LiveCourseScreen()
-                                            : const CoursePanelBody(),
+                                            : showCombo
+                                                ? const ComboPage()
+                                                : showdeletecombo
+                                                    ? const DeletedComboScreen()
+                                                    : const CoursePanelBody(),
                   ],
                 ),
               ),
@@ -339,6 +347,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = false;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -383,6 +393,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = true;
                         showPendingCourses = false;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -427,6 +439,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = true;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -471,6 +485,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = false;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -515,6 +531,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = false;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -559,6 +577,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = false;
                         showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -572,6 +592,51 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         const SizedBox(width: 10),
                         Text(
                           'Upload Courses',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showCombo ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showApprovedCourses = false;
+                        showRejectedCourses = false;
+                        showUploadCourses = false;
+                        showLiveCourses = false;
+                        showPendingCourses = false;
+                        showDeleteCourses = false;
+                        showCombo = true;
+                        showdeletecombo = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.data_object,
+                          color:
+                              showCombo ? greenSelectedColor : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Combos',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -603,6 +668,8 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showLiveCourses = false;
                         showPendingCourses = false;
                         showDeleteCourses = true;
+                        showCombo = false;
+                        showdeletecombo = false;
                       });
                     },
                     child: Row(
@@ -646,7 +713,9 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         showUploadCourses = false;
                         showLiveCourses = false;
                         showPendingCourses = false;
-                        showDeleteCourses = true;
+                        showDeleteCourses = false;
+                        showCombo = false;
+                        showdeletecombo = true;
                       });
                     },
                     child: Row(
@@ -659,7 +728,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Rankings',
+                          'Delete Combos',
                           style: TextStyle(
                             color: whiteColor,
                           ),

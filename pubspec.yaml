@@ -48,6 +48,7 @@ dependencies:
   flutter_widget_from_html_core:
   font_awesome_flutter:
   google_fonts:
+  image_network: ^2.5.2
   image_picker:
   ionicons:
   lottie:

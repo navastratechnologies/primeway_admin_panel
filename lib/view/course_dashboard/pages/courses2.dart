@@ -2,12 +2,14 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_network/image_network.dart';
 import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/edit_course_info.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/courseinfo.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/uploadcourse.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key});
@@ -980,13 +982,25 @@ class _CoursesPageState extends State<CoursesPage> {
                                                 child: Stack(
                                                   children: [
                                                     SizedBox(
-                                                      height: 200,
+                                                      height: 300,
                                                       width: 200,
-                                                      child: Image.network(
-                                                        streamSnapshot.data!
+                                                      child: ImageNetwork(
+                                                        image: streamSnapshot
+                                                                .data!
                                                                 .docs[index]
                                                             ['image'],
-                                                        fit: BoxFit.cover,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        imageCache:
+                                                            CachedNetworkImageProvider(
+                                                          streamSnapshot.data!
+                                                                  .docs[index]
+                                                              ['image'],
+                                                        ),
+                                                        height: 300,
+                                                        width: 200,
+                                                        fitWeb: BoxFitWeb.cover,
                                                       ),
                                                     ),
                                                     streamSnapshot.data!
