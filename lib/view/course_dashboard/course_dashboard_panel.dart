@@ -636,7 +636,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Combos',
+                          'Combo',
                           style: TextStyle(
                             color: whiteColor,
                           ),
@@ -693,7 +693,7 @@ class _CourseDashboardState extends State<CourseDashboard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
-                    color: showDeleteCourses ? greenShadeColor : mainColor,
+                    color: showdeletecombo ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
                     shape: const RoundedRectangleBorder(
@@ -722,13 +722,13 @@ class _CourseDashboardState extends State<CourseDashboard> {
                       children: [
                         Icon(
                           Icons.delete_rounded,
-                          color: showDeleteCourses
+                          color: showdeletecombo
                               ? greenSelectedColor
                               : mainShadeColor,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          'Delete Combos',
+                          'Delete Combo',
                           style: TextStyle(
                             color: whiteColor,
                           ),

@@ -278,7 +278,6 @@ class _AdminPanelBodyState extends State<AdminPanelBody> {
                           ),
                         ],
                       ),
-                const SizedBox(height: 10),
                 adminTabel(context),
               ],
             ),

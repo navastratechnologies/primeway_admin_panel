@@ -43,7 +43,7 @@ class _DeletedComboScreenState extends State<DeletedComboScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SelectableText(
-                        'Deleted Combos :-',
+                        'Deleted Combo :-',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black.withOpacity(0.4),

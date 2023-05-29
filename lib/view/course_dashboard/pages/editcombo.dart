@@ -134,12 +134,12 @@ class _EditComboInfoState extends State<EditComboInfo> {
       courseShortDescription = value.get('short_description');
       courseDays = value.get('validity');
       studentLearn = value.get('students_learn');
-      courseImage = value.get('image');
+
       courseBaseAmmount = value.get('base_ammount');
       courseGstRate = value.get('gst_rate');
       courseDiscount = value.get('discount');
       courses.addAll(value.get('Courses'));
-      log('courses : $courses');
+      log('courses : $courseImage');
       setState(() {
         courseNameController.text = courseName;
         courseAuthorNameController.text = courseAuthorName;
@@ -516,7 +516,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                                                               ],
                                                             ),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             height: 5,
                                                           ),
                                                           SingleChildScrollView(
@@ -846,19 +846,49 @@ class _EditComboInfoState extends State<EditComboInfo> {
                 child: Stack(
                   children: [
                     SizedBox(
-                      height: 300,
-                      width: 200,
-                      child: ImageNetwork(
-                        image: courseImage,
-                        borderRadius: BorderRadius.circular(12),
-                        imageCache: CachedNetworkImageProvider(
-                          courseImage,
-                        ),
                         height: 300,
                         width: 200,
-                        fitWeb: BoxFitWeb.cover,
-                      ),
-                    ),
+                        child:
+                            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                          stream: FirebaseFirestore.instance
+                              .collection('combos')
+                              .where('course_id', isEqualTo: widget.courseId)
+                              .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  streamSnapshot) {
+                            if (streamSnapshot.hasData) {
+                              final List<
+                                      QueryDocumentSnapshot<
+                                          Map<String, dynamic>>> documents =
+                                  streamSnapshot.data!.docs;
+
+                              if (documents.isNotEmpty) {
+                                final Map<String, dynamic> comboData =
+                                    documents.first.data();
+                                final String courseImage = comboData['image'];
+
+                                return SizedBox(
+                                  height: 300,
+                                  width: 200,
+                                  child: ImageNetwork(
+                                    image: courseImage,
+                                    borderRadius: BorderRadius.circular(12),
+                                    imageCache:
+                                        CachedNetworkImageProvider(courseImage),
+                                    height: 300,
+                                    width: 200,
+                                    fitWeb: BoxFitWeb.cover,
+                                  ),
+                                );
+                              }
+                            }
+
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        )),
                     Align(
                       alignment: Alignment.topRight,
                       child: Container(

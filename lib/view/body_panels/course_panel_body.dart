@@ -278,7 +278,7 @@ class _CoursePanelBodyState extends State<CoursePanelBody> {
               ),
             ],
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           SizedBox(
             width: displayWidth(context) < 600 || displayWidth(context) < 1200
                 ? displayWidth(context)

@@ -997,17 +997,18 @@ class _ComboPageState extends State<ComboPage> {
                                                             .docs[index]
                                                             .id)) {
                                                       return InkWell(
-                                                        onTap: () {
-                                                          //           setState(() {
-                                                          //   showCourseInfoPage =
-                                                          //       true;
-                                                          //   courseId =
-                                                          //       streamSnapshot
-                                                          //           .data!
-                                                          //           .docs[index]
-                                                          //           .id;
-                                                          // }),
-                                                        },
+                                                        // onTap: () {
+                                                        //   setState(() {
+                                                        //     showCourseInfoPage =
+                                                        //         true;
+                                                        //     courseId =
+                                                        //         streamSnapshot
+                                                        //             .data!
+                                                        //             .docs[index]
+                                                        //             .id;
+                                                        //   });
+                                                        // },
+
                                                         child: Container(
                                                           decoration:
                                                               BoxDecoration(
