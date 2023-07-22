@@ -102,7 +102,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SelectableText(
+                          Text(
                             'Affiliate User Requests :-',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -195,7 +195,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SelectableText(
+                      Text(
                         'Withdrawal Requests :-',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -249,7 +249,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 80,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "User Id",
                             style: TextStyle(
                               color: whiteColor,
@@ -261,7 +261,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "UserName",
                             style: TextStyle(
                               color: whiteColor,
@@ -273,7 +273,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "Course Shared",
                             style: TextStyle(
                               color: whiteColor,
@@ -285,7 +285,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "Course Shared To users",
                             style: TextStyle(
                               color: whiteColor,
@@ -297,7 +297,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "Complete Course Shared",
                             style: TextStyle(
                               color: whiteColor,
@@ -309,7 +309,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "Affiliate Status",
                             style: TextStyle(
                               color: whiteColor,
@@ -321,7 +321,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                       SizedBox(
                         width: 120,
                         child: Center(
-                          child: SelectableText(
+                          child: Text(
                             "Action",
                             style: TextStyle(
                               color: whiteColor,
@@ -372,7 +372,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                     ExpansionTile(
                                       childrenPadding: const EdgeInsets.all(10),
                                       tilePadding: const EdgeInsets.all(6),
-                                      title: SelectableText(
+                                      title: Text(
                                         documentSnapshot['transaction_Id'],
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.4),
@@ -451,8 +451,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                         children: const [
                                                           SizedBox(
                                                             width: 80,
-                                                            child:
-                                                                SelectableText(
+                                                            child: Text(
                                                               "Date",
                                                               style: TextStyle(
                                                                 color: Colors
@@ -466,8 +465,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           SizedBox(
                                                             width: 120,
                                                             child: Center(
-                                                              child:
-                                                                  SelectableText(
+                                                              child: Text(
                                                                 "Course Name",
                                                                 style:
                                                                     TextStyle(
@@ -483,8 +481,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           SizedBox(
                                                             width: 120,
                                                             child: Center(
-                                                              child:
-                                                                  SelectableText(
+                                                              child: Text(
                                                                 "Course Shared",
                                                                 style:
                                                                     TextStyle(
@@ -500,8 +497,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           SizedBox(
                                                             width: 120,
                                                             child: Center(
-                                                              child:
-                                                                  SelectableText(
+                                                              child: Text(
                                                                 "Amount credit",
                                                                 style:
                                                                     TextStyle(
@@ -517,8 +513,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           SizedBox(
                                                             width: 120,
                                                             child: Center(
-                                                              child:
-                                                                  SelectableText(
+                                                              child: Text(
                                                                 "Total Earnings",
                                                                 style:
                                                                     TextStyle(
@@ -548,8 +543,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                                 SizedBox(
                                                                   width: 80,
                                                                   child: Center(
-                                                                    child:
-                                                                        SelectableText(
+                                                                    child: Text(
                                                                       "2/03/2023",
                                                                       style:
                                                                           TextStyle(
@@ -565,8 +559,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                                 SizedBox(
                                                                   width: 120,
                                                                   child: Center(
-                                                                    child:
-                                                                        SelectableText(
+                                                                    child: Text(
                                                                       "insta users",
                                                                       style:
                                                                           TextStyle(
@@ -582,8 +575,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                                 SizedBox(
                                                                   width: 120,
                                                                   child: Center(
-                                                                    child:
-                                                                        SelectableText(
+                                                                    child: Text(
                                                                       "100",
                                                                       style:
                                                                           TextStyle(
@@ -599,8 +591,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                                 SizedBox(
                                                                   width: 120,
                                                                   child: Center(
-                                                                    child:
-                                                                        SelectableText(
+                                                                    child: Text(
                                                                       "2000",
                                                                       style:
                                                                           TextStyle(
@@ -616,8 +607,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                                 SizedBox(
                                                                   width: 120,
                                                                   child: Center(
-                                                                    child:
-                                                                        SelectableText(
+                                                                    child: Text(
                                                                       "2000",
                                                                       style:
                                                                           TextStyle(
@@ -649,7 +639,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               child: documentSnapshot[
                                                           'user_Id'] !=
                                                       null
-                                                  ? SelectableText(
+                                                  ? Text(
                                                       documentSnapshot[
                                                           'user_Id'],
                                                       style: TextStyle(
@@ -659,7 +649,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                             FontWeight.bold,
                                                       ),
                                                     )
-                                                  : SelectableText(
+                                                  : Text(
                                                       '',
                                                       style: TextStyle(
                                                         color: Colors.black
@@ -674,7 +664,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               ? SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       documentSnapshot[
                                                           'user_name'],
                                                       style: TextStyle(
@@ -689,7 +679,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               : SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       '',
                                                       style: TextStyle(
                                                         color: Colors.black
@@ -705,7 +695,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               ? SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       documentSnapshot[
                                                           'wallet_balance'],
                                                       style: TextStyle(
@@ -720,7 +710,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               : SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       '',
                                                       style: TextStyle(
                                                         color: Colors.black
@@ -736,7 +726,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               ? SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       documentSnapshot[
                                                           'wallet_balance'],
                                                       style: TextStyle(
@@ -751,7 +741,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               : SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       '',
                                                       style: TextStyle(
                                                         color: Colors.black
@@ -767,7 +757,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               ? SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       documentSnapshot[
                                                           'wallet_balance'],
                                                       style: TextStyle(
@@ -782,7 +772,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                               : SizedBox(
                                                   width: 120,
                                                   child: Center(
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       '',
                                                       style: TextStyle(
                                                         color: Colors.black
@@ -811,7 +801,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                             BorderRadius
                                                                 .circular(5),
                                                       ),
-                                                      child: SelectableText(
+                                                      child: Text(
                                                         documentSnapshot[
                                                                     'status'] ==
                                                                 'approved'
@@ -839,7 +829,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                             BorderRadius
                                                                 .circular(5),
                                                       ),
-                                                      child: SelectableText(
+                                                      child: Text(
                                                         '',
                                                         style: TextStyle(
                                                           color: whiteColor,
@@ -858,22 +848,81 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                     MainAxisAlignment
                                                         .spaceAround,
                                                 children: [
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          greenLightShadeColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
+                                                  InkWell(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            AlertDialog(
+                                                          actionsPadding:
+                                                              const EdgeInsets
+                                                                  .all(12),
+                                                          title: const Text(
+                                                            'Do you really want to approve this user for affiliate program?',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          actions: [
+                                                            MaterialButton(
+                                                              onPressed: () {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                    content:
+                                                                        Text(
+                                                                      'User approved for affiliate program.',
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              color:
+                                                                  greenShadeColor,
+                                                              child: Text(
+                                                                'Yes',
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        whiteColor),
+                                                              ),
+                                                            ),
+                                                            MaterialButton(
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context),
+                                                              color: mainColor,
+                                                              child: Text(
+                                                                'No',
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        whiteColor),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
                                                               5),
-                                                    ),
-                                                    child: SelectableText(
-                                                      "Approve",
-                                                      style: TextStyle(
-                                                        color: whiteColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            greenLightShadeColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child: Text(
+                                                        "Approve",
+                                                        style: TextStyle(
+                                                          color: whiteColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -886,7 +935,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       "Reject",
                                                       style: TextStyle(
                                                         color: whiteColor,
@@ -904,7 +953,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
-                                                    child: SelectableText(
+                                                    child: Text(
                                                       "Ban",
                                                       style: TextStyle(
                                                         color: whiteColor,
@@ -982,7 +1031,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                   builder:
                       (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                     if (streamSnapshot.hasData) {
-                      return SelectableText(
+                      return Text(
                         streamSnapshot.data!.docs.length.toString(),
                         style: TextStyle(
                           fontSize: 50,
@@ -991,7 +1040,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                         ),
                       );
                     }
-                    return SelectableText(
+                    return Text(
                       '0',
                       style: TextStyle(
                         fontSize: 50,
@@ -1004,7 +1053,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                 const SizedBox(height: 10),
                 SizedBox(
                   width: 120,
-                  child: SelectableText(
+                  child: Text(
                     title,
                     style: TextStyle(
                       color: whiteColor,
