@@ -1421,11 +1421,9 @@ class _CollaborationDetailsScreenState
                 child: QuillHtmlEditor(
                   hintText: 'Hint text goes here',
                   controller: controller,
-                  height: MediaQuery.of(context).size.height,
+                  minHeight: MediaQuery.of(context).size.height,
                   onTextChanged: (text) =>
                       debugPrint('widget text change $text'),
-                  defaultFontSize: 18,
-                  defaultFontColor: Colors.black45,
                   isEnabled: true,
                   backgroundColor: Colors.white,
                 ),

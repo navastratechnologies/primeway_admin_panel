@@ -41,8 +41,6 @@ dependencies:
   firebase_storage: ^11.0.14
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
   flutter_rating_bar:
   flutter_widget_from_html:
   flutter_widget_from_html_core:
