@@ -1421,7 +1421,7 @@ class _CollaborationDetailsScreenState
                 child: QuillHtmlEditor(
                   hintText: 'Hint text goes here',
                   controller: controller,
-                  minHeight: MediaQuery.of(context).size.height,
+                  height: MediaQuery.of(context).size.height,
                   onTextChanged: (text) =>
                       debugPrint('widget text change $text'),
                   isEnabled: true,

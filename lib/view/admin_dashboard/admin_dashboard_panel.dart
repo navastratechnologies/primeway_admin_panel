@@ -34,6 +34,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
   bool showCreatorProgramPanel = false;
   bool showFeedbackPanel = false;
   bool showOtherRequestPanel = false;
+  bool showRolesPanel = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,7 +216,9 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                                             ? const UserScreen()
                                             : showCollaborationPanel
                                                 ? const CollaborationScreen()
-                                                : const AdminPanelBody(),
+                                                : showRolesPanel
+                                                    ? Container()
+                                                    : const AdminPanelBody(),
                   ],
                 ),
               ),
@@ -349,6 +352,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = false;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -394,6 +398,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = false;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -439,6 +444,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = true;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -484,6 +490,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = false;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -529,6 +536,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = false;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -575,6 +583,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showWalletPanel = false;
                         showFeedbackPanel = false;
                         showOtherRequestPanel = false;
+                        showRolesPanel = false;
                       });
                     },
                     child: Row(
@@ -613,6 +622,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+                        showRolesPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -664,6 +674,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         showUsersPanel = false;
                         showWalletPanel = false;
                         showFeedbackPanel = false;
+                        showRolesPanel = false;
                         showOtherRequestPanel = true;
                       });
                     },
@@ -678,6 +689,52 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                         const SizedBox(width: 10),
                         Text(
                           'Requests',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showRolesPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                        showRolesPanel = true;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.manage_accounts_rounded,
+                          color: showRolesPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Roles',
                           style: TextStyle(
                             color: whiteColor,
                           ),
