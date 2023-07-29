@@ -77,59 +77,61 @@ class _RolesScreenState extends State<RolesScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              displayWidth(context) < 600 || displayWidth(context) < 1200
+              showAddUserForm
                   ? const SizedBox()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SelectableText(
-                          'All Users :-',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black.withOpacity(0.4),
-                          ),
-                        ),
-                        Container(
-                          width: 400,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: TextFormField(
-                            controller: searchController,
-                            onChanged: (value) {
-                              setState(() {
-                                searchId = searchController.text;
-                              });
-                            },
-                            onEditingComplete: () {
-                              setState(() {
-                                searchId = searchController.text;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter user id to search',
-                              hintStyle: TextStyle(
-                                color: Colors.black.withOpacity(0.5),
-                                fontWeight: FontWeight.w500,
+                  : displayWidth(context) < 600 || displayWidth(context) < 1200
+                      ? const SizedBox()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SelectableText(
+                              'All Users :-',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withOpacity(0.4),
                               ),
                             ),
-                          ),
+                            Container(
+                              width: 400,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
+                              child: TextFormField(
+                                controller: searchController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    searchId = searchController.text;
+                                  });
+                                },
+                                onEditingComplete: () {
+                                  setState(() {
+                                    searchId = searchController.text;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter user id to search',
+                                  hintStyle: TextStyle(
+                                    color: Colors.black.withOpacity(0.5),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
               const SizedBox(height: 20),
               showAddUserForm
                   ? Padding(
@@ -277,9 +279,52 @@ class _RolesScreenState extends State<RolesScreen> {
                             padding: const EdgeInsets.all(20),
                             minWidth: 300,
                             onPressed: () {
-                              setState(() {
-                                showAddUserForm = false;
-                              });
+                              if (userNameController.text.isEmpty ||
+                                  nameController.text.isEmpty ||
+                                  passwordController.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: mainColor,
+                                    content: Center(
+                                      child: Text(
+                                        'Please fill all the fields and select the role to continue',
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                FirebaseFirestore.instance
+                                    .collection('admins')
+                                    .add(
+                                  {
+                                    'name': nameController.text,
+                                    'username': userNameController.text,
+                                    'password': passwordController.text,
+                                    'role': userRole,
+                                  },
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: purpleColor,
+                                    content: Center(
+                                      child: Text(
+                                        'User added successfully and assigned $userRole admin role.',
+                                        style: TextStyle(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+                                  showAddUserForm = false;
+                                });
+                              }
                             },
                             child: Text(
                               'Add User',
@@ -398,7 +443,7 @@ class _RolesScreenState extends State<RolesScreen> {
                                         width: 120,
                                         child: Center(
                                           child: SelectableText(
-                                            "UserName",
+                                            "Name",
                                             style: TextStyle(
                                               color: whiteColor,
                                               fontWeight: FontWeight.bold,
@@ -410,7 +455,7 @@ class _RolesScreenState extends State<RolesScreen> {
                                         width: 120,
                                         child: Center(
                                           child: SelectableText(
-                                            "Phone Number",
+                                            "Username",
                                             style: TextStyle(
                                               color: whiteColor,
                                               fontWeight: FontWeight.bold,
@@ -422,31 +467,7 @@ class _RolesScreenState extends State<RolesScreen> {
                                         width: 120,
                                         child: Center(
                                           child: SelectableText(
-                                            "Address",
-                                            style: TextStyle(
-                                              color: whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: SelectableText(
-                                            "Social Account",
-                                            style: TextStyle(
-                                              color: whiteColor,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 120,
-                                        child: Center(
-                                          child: SelectableText(
-                                            "Status",
+                                            "Role",
                                             style: TextStyle(
                                               color: whiteColor,
                                               fontWeight: FontWeight.bold,
@@ -468,7 +489,9 @@ class _RolesScreenState extends State<RolesScreen> {
                               color: whiteColor,
                             ),
                             child: StreamBuilder(
-                              stream: user.snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('admins')
+                                  .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                                 if (streamSnapshot.hasData) {
@@ -485,7 +508,7 @@ class _RolesScreenState extends State<RolesScreen> {
                                     itemBuilder: (context, index) {
                                       final DocumentSnapshot documentSnapshot =
                                           streamSnapshot.data!.docs[index];
-                                      if (documentSnapshot['phone_number']
+                                      if (documentSnapshot.id
                                           .toString()
                                           .contains(searchId)) {
                                         return displayWidth(context) < 600 ||
