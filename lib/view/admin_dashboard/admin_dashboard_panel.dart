@@ -6,6 +6,7 @@ import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_pa
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/creator_programs_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/other_requests_page.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/pages/roles_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/user_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/wallet_page.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/affiliate_dashboard_panel.dart';
@@ -217,7 +218,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                                             : showCollaborationPanel
                                                 ? const CollaborationScreen()
                                                 : showRolesPanel
-                                                    ? Container()
+                                                    ? const RolesScreen()
                                                     : const AdminPanelBody(),
                   ],
                 ),
