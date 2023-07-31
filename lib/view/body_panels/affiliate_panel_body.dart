@@ -5,7 +5,6 @@ import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class AffiliatePanelBody extends StatefulWidget {
   const AffiliatePanelBody({super.key});
@@ -15,7 +14,7 @@ class AffiliatePanelBody extends StatefulWidget {
 }
 
 class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
-  List<TransactionData> _transactions = [];
+  final List<TransactionData> _transactions = [];
 
   var data = {};
   String userCount = '';
@@ -128,7 +127,8 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
                           yValueMapper: (_SalesData sales, _) => sales.sales,
                           name: 'Affiliate Users',
                           // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
+                          dataLabelSettings:
+                              const DataLabelSettings(isVisible: true))
                     ]),
               ])),
           SizedBox(
@@ -154,7 +154,8 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
                           yValueMapper: (_SalesData sales, _) => sales.sales,
                           name: 'affiliate Course upload',
                           // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
+                          dataLabelSettings:
+                              const DataLabelSettings(isVisible: true))
                     ]),
               ])),
           SizedBox(
@@ -180,7 +181,8 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
                           yValueMapper: (_SalesData sales, _) => sales.sales,
                           name: 'P Coins Earn',
                           // Enable data label
-                          dataLabelSettings: DataLabelSettings(isVisible: true))
+                          dataLabelSettings:
+                              const DataLabelSettings(isVisible: true))
                     ]),
               ])),
         ],

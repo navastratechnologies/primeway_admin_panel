@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/showPdf_screen.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/text_editor.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:image_picker_platform_interface/src/types/image_source.dart'
     as imagesource;

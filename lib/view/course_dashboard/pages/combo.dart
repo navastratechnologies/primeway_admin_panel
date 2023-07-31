@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -237,7 +236,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                   imageUploadData(),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 22,
               ),
               MaterialButton(
@@ -306,7 +305,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                                   child: Center(
                                     child: Text(
                                       'Selected Courses  ${courses.length}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600),
@@ -511,7 +510,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                                                               ],
                                                             ),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             height: 5,
                                                           ),
                                                           SingleChildScrollView(
@@ -543,7 +542,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                                             );
                                           }));
                                     }
-                                    return Center(
+                                    return const Center(
                                         child: CircularProgressIndicator());
                                   }),
                             ),
@@ -554,7 +553,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                   ),
                 ),
               )
-            : Container(
+            : SizedBox(
                 height: 1,
                 width: 1,
                 //color: Colors.white,
@@ -570,7 +569,7 @@ class _CoursesComboState extends State<CoursesCombo> {
           return AlertDialog(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
-              title: Container(
+              title: SizedBox(
                 height: 700,
                 width: 500,
                 child: Column(
@@ -593,7 +592,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.cancel,
                             size: 35,
                           ),
@@ -750,7 +749,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                                                       ],
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     height: 5,
                                                   ),
                                                   SingleChildScrollView(
@@ -780,7 +779,8 @@ class _CoursesComboState extends State<CoursesCombo> {
                                     );
                                   }));
                             }
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }),
                     ),
                   ],
