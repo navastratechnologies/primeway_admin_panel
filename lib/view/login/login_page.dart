@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool showWarning = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             height: displayHeight(context),
             width: displayWidth(context),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xff1C1B2B),
             ),
             child: Lottie.asset(
@@ -111,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                                     height: 100,
                                     width: 100,
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     'Primewayskills Private Limited',
                                     style: GoogleFonts.poppins(
@@ -126,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Colors.black.withOpacity(0.4),
                                     ),
                                   ),
-                                  SizedBox(height: 50),
+                                  const SizedBox(height: 50),
                                 ],
                               ),
                         Row(
@@ -140,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -162,19 +168,19 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
                         loginField(
                           ' Username',
                           usernameController,
                           'Enter username',
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         loginField(
                           ' Password',
                           passwordController,
                           'Enter password',
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Align(
                           alignment: Alignment.centerRight,
                           child: MaterialButton(
@@ -188,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         Align(
                           alignment: Alignment.center,
                           child: MaterialButton(
@@ -196,9 +202,48 @@ class _LoginPageState extends State<LoginPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             color: greenLightShadeColor,
-                            onPressed: () {},
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection('admins')
+                                  .where('username',
+                                      isEqualTo: usernameController.text)
+                                  .where('password',
+                                      isEqualTo: passwordController.text)
+                                  .get()
+                                  .then(
+                                (value) {
+                                  if (value.docs.isNotEmpty) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AdminDashBoard(),
+                                      ),
+                                    );
+                                  } else {
+                                    setState(
+                                      () {
+                                        usernameController.clear();
+                                        passwordController.clear();
+                                        showWarning = true;
+                                        Timer(
+                                          const Duration(seconds: 2),
+                                          () {
+                                            setState(
+                                              () {
+                                                showWarning = false;
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
                             child: Text(
                               'Sign In',
                               style: GoogleFonts.poppins(
@@ -208,6 +253,20 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
+                        showWarning
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                ),
+                                child: Text(
+                                  'username or password is incorrect. Please login with right credentials',
+                                  style: GoogleFonts.poppins(
+                                    color: mainColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -223,8 +282,8 @@ class _LoginPageState extends State<LoginPage> {
   rightSideView() {
     return Expanded(
       child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xffF3F4F8),
+        decoration: const BoxDecoration(
+          color: Color(0xffF3F4F8),
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(40),
             bottomRight: Radius.circular(40),
@@ -240,7 +299,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 300,
                 width: 300,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 'Primewayskills Private Limited',
                 style: GoogleFonts.poppins(
@@ -273,9 +332,9 @@ class _LoginPageState extends State<LoginPage> {
             // fontSize: 26,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black.withOpacity(0.1),

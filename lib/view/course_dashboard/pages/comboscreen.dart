@@ -5,11 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_network/image_network.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/edit_course_info.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/combo.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/courseinfo.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/pages/editcombo.dart';
-import 'package:primeway_admin_panel/view/course_dashboard/pages/uploadcourse.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
@@ -1456,7 +1453,7 @@ class _ComboPageState extends State<ComboPage> {
                                                         ),
                                                       );
                                                     }
-                                                    return SizedBox();
+                                                    return const SizedBox();
                                                   }),
                                                 );
                                               }
@@ -1498,7 +1495,7 @@ class _ComboPageState extends State<ComboPage> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CoursesCombo(),
+                            builder: (context) => const CoursesCombo(),
                           ),
                         ),
                         child: Padding(
