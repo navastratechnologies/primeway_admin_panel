@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
@@ -17,6 +18,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  final box = GetStorage();
 
   bool showWarning = false;
 
@@ -215,6 +218,8 @@ class _LoginPageState extends State<LoginPage> {
                                   .then(
                                 (value) {
                                   if (value.docs.isNotEmpty) {
+                                    storeTokenAndDataForWeb(
+                                        usernameController.text);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -319,6 +324,10 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void storeTokenAndDataForWeb(username) async {
+    box.write('username', username);
   }
 
   loginField(heading, controller, hint) {

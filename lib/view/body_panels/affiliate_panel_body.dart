@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:primeway_admin_panel/view/affiliate_dashboard/chart.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AffiliatePanelBody extends StatefulWidget {
   const AffiliatePanelBody({super.key});
@@ -14,8 +12,6 @@ class AffiliatePanelBody extends StatefulWidget {
 }
 
 class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
-  final List<TransactionData> _transactions = [];
-
   var data = {};
   String userCount = '';
   String coursesCount = '';
@@ -56,13 +52,6 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
   }
 
   mainBody() {
-    List<_SalesData> data = [
-      _SalesData('Jan', 35),
-      _SalesData('Feb', 28),
-      _SalesData('Mar', 34),
-      _SalesData('Apr', 32),
-      _SalesData('May', 40)
-    ];
     return Container(
       width: displayWidth(context) < 600 || displayWidth(context) < 1200
           ? displayWidth(context)
@@ -104,87 +93,6 @@ class _AffiliatePanelBodyState extends State<AffiliatePanelBody> {
               ),
             ],
           ),
-          const SizedBox(height: 40),
-          SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title: ChartTitle(text: 'Monthly User Ragistration'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'Affiliate Users',
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
-          SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title:
-                        ChartTitle(text: 'Monthly Affiliate Courses Uploded'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'affiliate Course upload',
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
-          SizedBox(
-              height: 400,
-              width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                  ? displayWidth(context)
-                  : displayWidth(context) / 1.5,
-              child: Column(children: [
-                //Initialize the chart widget
-                SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    // Chart title
-                    title:
-                        ChartTitle(text: 'Monthly Affiliate members Earnings'),
-                    // Enable legend
-                    legend: Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                          dataSource: data,
-                          xValueMapper: (_SalesData sales, _) => sales.year,
-                          yValueMapper: (_SalesData sales, _) => sales.sales,
-                          name: 'P Coins Earn',
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ]),
-              ])),
         ],
       ),
     );

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/creator_programs_page.dart';
@@ -36,6 +39,15 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
   bool showFeedbackPanel = false;
   bool showOtherRequestPanel = false;
   bool showRolesPanel = false;
+
+  var box = GetStorage();
+
+  @override
+  void initState() {
+    log('username is ${box.read('username')}');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

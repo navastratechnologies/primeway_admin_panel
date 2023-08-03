@@ -29,35 +29,37 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  change_app_package_name:
+  cached_network_image: ^3.2.3
+  change_app_package_name: null
   charts_flutter: ^0.12.0
   cloud_firestore: ^4.4.3
-  cupertino_icons:
-  dotted_border:
-  file_picker:
+  cupertino_icons: null
+  dotted_border: null
+  file_picker: null
   firebase_auth: ^4.2.9
   firebase_core: ^2.7.0
   firebase_database: ^10.0.14
   firebase_storage: ^11.0.14
   flutter:
     sdk: flutter
-  flutter_rating_bar:
-  flutter_widget_from_html:
-  flutter_widget_from_html_core:
-  font_awesome_flutter:
-  google_fonts:
+  flutter_rating_bar: null
+  flutter_secure_storage: ^8.0.0
+  flutter_widget_from_html: null
+  flutter_widget_from_html_core: null
+  font_awesome_flutter: null
+  get_storage: ^2.1.1
+  google_fonts: null
   image_network: ^2.5.2
-  image_picker:
-  ionicons:
-  lottie:
-  mrx_charts:
-  quill_html_editor:
-  responsive_builder:
-  responsive_grid_list:
-  syncfusion_flutter_charts:
-  syncfusion_flutter_pdfviewer:
-  video_player:
-  cached_network_image: ^3.2.3
+  image_picker: null
+  ionicons: null
+  lottie: null
+  mrx_charts: null
+  quill_html_editor: null
+  responsive_builder: null
+  responsive_grid_list: null
+  syncfusion_flutter_charts: null
+  syncfusion_flutter_pdfviewer: null
+  video_player: null
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:

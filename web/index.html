@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -15,28 +14,33 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF" />
+  <base href="$FLUTTER_BASE_HREF">
 
-  <meta charset="UTF-8" />
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-  <meta name="description" content="A new Flutter project." />
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
 
   <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="primeway_admin_panel" />
-  <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="primeway_website">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>primeway_admin_panel</title>
-  <link rel="manifest" href="manifest.json" />
+  <title>Admin Panel</title>
+  <link rel="manifest" href="manifest.json">
 
-  <script>
-    import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
-
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyDYjuZa-xQtcTX83kDatHuJNPTmDZGIyVg",
       authDomain: "primeway-e0f3f.firebaseapp.com",
@@ -46,7 +50,8 @@
       appId: "1:836225855666:web:706ef5407b807571a3d9ab",
       measurementId: "G-433C740BYM"
     };
-
+  
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>
@@ -58,25 +63,21 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
-
 <body>
   <script>
-    window.addEventListener("load", function (ev) {
+    window.addEventListener('load', function(ev) {
       // Download main.dart.js
-      _flutter.loader
-        .loadEntrypoint({
-          serviceWorker: {
-            serviceWorkerVersion: serviceWorkerVersion,
-          },
-        })
-        .then(function (engineInitializer) {
-          return engineInitializer.initializeEngine();
-        })
-        .then(function (appRunner) {
-          return appRunner.runApp();
-        });
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
     });
   </script>
 </body>
-
 </html>
