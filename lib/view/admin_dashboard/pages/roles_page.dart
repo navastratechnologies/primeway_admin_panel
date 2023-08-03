@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
@@ -17,6 +19,7 @@ class _RolesScreenState extends State<RolesScreen> {
   bool showRejectedUsers = false;
   bool showAddUserForm = false;
   bool editRole = false;
+  bool alreadyAvailable = false;
 
   String searchId = '';
   String userRole = 'super';
@@ -31,6 +34,36 @@ class _RolesScreenState extends State<RolesScreen> {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference admins =
       FirebaseFirestore.instance.collection('admins');
+
+  Future<bool> checkIfValueExists(
+      String collectionPath, String fieldName, String value) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('admins')
+        .where('username', isEqualTo: value)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<void> _submitForm() async {
+    final enteredValue = userNameController.text.trim();
+
+    // Check if the value already exists in Firestore
+    final exists =
+        await checkIfValueExists('your_collection', 'field_name', enteredValue);
+
+    if (exists) {
+      setState(() {
+        alreadyAvailable = true;
+      });
+      log('Value does exist. Saving to Firestore...');
+    } else {
+      // Save the value to Firestore or perform any other action.
+      // For example, you can use `Firestore.instance.collection('your_collection').add(...)`
+      // to save the value to Firestore.
+      log('Value does not exist. Saving to Firestore...');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,10 +237,78 @@ class _RolesScreenState extends State<RolesScreen> {
             nameController,
           ),
           const SizedBox(height: 20),
-          addUserFormTextField(
-            'Enter username here',
-            'Username',
-            userNameController,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Username',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: 300,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: TextFormField(
+                  controller: userNameController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter username here',
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    FirebaseFirestore.instance
+                        .collection('admins')
+                        .where('username', isEqualTo: userNameController.text)
+                        .get()
+                        .then(
+                      (value) {
+                        if (value.docs.isNotEmpty) {
+                          setState(() {
+                            alreadyAvailable = true;
+                          });
+                        } else {
+                          setState(() {
+                            alreadyAvailable = false;
+                          });
+                        }
+                      },
+                    );
+                  },
+                  onFieldSubmitted: (value) async {
+                    await _submitForm();
+                  },
+                ),
+              ),
+              Text(
+                alreadyAvailable
+                    ? 'username already exist try another'
+                    : 'username available',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: whiteColor,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           addUserFormTextField(
