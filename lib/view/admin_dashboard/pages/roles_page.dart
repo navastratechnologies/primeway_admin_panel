@@ -20,6 +20,7 @@ class _RolesScreenState extends State<RolesScreen> {
   bool showAddUserForm = false;
   bool editRole = false;
   bool alreadyAvailable = false;
+  bool usernameTypeStart = false;
 
   String searchId = '';
   String userRole = 'super';
@@ -34,36 +35,6 @@ class _RolesScreenState extends State<RolesScreen> {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference admins =
       FirebaseFirestore.instance.collection('admins');
-
-  Future<bool> checkIfValueExists(
-      String collectionPath, String fieldName, String value) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('admins')
-        .where('username', isEqualTo: value)
-        .get();
-
-    return snapshot.docs.isNotEmpty;
-  }
-
-  Future<void> _submitForm() async {
-    final enteredValue = userNameController.text.trim();
-
-    // Check if the value already exists in Firestore
-    final exists =
-        await checkIfValueExists('your_collection', 'field_name', enteredValue);
-
-    if (exists) {
-      setState(() {
-        alreadyAvailable = true;
-      });
-      log('Value does exist. Saving to Firestore...');
-    } else {
-      // Save the value to Firestore or perform any other action.
-      // For example, you can use `Firestore.instance.collection('your_collection').add(...)`
-      // to save the value to Firestore.
-      log('Value does not exist. Saving to Firestore...');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,6 +247,15 @@ class _RolesScreenState extends State<RolesScreen> {
                     ),
                   ),
                   onChanged: (value) {
+                    if (value.length > 6) {
+                      setState(() {
+                        usernameTypeStart = true;
+                      });
+                    } else if (value.isEmpty) {
+                      setState(() {
+                        usernameTypeStart = false;
+                      });
+                    }
                     FirebaseFirestore.instance
                         .collection('admins')
                         .where('username', isEqualTo: userNameController.text)
@@ -286,28 +266,47 @@ class _RolesScreenState extends State<RolesScreen> {
                           setState(() {
                             alreadyAvailable = true;
                           });
+                          log('username exist');
                         } else {
                           setState(() {
                             alreadyAvailable = false;
                           });
+                          log('username not exist');
                         }
                       },
                     );
                   },
-                  onFieldSubmitted: (value) async {
-                    await _submitForm();
-                  },
+                  onFieldSubmitted: (value) async {},
                 ),
               ),
-              Text(
-                alreadyAvailable
-                    ? 'username already exist try another'
-                    : 'username available',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: whiteColor,
-                ),
-              ),
+              usernameTypeStart
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            alreadyAvailable
+                                ? Icons.close_rounded
+                                : Icons.done_all_rounded,
+                            color:
+                                alreadyAvailable ? mainColor : greenShadeColor,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            alreadyAvailable
+                                ? 'username already exist try another'
+                                : 'username available',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: alreadyAvailable
+                                  ? mainColor
+                                  : greenShadeColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
             ],
           ),
           const SizedBox(height: 20),
