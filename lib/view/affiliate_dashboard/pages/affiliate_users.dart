@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class AffiliatePanelBodyUsers extends StatefulWidget {
   const AffiliatePanelBodyUsers({super.key});
@@ -27,133 +26,96 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: displayWidth(context) < 600 || displayWidth(context) < 1200
-            ? SingleChildScrollView(
-                child: Column(
-                  children: [
-                    mainBody(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: displayWidth(context) < 600 || displayWidth(context) < 1200
+          ? SingleChildScrollView(
+              child: Column(
                 children: [
                   mainBody(),
+                  const SizedBox(height: 20),
                 ],
               ),
-      ),
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: mainBody(),
+                ),
+              ],
+            ),
     );
   }
 
   mainBody() {
     return Container(
-      width: displayWidth(context) < 600 || displayWidth(context) < 1200
-          ? displayWidth(context)
-          : displayWidth(context) / 1.5,
       decoration: BoxDecoration(
         color: whiteColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ResponsiveGridList(
-            horizontalGridSpacing: 10,
-            minItemWidth:
-                displayWidth(context) < 600 || displayWidth(context) < 1200
-                    ? 200
-                    : 300,
-            listViewBuilderOptions: ListViewBuilderOptions(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              dashboardTile(
-                'All Affiliate Users',
-                'All Affiliate Users',
-                Icons.person_pin,
-              ),
-              dashboardTile(
-                'Approved Affiliate Users',
-                'Approved Affiliate Users',
-                Icons.person_pin,
-              ),
-              dashboardTile(
-                'Rejected Affiliate Users',
-                "Rejected Affiliate Users",
-                Icons.person_pin,
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          SizedBox(
-            width: displayWidth(context) < 600 || displayWidth(context) < 1200
-                ? displayWidth(context)
-                : displayWidth(context) / 1.5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                displayWidth(context) < 600 || displayWidth(context) < 1200
-                    ? const SizedBox()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Affiliate User Requests :-',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(0.4),
-                            ),
+              displayWidth(context) < 600 || displayWidth(context) < 1200
+                  ? const SizedBox()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Affiliate User Requests :-',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(0.4),
                           ),
-                          Container(
-                            width: 400,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                            child: TextFormField(
-                              controller: searchController,
-                              onChanged: (value) {
-                                setState(() {
-                                  searchId = searchController.text;
-                                });
-                              },
-                              onEditingComplete: () {
-                                setState(() {
-                                  searchId = searchController.text;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Enter User id to search',
-                                hintStyle: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        ),
+                        Container(
+                          width: 400,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: TextFormField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              setState(() {
+                                searchId = searchController.text;
+                              });
+                            },
+                            onEditingComplete: () {
+                              setState(() {
+                                searchId = searchController.text;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Enter User id to search',
+                              hintStyle: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                const SizedBox(height: 10),
-                adminTabel(context),
-              ],
-            ),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 10),
+              adminTabel(context),
+            ],
           ),
         ],
       ),
@@ -337,7 +299,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
             padding: const EdgeInsets.all(10),
             height: displayWidth(context) < 600 || displayWidth(context) < 1200
                 ? null
-                : displayHeight(context) / 1.65,
+                : displayHeight(context) / 1.3,
             child: StreamBuilder(
                 stream: searchController.text.isEmpty
                     ? withDrawal.snapshots()
@@ -429,11 +391,11 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: Row(
+                                                title: const Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
-                                                  children: const [
+                                                  children: [
                                                     Text("Earning Details"),
                                                     Text("Rohit Rai"),
                                                   ],
@@ -444,11 +406,11 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                                       const SizedBox(
                                                         height: 20,
                                                       ),
-                                                      Row(
+                                                      const Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                        children: const [
+                                                        children: [
                                                           SizedBox(
                                                             width: 80,
                                                             child: Text(

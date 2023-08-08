@@ -55,7 +55,7 @@ class _AffiliateRankingScreenState extends State<AffiliateRankingScreen> {
     );
   }
 
-  dailyRankingList(AsyncSnapshot<QuerySnapshot> snapshot) {
+  dailyRankingList(snapshot) {
     return ResponsiveGridList(
       horizontalGridSpacing: 10,
       minItemWidth: displayWidth(context) < 600

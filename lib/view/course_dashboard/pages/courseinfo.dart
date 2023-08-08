@@ -106,7 +106,8 @@ class _CoursesInfoState extends State<CoursesInfo> {
       'islive': 'false',
       'chapters': '0',
       'isInAffiliate': 'false',
-      'add_combo': '0'
+      'add_combo': '0',
+      'total_collection': '',
     }).then((value) {
       FirebaseFirestore.instance.collection('courses').doc(value.id).update({
         "course_id": value.id.toString(),

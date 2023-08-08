@@ -74,13 +74,9 @@ class _EditComboInfoState extends State<EditComboInfo> {
       webImage,
       SettableMetadata(contentType: 'image/png'),
     );
-    TaskSnapshot taskSnapshot = await uploadTask
-        .whenComplete(
-          () => log('done'),
-        )
-        .catchError(
-          (error) => log('something went wrong'),
-        );
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
+      () => log('done'),
+    );
     String url = await taskSnapshot.ref.getDownloadURL();
 
     FirebaseFirestore.instance
@@ -223,7 +219,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
   desktopBody() {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           height: double.infinity,
           width: double.infinity,
           child: Column(
@@ -311,7 +307,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                                   child: Center(
                                     child: Text(
                                       'Selected Courses  ${courses.length}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600),
@@ -548,7 +544,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                                             );
                                           }));
                                     }
-                                    return Center(
+                                    return const Center(
                                         child: CircularProgressIndicator());
                                   }),
                             ),
@@ -559,7 +555,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                   ),
                 ),
               )
-            : Container(
+            : const SizedBox(
                 height: 1,
                 width: 1,
                 //color: Colors.white,
@@ -575,7 +571,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
           return AlertDialog(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
-              title: Container(
+              title: SizedBox(
                 height: 700,
                 width: 500,
                 child: Column(
@@ -598,7 +594,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.cancel,
                             size: 35,
                           ),
@@ -757,7 +753,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
                                                       ],
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     height: 5,
                                                   ),
                                                   SingleChildScrollView(
@@ -787,7 +783,8 @@ class _EditComboInfoState extends State<EditComboInfo> {
                                     );
                                   }));
                             }
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }),
                     ),
                   ],
@@ -797,7 +794,7 @@ class _EditComboInfoState extends State<EditComboInfo> {
   }
 
   mobileBody() {
-    return Container(
+    return SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Column(

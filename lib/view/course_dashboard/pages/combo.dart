@@ -76,13 +76,9 @@ class _CoursesComboState extends State<CoursesCombo> {
       webImage,
       SettableMetadata(contentType: 'image/png'),
     );
-    TaskSnapshot taskSnapshot = await uploadTask
-        .whenComplete(
-          () => log('done'),
-        )
-        .catchError(
-          (error) => log('something went wrong'),
-        );
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(
+      () => log('done'),
+    );
     String url = await taskSnapshot.ref.getDownloadURL();
 
     FirebaseFirestore.instance.collection('combos').add({
@@ -553,7 +549,7 @@ class _CoursesComboState extends State<CoursesCombo> {
                   ),
                 ),
               )
-            : SizedBox(
+            : const SizedBox(
                 height: 1,
                 width: 1,
                 //color: Colors.white,

@@ -6,15 +6,15 @@ import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
-class AffiliatePanelBodyCourses extends StatefulWidget {
-  const AffiliatePanelBodyCourses({super.key});
+class AffiliateCollaborations extends StatefulWidget {
+  const AffiliateCollaborations({super.key});
 
   @override
-  State<AffiliatePanelBodyCourses> createState() =>
-      _AffiliatePanelBodyCoursesState();
+  State<AffiliateCollaborations> createState() =>
+      _AffiliateCollaborationsState();
 }
 
-class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
+class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
   var data = {};
   String userCount = '';
   String coursesCount = '';
@@ -26,18 +26,16 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
 
   TextEditingController searchController = TextEditingController();
 
-  final CollectionReference withDrawal =
-      FirebaseFirestore.instance.collection('withdrawal_request');
+  final CollectionReference collabs =
+      FirebaseFirestore.instance.collection('collaboration');
 
-  final CollectionReference course =
-      FirebaseFirestore.instance.collection('courses');
-
-  bool showAffiliateUserPanel = false;
+  bool showAffiliatePCollabParticipatedPanel = false;
+  bool showAffiliatePCollabcompletedPanel = false;
   String docId = '';
 
   @override
   Widget build(BuildContext context) {
-    return showAffiliateUserPanel
+    return showAffiliatePCollabParticipatedPanel
         ? Padding(
             padding: const EdgeInsets.all(8.0),
             child: displayWidth(context) < 600 || displayWidth(context) < 1200
@@ -64,9 +62,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: StreamBuilder(
-                  stream: course
-                      .where('isInAffiliate', isEqualTo: 'true')
-                      .snapshots(),
+                  stream: collabs.snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
                       return ResponsiveGridList(
@@ -81,29 +77,111 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                           physics: const NeverScrollableScrollPhysics(),
                         ),
                         children: List.generate(
-                          snapshot.data!.docs
-                              .where(
-                                (element) => element['status']
-                                    .toString()
-                                    .contains('paused'),
-                              )
-                              .length,
+                          snapshot.data!.docs.length,
                           (index) {
-                            final documentSnapshot = snapshot.data!.docs
-                                .where(
-                                  (element) => element['status']
-                                      .toString()
-                                      .contains('paused'),
-                                )
-                                .elementAt(index);
+                            DocumentSnapshot documentSnapshot =
+                                snapshot.data!.docs[index];
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: InkWell(
                                 onTap: () {
-                                  setState(() {
-                                    showAffiliateUserPanel = true;
-                                    docId = documentSnapshot.id.toString();
-                                  });
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return Builder(builder: (context) {
+                                        return AlertDialog(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'View List Options',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      Colors.black.withOpacity(
+                                                    0.4,
+                                                  ),
+                                                ),
+                                              ),
+                                              MaterialButton(
+                                                shape: const CircleBorder(),
+                                                color: mainColor,
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Icon(
+                                                  Icons.close_rounded,
+                                                  color: whiteColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  Navigator.pop(context);
+                                                  docId = documentSnapshot.id
+                                                      .toString();
+                                                  showAffiliatePCollabParticipatedPanel =
+                                                      false;
+                                                  showAffiliatePCollabcompletedPanel =
+                                                      true;
+                                                });
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: greenShadeColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Text(
+                                                  'View total users who completed task',
+                                                  style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  Navigator.pop(context);
+                                                  docId = documentSnapshot.id
+                                                      .toString();
+                                                  showAffiliatePCollabParticipatedPanel =
+                                                      true;
+                                                  showAffiliatePCollabcompletedPanel =
+                                                      false;
+                                                });
+                                              },
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: purpleColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Text(
+                                                  'View total users who participated in this collab',
+                                                  style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                    },
+                                  );
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
@@ -153,7 +231,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                documentSnapshot['name'],
+                                                documentSnapshot['titles'],
                                                 style: const TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.black,
@@ -168,15 +246,53 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Text(
-                                                        "$rupeeSign ${documentSnapshot['total_collection']}",
-                                                        style: TextStyle(
-                                                          fontSize: 26,
-                                                          color: Colors.black
-                                                              .withOpacity(0.5),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                      StreamBuilder(
+                                                        stream: collabs
+                                                            .doc(
+                                                                documentSnapshot
+                                                                    .id)
+                                                            .collection('users')
+                                                            .where(
+                                                                'task_uploaded',
+                                                                isEqualTo:
+                                                                    'true')
+                                                            .snapshots(),
+                                                        builder: (context,
+                                                            AsyncSnapshot<
+                                                                    QuerySnapshot>
+                                                                snapshot) {
+                                                          if (snapshot
+                                                              .hasData) {
+                                                            return Text(
+                                                              snapshot.data!
+                                                                  .docs.length
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                fontSize: 26,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            );
+                                                          }
+                                                          return Text(
+                                                            "00",
+                                                            style: TextStyle(
+                                                              fontSize: 26,
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          );
+                                                        },
                                                       ),
                                                       Container(
                                                         padding:
@@ -191,7 +307,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                                   .circular(5),
                                                         ),
                                                         child: Text(
-                                                          'Total Collection',
+                                                          'Total Users Completed task',
                                                           style: TextStyle(
                                                             color: whiteColor,
                                                             fontWeight:
@@ -208,12 +324,11 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                             .start,
                                                     children: [
                                                       StreamBuilder(
-                                                        stream: course
+                                                        stream: collabs
                                                             .doc(
                                                                 documentSnapshot
                                                                     .id)
-                                                            .collection(
-                                                                'purchased_users')
+                                                            .collection('users')
                                                             .snapshots(),
                                                         builder: (context,
                                                             AsyncSnapshot<
@@ -264,7 +379,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                                   .circular(5),
                                                         ),
                                                         child: Text(
-                                                          'Purchased Users',
+                                                          'Total Users Participated',
                                                           style: TextStyle(
                                                             color: whiteColor,
                                                             fontWeight:
@@ -279,25 +394,6 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                             ],
                                           ),
                                         ],
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: BoxDecoration(
-                                          color: mainColor,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          documentSnapshot['islive'] == 'true'
-                                              ? 'Live Now'
-                                              : 'Paused',
-                                          style: TextStyle(
-                                            color: whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -327,10 +423,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
           displayWidth(context) < 600 || displayWidth(context) < 1200
               ? const SizedBox()
               : StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('courses')
-                      .where('course_id', isEqualTo: docId)
-                      .snapshots(),
+                  stream: collabs.where('id', isEqualTo: docId).snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
@@ -363,7 +456,10 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                   onPressed: () {
                                     setState(() {
                                       docId = '';
-                                      showAffiliateUserPanel = false;
+                                      showAffiliatePCollabParticipatedPanel =
+                                          false;
+                                      showAffiliatePCollabcompletedPanel =
+                                          false;
                                     });
                                   },
                                   child: Row(
@@ -416,7 +512,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              documentSnapshot['name'],
+                                              documentSnapshot['titles'],
                                               style: const TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.black,
@@ -425,20 +521,55 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                             ),
                                             const SizedBox(height: 20),
                                             Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
                                               children: [
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      "$rupeeSign ${documentSnapshot['total_collection']}",
-                                                      style: TextStyle(
-                                                        fontSize: 26,
-                                                        color: Colors.black
-                                                            .withOpacity(0.5),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                    StreamBuilder(
+                                                      stream: collabs
+                                                          .doc(documentSnapshot
+                                                              .id)
+                                                          .collection('users')
+                                                          .where(
+                                                              'task_uploaded',
+                                                              isEqualTo: 'true')
+                                                          .snapshots(),
+                                                      builder: (context,
+                                                          AsyncSnapshot<
+                                                                  QuerySnapshot>
+                                                              snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          return Text(
+                                                            snapshot.data!.docs
+                                                                .length
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                              fontSize: 26,
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          );
+                                                        }
+                                                        return Text(
+                                                          "00",
+                                                          style: TextStyle(
+                                                            fontSize: 26,
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
                                                     Container(
                                                       padding:
@@ -451,7 +582,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                                 .circular(5),
                                                       ),
                                                       child: Text(
-                                                        'Total Collection',
+                                                        'Total Users Completed task',
                                                         style: TextStyle(
                                                           color: whiteColor,
                                                           fontWeight:
@@ -467,13 +598,10 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     StreamBuilder(
-                                                      stream: FirebaseFirestore
-                                                          .instance
-                                                          .collection('courses')
+                                                      stream: collabs
                                                           .doc(documentSnapshot
                                                               .id)
-                                                          .collection(
-                                                              'purchased_users')
+                                                          .collection('users')
                                                           .snapshots(),
                                                       builder: (context,
                                                           AsyncSnapshot<
@@ -520,7 +648,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                                 .circular(5),
                                                       ),
                                                       child: Text(
-                                                        'Purchased Users',
+                                                        'Total Users Participated',
                                                         style: TextStyle(
                                                           color: whiteColor,
                                                           fontWeight:
@@ -530,28 +658,34 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                                     ),
                                                   ],
                                                 ),
+                                                const SizedBox(width: 30),
+                                                InkWell(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    decoration: BoxDecoration(
+                                                      color: mainColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Text(
+                                                      'Export Data In Excel Format',
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ],
                                         ),
                                       ],
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: mainColor,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Paused',
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ),
