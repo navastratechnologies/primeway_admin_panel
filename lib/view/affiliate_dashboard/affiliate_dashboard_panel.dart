@@ -4,9 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_courses.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_ranking_screen.dart';
-import 'package:primeway_admin_panel/view/body_panels/affiliate_panel_body.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 import 'pages/affiliate_earning.dart';
 import 'pages/affiliate_users.dart';
@@ -29,6 +29,21 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
   bool showCoursesPanel = false;
   bool showEarningsPanel = false;
   bool showRankingsPanel = false;
+  bool showCollaborationPanel = false;
+  bool showReferralPanel = false;
+
+  var data = {};
+  String userCount = '';
+  String coursesCount = '';
+  String collaborationCount = '';
+
+  String searchId = '';
+
+  TextEditingController searchController = TextEditingController();
+
+  final CollectionReference withDrawal =
+      FirebaseFirestore.instance.collection('withdrawal_request');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -204,7 +219,131 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                                 ? const AffiliatePanelBodyUsers()
                                 : showEarningsPanel
                                     ? const AffiliatePanelBodyEarnings()
-                                    : const AffiliatePanelBody(),
+                                    : Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 30, bottom: 10),
+                                          child: ResponsiveGridList(
+                                            minItemWidth: 400,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = true;
+                                                    showCoursesPanel = false;
+                                                    showEarningsPanel = false;
+                                                    showRankingsPanel = false;
+                                                    showCollaborationPanel =
+                                                        false;
+                                                    showReferralPanel = false;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'users',
+                                                  'All Affiliate Users',
+                                                  Icons.person_pin,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = false;
+                                                    showCoursesPanel = true;
+                                                    showEarningsPanel = false;
+                                                    showRankingsPanel = false;
+                                                    showCollaborationPanel =
+                                                        false;
+                                                    showReferralPanel = false;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'courses',
+                                                  'Affiliate Courses',
+                                                  Icons.menu_book_rounded,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = false;
+                                                    showCoursesPanel = false;
+                                                    showEarningsPanel = true;
+                                                    showRankingsPanel = false;
+                                                    showCollaborationPanel =
+                                                        false;
+                                                    showReferralPanel = false;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'Earnings',
+                                                  "Member's Earnings",
+                                                  Icons.currency_rupee_rounded,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = false;
+                                                    showCoursesPanel = false;
+                                                    showEarningsPanel = false;
+                                                    showRankingsPanel = true;
+                                                    showCollaborationPanel =
+                                                        false;
+                                                    showReferralPanel = false;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'Earnings',
+                                                  "Top Rankers",
+                                                  Icons.military_tech_rounded,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = false;
+                                                    showCoursesPanel = false;
+                                                    showEarningsPanel = false;
+                                                    showRankingsPanel = false;
+                                                    showCollaborationPanel =
+                                                        true;
+                                                    showReferralPanel = false;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'collaboration',
+                                                  "Total Collaborations",
+                                                  Icons.group_rounded,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showDashboardPanel = false;
+                                                    showUsersPanel = false;
+                                                    showCoursesPanel = false;
+                                                    showEarningsPanel = false;
+                                                    showRankingsPanel = false;
+                                                    showCollaborationPanel =
+                                                        false;
+                                                    showReferralPanel = true;
+                                                  });
+                                                },
+                                                child: dashboardTile(
+                                                  'Earnings',
+                                                  "Total Refferals",
+                                                  Icons.share_rounded,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                   ],
                 ),
               ),
@@ -335,6 +474,8 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         showCoursesPanel = false;
                         showEarningsPanel = false;
                         showRankingsPanel = false;
+                        showCollaborationPanel = false;
+                        showReferralPanel = false;
                       });
                     },
                     child: Row(
@@ -377,6 +518,8 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         showCoursesPanel = false;
                         showEarningsPanel = false;
                         showRankingsPanel = false;
+                        showCollaborationPanel = false;
+                        showReferralPanel = false;
                       });
                     },
                     child: Row(
@@ -419,6 +562,8 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                         showCoursesPanel = true;
                         showEarningsPanel = false;
                         showRankingsPanel = false;
+                        showCollaborationPanel = false;
+                        showReferralPanel = false;
                       });
                     },
                     child: Row(
@@ -462,6 +607,8 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                           showCoursesPanel = false;
                           showEarningsPanel = true;
                           showRankingsPanel = false;
+                          showCollaborationPanel = false;
+                          showReferralPanel = false;
                         },
                       );
                     },
@@ -506,6 +653,8 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                           showCoursesPanel = false;
                           showEarningsPanel = false;
                           showRankingsPanel = true;
+                          showCollaborationPanel = false;
+                          showReferralPanel = false;
                         },
                       );
                     },
@@ -527,11 +676,180 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showCollaborationPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (displayWidth(context) < 1200) {
+                            Navigator.pop(context);
+                          }
+                          showDashboardPanel = false;
+                          showUsersPanel = false;
+                          showCoursesPanel = false;
+                          showEarningsPanel = false;
+                          showRankingsPanel = false;
+                          showCollaborationPanel = true;
+                          showReferralPanel = false;
+                        },
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.group_rounded,
+                          color: showCollaborationPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Collaborations',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
+                    color: showReferralPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (displayWidth(context) < 1200) {
+                            Navigator.pop(context);
+                          }
+                          showDashboardPanel = false;
+                          showUsersPanel = false;
+                          showCoursesPanel = false;
+                          showEarningsPanel = false;
+                          showRankingsPanel = false;
+                          showCollaborationPanel = false;
+                          showReferralPanel = true;
+                        },
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.share_rounded,
+                          color: showReferralPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Refferals',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  dashboardTile(stream, title, icon) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: greenShadeColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: greenLightShadeColor,
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StreamBuilder(
+                stream: stream == 'affilate_dashboard'
+                    ? FirebaseFirestore.instance
+                        .collection(stream)
+                        .doc('NkcdMPSuI3SSIpJ2uLuv')
+                        .collection('affiliate_users')
+                        .snapshots()
+                    : FirebaseFirestore.instance.collection(stream).snapshots(),
+                builder:
+                    (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                  if (streamSnapshot.hasData) {
+                    return Text(
+                      title == 'Top Rankers'
+                          ? '3'
+                          : streamSnapshot.data!.docs.length.toString(),
+                      style: TextStyle(
+                        fontSize: 50,
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }
+                  return SelectableText(
+                    '0',
+                    style: TextStyle(
+                      fontSize: 50,
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 120,
+                child: SelectableText(
+                  title,
+                  style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Icon(
+            icon,
+            color: greenLightShadeColor,
+            size: displayWidth(context) < 1200 ? 80 : 120,
+          ),
+        ],
       ),
     );
   }
