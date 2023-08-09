@@ -2,12 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
-import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_collaborations.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_courses.dart';
 import 'package:primeway_admin_panel/view/affiliate_dashboard/pages/affiliate_ranking_screen.dart';
 import 'package:primeway_admin_panel/view/course_dashboard/course_dashboard_panel.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
-import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 import 'pages/affiliate_earning.dart';
 import 'pages/affiliate_users.dart';
@@ -30,21 +28,6 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
   bool showCoursesPanel = false;
   bool showEarningsPanel = false;
   bool showRankingsPanel = false;
-  bool showCollaborationPanel = true;
-  bool showReferralPanel = false;
-
-  var data = {};
-  String userCount = '';
-  String coursesCount = '';
-  String collaborationCount = '';
-
-  String searchId = '';
-
-  TextEditingController searchController = TextEditingController();
-
-  final CollectionReference withDrawal =
-      FirebaseFirestore.instance.collection('withdrawal_request');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,164 +203,7 @@ class _AffiliateDashboardState extends State<AffiliateDashboard> {
                                 ? const AffiliatePanelBodyUsers()
                                 : showEarningsPanel
                                     ? const AffiliatePanelBodyEarnings()
-                                    : showCollaborationPanel
-                                        ? const AffiliateCollaborations()
-                                        : Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 30, bottom: 10),
-                                              child: ResponsiveGridList(
-                                                minItemWidth: 400,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = true;
-                                                        showCoursesPanel =
-                                                            false;
-                                                        showEarningsPanel =
-                                                            false;
-                                                        showRankingsPanel =
-                                                            false;
-                                                        showCollaborationPanel =
-                                                            false;
-                                                        showReferralPanel =
-                                                            false;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'users',
-                                                      'All Affiliate Users',
-                                                      Icons.person_pin,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = false;
-                                                        showCoursesPanel = true;
-                                                        showEarningsPanel =
-                                                            false;
-                                                        showRankingsPanel =
-                                                            false;
-                                                        showCollaborationPanel =
-                                                            false;
-                                                        showReferralPanel =
-                                                            false;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'courses',
-                                                      'Affiliate Courses',
-                                                      Icons.menu_book_rounded,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = false;
-                                                        showCoursesPanel =
-                                                            false;
-                                                        showEarningsPanel =
-                                                            true;
-                                                        showRankingsPanel =
-                                                            false;
-                                                        showCollaborationPanel =
-                                                            false;
-                                                        showReferralPanel =
-                                                            false;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'Earnings',
-                                                      "Member's Earnings",
-                                                      Icons
-                                                          .currency_rupee_rounded,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = false;
-                                                        showCoursesPanel =
-                                                            false;
-                                                        showEarningsPanel =
-                                                            false;
-                                                        showRankingsPanel =
-                                                            true;
-                                                        showCollaborationPanel =
-                                                            false;
-                                                        showReferralPanel =
-                                                            false;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'Earnings',
-                                                      "Top Rankers",
-                                                      Icons
-                                                          .military_tech_rounded,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = false;
-                                                        showCoursesPanel =
-                                                            false;
-                                                        showEarningsPanel =
-                                                            false;
-                                                        showRankingsPanel =
-                                                            false;
-                                                        showCollaborationPanel =
-                                                            true;
-                                                        showReferralPanel =
-                                                            false;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'collaboration',
-                                                      "Total Collaborations",
-                                                      Icons.group_rounded,
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        showDashboardPanel =
-                                                            false;
-                                                        showUsersPanel = false;
-                                                        showCoursesPanel =
-                                                            false;
-                                                        showEarningsPanel =
-                                                            false;
-                                                        showRankingsPanel =
-                                                            false;
-                                                        showCollaborationPanel =
-                                                            false;
-                                                        showReferralPanel =
-                                                            true;
-                                                      });
-                                                    },
-                                                    child: dashboardTile(
-                                                      'Earnings',
-                                                      "Total Refferals",
-                                                      Icons.share_rounded,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
+                                    : const AffiliatePanelBody(),
                   ],
                 ),
               ),
