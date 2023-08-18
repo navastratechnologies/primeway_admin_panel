@@ -1,20 +1,20 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_network/image_network.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
-class AffiliatePanelBodyCourses extends StatefulWidget {
-  const AffiliatePanelBodyCourses({super.key});
+class AffiliateRefferalScreen extends StatefulWidget {
+  const AffiliateRefferalScreen({super.key});
 
   @override
-  State<AffiliatePanelBodyCourses> createState() =>
-      _AffiliatePanelBodyCoursesState();
+  State<AffiliateRefferalScreen> createState() =>
+      _AffiliateRefferalScreenState();
 }
 
-class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
+class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
   var data = {};
   String userCount = '';
   String coursesCount = '';
@@ -26,18 +26,18 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
 
   TextEditingController searchController = TextEditingController();
 
-  final CollectionReference withDrawal =
-      FirebaseFirestore.instance.collection('withdrawal_request');
+  final CollectionReference refferals =
+      FirebaseFirestore.instance.collection('users');
 
-  final CollectionReference course =
-      FirebaseFirestore.instance.collection('courses');
-
-  bool showAffiliateUserPanel = false;
+  bool showAffiliatePCollabParticipatedPanel = false;
+  bool showAffiliatePCollabcompletedPanel = false;
   String docId = '';
+
+  bool showDowlinkPanel = false;
 
   @override
   Widget build(BuildContext context) {
-    return showAffiliateUserPanel
+    return showDowlinkPanel
         ? Padding(
             padding: const EdgeInsets.all(8.0),
             child: displayWidth(context) < 600 || displayWidth(context) < 1200
@@ -64,8 +64,8 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: StreamBuilder(
-                  stream: course
-                      .where('isInAffiliate', isEqualTo: 'true')
+                  stream: refferals
+                      .orderBy('total_refferals', descending: true)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
@@ -81,28 +81,18 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                           physics: const NeverScrollableScrollPhysics(),
                         ),
                         children: List.generate(
-                          snapshot.data!.docs
-                              .where(
-                                (element) => element['status']
-                                    .toString()
-                                    .contains('paused'),
-                              )
-                              .length,
+                          snapshot.data!.docs.length,
                           (index) {
-                            final documentSnapshot = snapshot.data!.docs
-                                .where(
-                                  (element) => element['status']
-                                      .toString()
-                                      .contains('paused'),
-                                )
-                                .elementAt(index);
+                            DocumentSnapshot documentSnapshot =
+                                snapshot.data!.docs[index];
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: InkWell(
                                 onTap: () {
+                                  log('tapped');
                                   setState(() {
-                                    showAffiliateUserPanel = true;
-                                    docId = documentSnapshot.id.toString();
+                                    showDowlinkPanel = true;
+                                    docId = documentSnapshot['refferrer_id'];
                                   });
                                 },
                                 child: Container(
@@ -118,186 +108,83 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                       ),
                                     ],
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Text(
+                                        'User Id: ${documentSnapshot.id}',
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.3),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text(
+                                        documentSnapshot['name'],
+                                        style: TextStyle(
+                                          color: greenShadeColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 30,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      const Divider(),
+                                      const SizedBox(height: 20),
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          SizedBox(
-                                            height: 100,
-                                            width: 100,
-                                            child: SizedBox(
-                                              height: 100,
-                                              width: 100,
-                                              child: ImageNetwork(
-                                                image:
-                                                    documentSnapshot['image'],
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                imageCache:
-                                                    CachedNetworkImageProvider(
-                                                  documentSnapshot['image'],
-                                                ),
-                                                height: 100,
-                                                width: 100,
-                                                fitWeb: BoxFitWeb.contain,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                documentSnapshot['name'],
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black,
+                                                'Downlines',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                               const SizedBox(height: 20),
-                                              Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "$rupeeSign ${documentSnapshot['total_collection']}",
-                                                        style: TextStyle(
-                                                          fontSize: 26,
-                                                          color: Colors.black
-                                                              .withOpacity(0.5),
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(4),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              greenShadeColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                        child: Text(
-                                                          'Total Collection',
-                                                          style: TextStyle(
-                                                            color: whiteColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      StreamBuilder(
-                                                        stream: course
-                                                            .doc(
-                                                                documentSnapshot
-                                                                    .id)
-                                                            .collection(
-                                                                'purchased_users')
-                                                            .snapshots(),
-                                                        builder: (context,
-                                                            AsyncSnapshot<
-                                                                    QuerySnapshot>
-                                                                snapshot) {
-                                                          if (snapshot
-                                                              .hasData) {
-                                                            return Text(
-                                                              snapshot.data!
-                                                                  .docs.length
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                fontSize: 26,
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            );
-                                                          }
-                                                          return Text(
-                                                            "00",
-                                                            style: TextStyle(
-                                                              fontSize: 26,
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      0.5),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(4),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: purpleColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                        child: Text(
-                                                          'Purchased Users',
-                                                          style: TextStyle(
-                                                            color: whiteColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                              Text(
+                                                documentSnapshot[
+                                                    'total_refferals'],
+                                                style: TextStyle(
+                                                  color: purpleColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const VerticalDivider(),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Total Revenue by Refferal',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text(
+                                                documentSnapshot[
+                                                    'earning_by_refferals'],
+                                                style: TextStyle(
+                                                  color: purpleColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30,
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ],
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: BoxDecoration(
-                                          color: mainColor,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          documentSnapshot['islive'] == 'true'
-                                              ? 'Live Now'
-                                              : 'Paused',
-                                          style: TextStyle(
-                                            color: whiteColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -327,9 +214,8 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
           displayWidth(context) < 600 || displayWidth(context) < 1200
               ? const SizedBox()
               : StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('courses')
-                      .where('course_id', isEqualTo: docId)
+                  stream: refferals
+                      .where('refferer_id', isEqualTo: docId)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
@@ -363,7 +249,7 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                   onPressed: () {
                                     setState(() {
                                       docId = '';
-                                      showAffiliateUserPanel = false;
+                                      showDowlinkPanel = false;
                                     });
                                   },
                                   child: Row(
@@ -387,172 +273,189 @@ class _AffiliatePanelBodyCoursesState extends State<AffiliatePanelBodyCourses> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          height: 100,
-                                          width: 100,
-                                          child: SizedBox(
-                                            height: 100,
-                                            width: 100,
-                                            child: ImageNetwork(
-                                              image: documentSnapshot['image'],
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              imageCache:
-                                                  CachedNetworkImageProvider(
-                                                documentSnapshot['image'],
-                                              ),
-                                              height: 100,
-                                              width: 100,
-                                              fitWeb: BoxFitWeb.contain,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              documentSnapshot['name'],
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 20),
-                                            Row(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "$rupeeSign ${documentSnapshot['total_collection']}",
-                                                      style: TextStyle(
-                                                        fontSize: 26,
-                                                        color: Colors.black
-                                                            .withOpacity(0.5),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      decoration: BoxDecoration(
-                                                        color: greenShadeColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        'Total Collection',
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(width: 10),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    StreamBuilder(
-                                                      stream: FirebaseFirestore
-                                                          .instance
-                                                          .collection('courses')
-                                                          .doc(documentSnapshot
-                                                              .id)
-                                                          .collection(
-                                                              'purchased_users')
-                                                          .snapshots(),
-                                                      builder: (context,
-                                                          AsyncSnapshot<
-                                                                  QuerySnapshot>
-                                                              snapshot) {
-                                                        if (snapshot.hasData) {
-                                                          return Text(
-                                                            snapshot.data!.docs
-                                                                .length
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              fontSize: 26,
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      0.5),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          );
-                                                        }
-                                                        return Text(
-                                                          "00",
-                                                          style: TextStyle(
-                                                            fontSize: 26,
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                    Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      decoration: BoxDecoration(
-                                                        color: purpleColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        'Purchased Users',
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: mainColor,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Paused',
-                                        style: TextStyle(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
+                                  children: const [
+                                    // Row(
+                                    //   children: [
+                                    //     Column(
+                                    //       crossAxisAlignment:
+                                    //           CrossAxisAlignment.start,
+                                    //       children: [
+                                    //         Text(
+                                    //           documentSnapshot['name'],
+                                    //           style: const TextStyle(
+                                    //             fontSize: 18,
+                                    //             color: Colors.black,
+                                    //             fontWeight: FontWeight.bold,
+                                    //           ),
+                                    //         ),
+                                    //         const SizedBox(height: 20),
+                                    //         Row(
+                                    //           crossAxisAlignment:
+                                    //               CrossAxisAlignment.end,
+                                    //           children: [
+                                    //             Column(
+                                    //               crossAxisAlignment:
+                                    //                   CrossAxisAlignment.start,
+                                    //               children: [
+                                    //                 StreamBuilder(
+                                    //                   stream: refferals
+                                    //                       .doc(documentSnapshot
+                                    //                           .id)
+                                    //                       .collection('users')
+                                    //                       .where(
+                                    //                           'task_uploaded',
+                                    //                           isEqualTo: 'true')
+                                    //                       .snapshots(),
+                                    //                   builder: (context,
+                                    //                       AsyncSnapshot<
+                                    //                               QuerySnapshot>
+                                    //                           snapshot) {
+                                    //                     if (snapshot.hasData) {
+                                    //                       return Text(
+                                    //                         snapshot.data!.docs
+                                    //                             .length
+                                    //                             .toString(),
+                                    //                         style: TextStyle(
+                                    //                           fontSize: 26,
+                                    //                           color: Colors
+                                    //                               .black
+                                    //                               .withOpacity(
+                                    //                                   0.5),
+                                    //                           fontWeight:
+                                    //                               FontWeight
+                                    //                                   .bold,
+                                    //                         ),
+                                    //                       );
+                                    //                     }
+                                    //                     return Text(
+                                    //                       "00",
+                                    //                       style: TextStyle(
+                                    //                         fontSize: 26,
+                                    //                         color: Colors.black
+                                    //                             .withOpacity(
+                                    //                                 0.5),
+                                    //                         fontWeight:
+                                    //                             FontWeight.bold,
+                                    //                       ),
+                                    //                     );
+                                    //                   },
+                                    //                 ),
+                                    //                 Container(
+                                    //                   padding:
+                                    //                       const EdgeInsets.all(
+                                    //                           4),
+                                    //                   decoration: BoxDecoration(
+                                    //                     color: greenShadeColor,
+                                    //                     borderRadius:
+                                    //                         BorderRadius
+                                    //                             .circular(5),
+                                    //                   ),
+                                    //                   child: Text(
+                                    //                     'Total Users Completed task',
+                                    //                     style: TextStyle(
+                                    //                       color: whiteColor,
+                                    //                       fontWeight:
+                                    //                           FontWeight.bold,
+                                    //                     ),
+                                    //                   ),
+                                    //                 ),
+                                    //               ],
+                                    //             ),
+                                    //             const SizedBox(width: 10),
+                                    //             Column(
+                                    //               crossAxisAlignment:
+                                    //                   CrossAxisAlignment.start,
+                                    //               children: [
+                                    //                 StreamBuilder(
+                                    //                   stream: refferals
+                                    //                       .doc(documentSnapshot
+                                    //                           .id)
+                                    //                       .collection('users')
+                                    //                       .snapshots(),
+                                    //                   builder: (context,
+                                    //                       AsyncSnapshot<
+                                    //                               QuerySnapshot>
+                                    //                           snapshot) {
+                                    //                     if (snapshot.hasData) {
+                                    //                       return Text(
+                                    //                         snapshot.data!.docs
+                                    //                             .length
+                                    //                             .toString(),
+                                    //                         style: TextStyle(
+                                    //                           fontSize: 26,
+                                    //                           color: Colors
+                                    //                               .black
+                                    //                               .withOpacity(
+                                    //                                   0.5),
+                                    //                           fontWeight:
+                                    //                               FontWeight
+                                    //                                   .bold,
+                                    //                         ),
+                                    //                       );
+                                    //                     }
+                                    //                     return Text(
+                                    //                       "00",
+                                    //                       style: TextStyle(
+                                    //                         fontSize: 26,
+                                    //                         color: Colors.black
+                                    //                             .withOpacity(
+                                    //                                 0.5),
+                                    //                         fontWeight:
+                                    //                             FontWeight.bold,
+                                    //                       ),
+                                    //                     );
+                                    //                   },
+                                    //                 ),
+                                    //                 Container(
+                                    //                   padding:
+                                    //                       const EdgeInsets.all(
+                                    //                           4),
+                                    //                   decoration: BoxDecoration(
+                                    //                     color: purpleColor,
+                                    //                     borderRadius:
+                                    //                         BorderRadius
+                                    //                             .circular(5),
+                                    //                   ),
+                                    //                   child: Text(
+                                    //                     'Total Users Participated',
+                                    //                     style: TextStyle(
+                                    //                       color: whiteColor,
+                                    //                       fontWeight:
+                                    //                           FontWeight.bold,
+                                    //                     ),
+                                    //                   ),
+                                    //                 ),
+                                    //               ],
+                                    //             ),
+                                    //             const SizedBox(width: 30),
+                                    //             InkWell(
+                                    //               onTap: () {},
+                                    //               child: Container(
+                                    //                 padding:
+                                    //                     const EdgeInsets.all(
+                                    //                         10),
+                                    //                 decoration: BoxDecoration(
+                                    //                   color: mainColor,
+                                    //                   borderRadius:
+                                    //                       BorderRadius.circular(
+                                    //                           5),
+                                    //                 ),
+                                    //                 child: Text(
+                                    //                   'Export Data In Excel Format',
+                                    //                   style: TextStyle(
+                                    //                     color: whiteColor,
+                                    //                     fontWeight:
+                                    //                         FontWeight.bold,
+                                    //                   ),
+                                    //                 ),
+                                    //               ),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ],
+                                    //     ),
+                                    //   ],
+                                    // ),
                                   ],
                                 ),
                               ],

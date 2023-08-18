@@ -920,11 +920,11 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: const Row(
+                                                title: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
-                                                  children: [
+                                                  children: const [
                                                     Text("Earning Details"),
                                                     Text("Rohit Rai"),
                                                   ],
@@ -935,11 +935,11 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                                                       const SizedBox(
                                                         height: 20,
                                                       ),
-                                                      const Row(
+                                                      Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                        children: [
+                                                        children: const [
                                                           SizedBox(
                                                             width: 80,
                                                             child: Text(

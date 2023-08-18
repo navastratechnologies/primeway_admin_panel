@@ -21,8 +21,10 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
 
   TextEditingController searchController = TextEditingController();
 
-  final CollectionReference withDrawal =
-      FirebaseFirestore.instance.collection('withdrawal_request');
+  final CollectionReference affiliateUser = FirebaseFirestore.instance
+      .collection('affilate_dashboard')
+      .doc('NkcdMPSuI3SSIpJ2uLuv')
+      .collection('affiliate_users');
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +160,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Withdrawal Requests :-',
+                        'Affiliate Users :-',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: whiteColor,
@@ -195,7 +197,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                           },
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Enter transaction id to search',
+                            hintText: 'Enter id to search',
                             hintStyle: TextStyle(
                               color: Colors.black.withOpacity(0.5),
                               fontWeight: FontWeight.w500,
@@ -248,19 +250,7 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Course Shared To users",
-                            style: TextStyle(
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 120,
-                        child: Center(
-                          child: Text(
-                            "Complete Course Shared",
+                            "App Reffered",
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,
@@ -302,10 +292,10 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                 : displayHeight(context) / 1.3,
             child: StreamBuilder(
                 stream: searchController.text.isEmpty
-                    ? withDrawal.snapshots()
-                    : withDrawal
+                    ? affiliateUser.snapshots()
+                    : affiliateUser
                         .where(
-                          'transaction_Id',
+                          'user_Id',
                           isEqualTo: searchId,
                         )
                         .snapshots(),
@@ -335,36 +325,56 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                       childrenPadding: const EdgeInsets.all(10),
                                       tilePadding: const EdgeInsets.all(6),
                                       title: Text(
-                                        documentSnapshot['transaction_Id'],
+                                        documentSnapshot['user_Id'],
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.4),
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       children: [
+                                        StreamBuilder(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('users')
+                                                .where('user_Id',
+                                                    isEqualTo: documentSnapshot[
+                                                        'user_Id'])
+                                                .snapshots(),
+                                            builder: (context,
+                                                AsyncSnapshot<QuerySnapshot>
+                                                    snapshot) {
+                                              if (snapshot.hasData) {
+                                                return SizedBox(
+                                                  height: 30,
+                                                  child: ListView.builder(
+                                                    itemCount: snapshot
+                                                        .data!.docs.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return expansionTableData(
+                                                        'Username',
+                                                        snapshot.data!
+                                                                .docs[index]
+                                                            ['name'],
+                                                        context,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              }
+                                              return expansionTableData(
+                                                'Username',
+                                                '',
+                                                context,
+                                              );
+                                            }),
                                         expansionTableData(
-                                          'User Id',
-                                          documentSnapshot['user_Id'],
+                                          'Course Shared',
+                                          documentSnapshot['courseShared'],
                                           context,
                                         ),
                                         expansionTableData(
-                                          'Name',
-                                          documentSnapshot['user_name'],
-                                          context,
-                                        ),
-                                        expansionTableData(
-                                          'Wallet Balqance',
-                                          documentSnapshot['wallet_balance'],
-                                          context,
-                                        ),
-                                        expansionTableData(
-                                          'Wallet Balanceq',
-                                          documentSnapshot['wallet_balance'],
-                                          context,
-                                        ),
-                                        expansionTableData(
-                                          'Wallet Balancqe',
-                                          documentSnapshot['wallet_balance'],
+                                          'App Reffered',
+                                          documentSnapshot['totalRefferals'],
                                           context,
                                         ),
                                         expansionTableData(
@@ -372,11 +382,52 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                           documentSnapshot['status'],
                                           context,
                                         ),
-                                        expansionTableData(
-                                          'Status',
-                                          documentSnapshot['status'],
-                                          context,
-                                        ),
+                                        InkWell(
+                                          onTap: documentSnapshot['status'] ==
+                                                  'active'
+                                              ? () {
+                                                  affiliateUser
+                                                      .doc(documentSnapshot[
+                                                          'user_Id'])
+                                                      .update(
+                                                    {
+                                                      'status': 'pause',
+                                                    },
+                                                  );
+                                                }
+                                              : () {
+                                                  affiliateUser
+                                                      .doc(documentSnapshot[
+                                                          'user_Id'])
+                                                      .update(
+                                                    {
+                                                      'status': 'active',
+                                                    },
+                                                  );
+                                                },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  documentSnapshot['status'] ==
+                                                          'active'
+                                                      ? mainColor
+                                                      : greenShadeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Text(
+                                              documentSnapshot['status'] ==
+                                                      'active'
+                                                  ? "Pause"
+                                                  : 'Resume',
+                                              style: TextStyle(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        )
                                       ],
                                     ),
                                     const SizedBox(height: 2),
@@ -385,551 +436,227 @@ class _AffiliatePanelBodyUsersState extends State<AffiliatePanelBodyUsers> {
                                 )
                               : Column(
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text("Earning Details"),
-                                                    Text("Rohit Rai"),
-                                                  ],
-                                                ),
-                                                content: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 80,
-                                                            child: Text(
-                                                              "Date",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Course Name",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Course Shared",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Amount credit",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Total Earnings",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      StreamBuilder<Object>(
-                                                          stream: null,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            return Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 80,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2/03/2023",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "insta users",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "100",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2000",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2000",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          }),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: 80,
-                                            child: Center(
-                                              child: documentSnapshot[
-                                                          'user_Id'] !=
-                                                      null
-                                                  ? Text(
-                                                      documentSnapshot[
-                                                          'user_Id'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: 90,
+                                          child: Center(
+                                            child: documentSnapshot[
+                                                        'user_Id'] !=
+                                                    null
+                                                ? SelectableText(
+                                                    documentSnapshot['user_Id'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                            ),
+                                                  )
+                                                : Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
                                           ),
-                                          documentSnapshot['user_name'] != null
-                                              ? SizedBox(
+                                        ),
+                                        StreamBuilder(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('users')
+                                                .where('user_Id',
+                                                    isEqualTo: documentSnapshot[
+                                                        'user_Id'])
+                                                .snapshots(),
+                                            builder: (context,
+                                                AsyncSnapshot<QuerySnapshot>
+                                                    snapshot) {
+                                              if (snapshot.hasData) {
+                                                return SizedBox(
+                                                  height: 20,
                                                   width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                          'user_name'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                          documentSnapshot['wallet_balance'] !=
-                                                  null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                          'wallet_balance'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                          documentSnapshot['wallet_balance'] !=
-                                                  null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                          'wallet_balance'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                          documentSnapshot['wallet_balance'] !=
-                                                  null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                          'wallet_balance'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                          documentSnapshot['status'] != null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        color: documentSnapshot[
-                                                                    'status'] ==
-                                                                'approved'
-                                                            ? greenLightShadeColor
-                                                            : mainShadeColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        documentSnapshot[
-                                                                    'status'] ==
-                                                                'approved'
-                                                            ? "Approved"
-                                                            : "Pending",
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        '',
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                          SizedBox(
-                                            width: 170,
-                                            child: Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialog(
-                                                          actionsPadding:
-                                                              const EdgeInsets
-                                                                  .all(12),
-                                                          title: const Text(
-                                                            'Do you really want to approve this user for affiliate program?',
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 16,
-                                                            ),
+                                                  child: ListView.builder(
+                                                    itemCount: snapshot
+                                                        .data!.docs.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Center(
+                                                        child: Text(
+                                                          snapshot.data!
+                                                                  .docs[index]
+                                                              ['name'],
+                                                          style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
-                                                          actions: [
-                                                            MaterialButton(
-                                                              onPressed: () {
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  const SnackBar(
-                                                                    content:
-                                                                        Text(
-                                                                      'User approved for affiliate program.',
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              },
-                                                              color:
-                                                                  greenShadeColor,
-                                                              child: Text(
-                                                                'Yes',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        whiteColor),
-                                                              ),
-                                                            ),
-                                                            MaterialButton(
-                                                              onPressed: () =>
-                                                                  Navigator.pop(
-                                                                      context),
-                                                              color: mainColor,
-                                                              child: Text(
-                                                                'No',
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        whiteColor),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                          textAlign:
+                                                              TextAlign.left,
                                                         ),
                                                       );
                                                     },
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              5),
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            greenLightShadeColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      child: Text(
-                                                        "Approve",
-                                                        style: TextStyle(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
+                                                  ),
+                                                );
+                                              }
+                                              return SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    child: Text(
-                                                      "Reject",
-                                                      style: TextStyle(
-                                                        color: whiteColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      color: mainColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    child: Text(
-                                                      "Ban",
-                                                      style: TextStyle(
-                                                        color: whiteColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                ),
+                                              );
+                                            }),
+                                        documentSnapshot['courseShared'] != null
+                                            ? SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot[
+                                                        'courseShared'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
-                                                ],
+                                                ),
+                                              )
+                                            : SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        documentSnapshot['totalRefferals'] !=
+                                                null
+                                            ? SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot[
+                                                        'totalRefferals'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        documentSnapshot['status'] != null
+                                            ? SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot['status'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        InkWell(
+                                          onTap: documentSnapshot['status'] ==
+                                                  'active'
+                                              ? () {
+                                                  affiliateUser
+                                                      .doc(documentSnapshot[
+                                                          'user_Id'])
+                                                      .update(
+                                                    {
+                                                      'status': 'pause',
+                                                    },
+                                                  );
+                                                }
+                                              : () {
+                                                  affiliateUser
+                                                      .doc(documentSnapshot[
+                                                          'user_Id'])
+                                                      .update(
+                                                    {
+                                                      'status': 'active',
+                                                    },
+                                                  );
+                                                },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  documentSnapshot['status'] ==
+                                                          'active'
+                                                      ? mainColor
+                                                      : greenShadeColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Text(
+                                              documentSnapshot['status'] ==
+                                                      'active'
+                                                  ? "Pause"
+                                                  : 'Resume',
+                                              style: TextStyle(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          )
-                                        ],
-                                      ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                     const SizedBox(height: 2),
                                     const Divider(),
