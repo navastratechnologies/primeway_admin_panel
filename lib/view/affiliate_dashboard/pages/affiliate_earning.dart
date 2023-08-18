@@ -71,7 +71,7 @@ class _AffiliatePanelBodyEarningsState
                             // Calculate the total purchase amount
                             int totalPurchase = 0;
                             for (var doc in snapshot.data!.docs) {
-                              totalPurchase += int.parse(doc['purchases']) ?? 0;
+                              totalPurchase += int.parse(doc['purchases']);
                             }
 
                             return Text(
