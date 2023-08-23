@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_network/image_network.dart';
+import 'package:primeway_admin_panel/controller/send_notification_controller.dart';
 import 'package:primeway_admin_panel/view/helpers/app_constants.dart';
 import 'package:primeway_admin_panel/view/helpers/helpers.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -32,6 +36,133 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
   bool showAffiliatePCollabParticipatedPanel = false;
   bool showAffiliatePCollabcompletedPanel = false;
   String docId = '';
+
+  exportToExcel(task) async {
+    List<Map<String, dynamic>> dataList = [];
+    List headerList = [
+      'Sr.',
+      'Name',
+      'Username',
+      'Email',
+      'Mobile Number',
+      'insta_username',
+      'youtube_username',
+    ];
+
+    QuerySnapshot userSnapshot =
+        await collabs.doc(docId).collection('users').get();
+
+    if (task == 'task uploaded') {
+      userSnapshot = await collabs
+          .doc(docId)
+          .collection('users')
+          .where('task_uploaded', isEqualTo: 'true')
+          .get();
+    } else if (task == 'task not uploaded') {
+      userSnapshot = await collabs
+          .doc(docId)
+          .collection('users')
+          .where('task_uploaded', isNotEqualTo: 'true')
+          .get();
+    } else {
+      if (task == 'task uploaded') {
+        userSnapshot = await collabs.doc(docId).collection('users').get();
+      }
+    }
+
+    List<String> userIds = userSnapshot.docs.map((doc) => doc.id).toList();
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('user_Id', whereIn: userIds)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      dataList.add(doc.data() as Map<String, dynamic>);
+    }
+
+    print('merge data is $dataList');
+
+    final excel = Excel.createExcel();
+    final sheet = excel[excel.getDefaultSheet()!];
+    sheet.setColWidth(1, 20);
+    sheet.setColWidth(2, 30);
+    sheet.setColWidth(3, 30);
+    sheet.setColWidth(4, 20);
+    sheet.setColWidth(6, 40);
+
+    for (var i = 0; i < headerList.length; i++) {
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: i,
+              rowIndex: 0,
+            ),
+          )
+          .value = headerList[i];
+    }
+    for (var i = 0; i < dataList.length; i++) {
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 0,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = i + 1;
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 1,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = dataList[i]['name'];
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 2,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = "PP${dataList[i]['user_Id']}";
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 3,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = dataList[i]['email'];
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 4,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = dataList[i]['phone_number'];
+
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 5,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = dataList[i]['instagram_username'];
+      sheet
+          .cell(
+            CellIndex.indexByColumnRow(
+              columnIndex: 6,
+              rowIndex: i + 1,
+            ),
+          )
+          .value = dataList[i]['youtube_username'];
+    }
+
+    excel.save(fileName: 'test.xlsx');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,103 +216,12 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                               padding: const EdgeInsets.all(10),
                               child: InkWell(
                                 onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return Builder(builder: (context) {
-                                        return AlertDialog(
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'View List Options',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      Colors.black.withOpacity(
-                                                    0.4,
-                                                  ),
-                                                ),
-                                              ),
-                                              MaterialButton(
-                                                shape: const CircleBorder(),
-                                                color: mainColor,
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Icon(
-                                                  Icons.close_rounded,
-                                                  color: whiteColor,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  Navigator.pop(context);
-                                                  docId = documentSnapshot.id
-                                                      .toString();
-                                                  showAffiliatePCollabParticipatedPanel =
-                                                      false;
-                                                  showAffiliatePCollabcompletedPanel =
-                                                      true;
-                                                });
-                                              },
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                  color: greenShadeColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Text(
-                                                  'View total users who completed task',
-                                                  style: TextStyle(
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  Navigator.pop(context);
-                                                  docId = documentSnapshot.id
-                                                      .toString();
-                                                  showAffiliatePCollabParticipatedPanel =
-                                                      true;
-                                                  showAffiliatePCollabcompletedPanel =
-                                                      false;
-                                                });
-                                              },
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                  color: purpleColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Text(
-                                                  'View total users who participated in this collab',
-                                                  style: TextStyle(
-                                                    color: whiteColor,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                    },
-                                  );
+                                  setState(() {
+                                    docId = documentSnapshot.id.toString();
+                                    showAffiliatePCollabParticipatedPanel =
+                                        true;
+                                    showAffiliatePCollabcompletedPanel = false;
+                                  });
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
@@ -660,7 +700,87 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                                                 ),
                                                 const SizedBox(width: 30),
                                                 InkWell(
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AlertDialog(
+                                                        content: SizedBox(
+                                                          height: 200,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              MaterialButton(
+                                                                color:
+                                                                    greenShadeColor,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  exportToExcel(
+                                                                      'all');
+                                                                },
+                                                                child: Text(
+                                                                  'Download All User Data',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              MaterialButton(
+                                                                color:
+                                                                    greenShadeColor,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  exportToExcel(
+                                                                      'task uploaded');
+                                                                },
+                                                                child: Text(
+                                                                  'Download task Uploaded User Data',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              MaterialButton(
+                                                                color:
+                                                                    greenShadeColor,
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  exportToExcel(
+                                                                      'task not uploaded');
+                                                                },
+                                                                child: Text(
+                                                                  'Download Task Not Uploaded User Data',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
                                                   child: Container(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -673,6 +793,64 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                                                     ),
                                                     child: Text(
                                                       'Export Data In Excel Format',
+                                                      style: TextStyle(
+                                                        color: whiteColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 30),
+                                                InkWell(
+                                                  onTap: () async {
+                                                    QuerySnapshot
+                                                        querySnapshot =
+                                                        await collabs
+                                                            .doc(docId)
+                                                            .collection('users')
+                                                            .where(
+                                                                'task_uploaded',
+                                                                isNotEqualTo:
+                                                                    'true')
+                                                            .get();
+
+                                                    for (var i = 0;
+                                                        i <
+                                                            querySnapshot
+                                                                .docs.length;
+                                                        i++) {
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'user_token')
+                                                          .doc(querySnapshot
+                                                                  .docs[i]
+                                                              ['number'])
+                                                          .get()
+                                                          .then(
+                                                        (value) {
+                                                          sendPushMessage(
+                                                              value
+                                                                  .get('token'),
+                                                              'Hey! You are just few steps away to get paid. Just complete all the tasks mentioned and earn rewards.',
+                                                              'Tasks Pending');
+                                                          log('token value is ${value.get('token')}');
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    decoration: BoxDecoration(
+                                                      color: purpleColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Text(
+                                                      'Send Notification to users who not completed tasks',
                                                       style: TextStyle(
                                                         color: whiteColor,
                                                         fontWeight:
@@ -819,7 +997,7 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Purchased at",
+                            "Task Uploaded",
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,
@@ -831,7 +1009,31 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Course Value",
+                            "Task Verified",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: Text(
+                            "Participation Time",
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 120,
+                        child: Center(
+                          child: Text(
+                            "Action",
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,
@@ -848,11 +1050,7 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                 ? null
                 : displayHeight(context) / 1.45,
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('courses')
-                    .doc(docId)
-                    .collection('purchased_users')
-                    .snapshots(),
+                stream: collabs.doc(docId).collection('users').snapshots(),
                 builder:
                     (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                   if (streamSnapshot.hasData) {
@@ -914,333 +1112,120 @@ class _AffiliateCollaborationsState extends State<AffiliateCollaborations> {
                                 )
                               : Column(
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: const [
-                                                    Text("Earning Details"),
-                                                    Text("Rohit Rai"),
-                                                  ],
-                                                ),
-                                                content: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: const [
-                                                          SizedBox(
-                                                            width: 80,
-                                                            child: Text(
-                                                              "Date",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Course Name",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Course Shared",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Amount credit",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 120,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Total Earnings",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      StreamBuilder<Object>(
-                                                          stream: null,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            return Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 80,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2/03/2023",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "insta users",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "100",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2000",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 120,
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "2000",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.4),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          }),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: 80,
-                                            child: Center(
-                                              child: documentSnapshot[
-                                                          'user_id'] !=
-                                                      null
-                                                  ? Text(
-                                                      documentSnapshot[
-                                                          'user_id'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                          width: 80,
+                                          child: Center(
+                                            child: Text(
+                                              "PP${documentSnapshot.id}",
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                          documentSnapshot['name'] != null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot['name'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                        ),
+                                        documentSnapshot['name'] != null
+                                            ? SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot['name'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
-                                          documentSnapshot['date_time'] != null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot[
-                                                          'date_time'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                              )
+                                            : SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
-                                          documentSnapshot['value'] != null
-                                              ? SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      documentSnapshot['value'],
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(
-                                                  width: 120,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '',
-                                                      style: TextStyle(
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                              ),
+                                        SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot['task_uploaded'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 120,
+                                          child: Center(
+                                            child: Text(
+                                              documentSnapshot['task_verified'],
+                                              style: TextStyle(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        documentSnapshot['date_time'] != null
+                                            ? SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    documentSnapshot[
+                                                        'date_time'],
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ),
-                                        ],
-                                      ),
+                                              )
+                                            : SizedBox(
+                                                width: 120,
+                                                child: Center(
+                                                  child: Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        MaterialButton(
+                                          color: purpleColor,
+                                          onPressed: () {},
+                                          child: Text(
+                                            'View Uploaded Task',
+                                            style: TextStyle(
+                                              color: whiteColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 2),
                                     const Divider(),

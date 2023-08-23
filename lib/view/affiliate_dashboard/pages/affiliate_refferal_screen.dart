@@ -37,63 +37,64 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return showDowlinkPanel
-        ? Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: displayWidth(context) < 600 || displayWidth(context) < 1200
-                ? SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        mainBody(),
-                        const SizedBox(height: 20),
-                      ],
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            children: [
+              MaterialButton(
+                color: purpleColor,
+                onPressed: () => setState(
+                  () {
+                    docId = '';
+                  },
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.arrow_back_rounded,
+                      color: whiteColor,
                     ),
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: mainBody(),
+                  ],
+                ),
+              ),
+              StreamBuilder(
+                stream: refferals
+                    .orderBy('total_refferals', descending: true)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    return ResponsiveGridList(
+                      horizontalGridSpacing: 10,
+                      minItemWidth: displayWidth(context) < 600
+                          ? displayWidth(context)
+                          : displayWidth(context) < 1200
+                              ? displayWidth(context) / 3
+                              : displayWidth(context) / 4,
+                      listViewBuilderOptions: ListViewBuilderOptions(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                       ),
-                    ],
-                  ),
-          )
-        : Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: StreamBuilder(
-                  stream: refferals
-                      .orderBy('total_refferals', descending: true)
-                      .snapshots(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasData) {
-                      return ResponsiveGridList(
-                        horizontalGridSpacing: 10,
-                        minItemWidth: displayWidth(context) < 600
-                            ? displayWidth(context)
-                            : displayWidth(context) < 1200
-                                ? displayWidth(context) / 3
-                                : displayWidth(context) / 4,
-                        listViewBuilderOptions: ListViewBuilderOptions(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        ),
-                        children: List.generate(
-                          snapshot.data!.docs.length,
-                          (index) {
-                            DocumentSnapshot documentSnapshot =
-                                snapshot.data!.docs[index];
+                      children: List.generate(
+                        snapshot.data!.docs.length,
+                        (index) {
+                          DocumentSnapshot documentSnapshot =
+                              snapshot.data!.docs[index];
+                          if (docId.isEmpty) {
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: InkWell(
                                 onTap: () {
                                   log('tapped');
-                                  setState(() {
-                                    showDowlinkPanel = true;
-                                    docId = documentSnapshot['refferrer_id'];
-                                  });
+                                  try {
+                                    setState(() {
+                                      showDowlinkPanel = true;
+                                      docId = documentSnapshot['user_Id'];
+                                    });
+                                  } catch (e) {
+                                    log('refer error is $e');
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(8),
@@ -191,16 +192,132 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
                                 ),
                               ),
                             );
-                          },
-                        ),
-                      );
-                    }
-                    return Container();
-                  },
-                ),
+                          } else if (docId.isNotEmpty &&
+                              documentSnapshot['refferer_id'] == docId) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: InkWell(
+                                onTap: () {
+                                  log('tapped');
+                                  try {
+                                    setState(() {
+                                      showDowlinkPanel = true;
+                                      docId = documentSnapshot['user_Id'];
+                                    });
+                                  } catch (e) {
+                                    log('refer error is $e');
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'User Id: ${documentSnapshot.id}',
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.3),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text(
+                                        documentSnapshot['name'],
+                                        style: TextStyle(
+                                          color: greenShadeColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 30,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      const Divider(),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Downlines',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text(
+                                                documentSnapshot[
+                                                    'total_refferals'],
+                                                style: TextStyle(
+                                                  color: purpleColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const VerticalDivider(),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Total Revenue by Refferal',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text(
+                                                documentSnapshot[
+                                                    'earning_by_refferals'],
+                                                style: TextStyle(
+                                                  color: purpleColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 30,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                    );
+                  }
+                  return Container();
+                },
               ),
-            ),
-          );
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   mainBody() {
@@ -211,262 +328,233 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          displayWidth(context) < 600 || displayWidth(context) < 1200
-              ? const SizedBox()
-              : StreamBuilder(
-                  stream: refferals
-                      .where('refferer_id', isEqualTo: docId)
-                      .snapshots(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot documentSnapshot =
-                              snapshot.data!.docs[index];
-                          return Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: whiteColor,
+          StreamBuilder(
+            stream:
+                refferals.where('refferer_id', isEqualTo: docId).snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot documentSnapshot =
+                        snapshot.data!.docs[index];
+                    return Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          MaterialButton(
+                            color: purpleColor,
+                            padding: const EdgeInsets.all(20),
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                docId = '';
+                                showDowlinkPanel = false;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_back_rounded,
+                                  color: whiteColor,
+                                ),
+                                Text(
+                                  'Go Back',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: whiteColor,
+                                  ),
                                 ),
                               ],
                             ),
-                            child: Column(
-                              children: [
-                                MaterialButton(
-                                  color: purpleColor,
-                                  padding: const EdgeInsets.all(20),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      docId = '';
-                                      showDowlinkPanel = false;
-                                    });
-                                  },
-                                  child: Row(
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.arrow_back_rounded,
-                                        color: whiteColor,
-                                      ),
                                       Text(
-                                        'Go Back',
-                                        style: TextStyle(
+                                        documentSnapshot['name'],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          color: whiteColor,
                                         ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              StreamBuilder(
+                                                stream: refferals
+                                                    .doc(documentSnapshot.id)
+                                                    .collection('users')
+                                                    .where('task_uploaded',
+                                                        isEqualTo: 'true')
+                                                    .snapshots(),
+                                                builder: (context,
+                                                    AsyncSnapshot<QuerySnapshot>
+                                                        snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return Text(
+                                                      snapshot.data!.docs.length
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 26,
+                                                        color: Colors.black
+                                                            .withOpacity(0.5),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Text(
+                                                    "00",
+                                                    style: TextStyle(
+                                                      fontSize: 26,
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                decoration: BoxDecoration(
+                                                  color: greenShadeColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Text(
+                                                  'Total Users Completed task',
+                                                  style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              StreamBuilder(
+                                                stream: refferals
+                                                    .doc(documentSnapshot.id)
+                                                    .collection('users')
+                                                    .snapshots(),
+                                                builder: (context,
+                                                    AsyncSnapshot<QuerySnapshot>
+                                                        snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return Text(
+                                                      snapshot.data!.docs.length
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 26,
+                                                        color: Colors.black
+                                                            .withOpacity(0.5),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Text(
+                                                    "00",
+                                                    style: TextStyle(
+                                                      fontSize: 26,
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                decoration: BoxDecoration(
+                                                  color: purpleColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Text(
+                                                  'Total Users Participated',
+                                                  style: TextStyle(
+                                                    color: whiteColor,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 30),
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: mainColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: Text(
+                                                'Export Data In Excel Format',
+                                                style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    // Row(
-                                    //   children: [
-                                    //     Column(
-                                    //       crossAxisAlignment:
-                                    //           CrossAxisAlignment.start,
-                                    //       children: [
-                                    //         Text(
-                                    //           documentSnapshot['name'],
-                                    //           style: const TextStyle(
-                                    //             fontSize: 18,
-                                    //             color: Colors.black,
-                                    //             fontWeight: FontWeight.bold,
-                                    //           ),
-                                    //         ),
-                                    //         const SizedBox(height: 20),
-                                    //         Row(
-                                    //           crossAxisAlignment:
-                                    //               CrossAxisAlignment.end,
-                                    //           children: [
-                                    //             Column(
-                                    //               crossAxisAlignment:
-                                    //                   CrossAxisAlignment.start,
-                                    //               children: [
-                                    //                 StreamBuilder(
-                                    //                   stream: refferals
-                                    //                       .doc(documentSnapshot
-                                    //                           .id)
-                                    //                       .collection('users')
-                                    //                       .where(
-                                    //                           'task_uploaded',
-                                    //                           isEqualTo: 'true')
-                                    //                       .snapshots(),
-                                    //                   builder: (context,
-                                    //                       AsyncSnapshot<
-                                    //                               QuerySnapshot>
-                                    //                           snapshot) {
-                                    //                     if (snapshot.hasData) {
-                                    //                       return Text(
-                                    //                         snapshot.data!.docs
-                                    //                             .length
-                                    //                             .toString(),
-                                    //                         style: TextStyle(
-                                    //                           fontSize: 26,
-                                    //                           color: Colors
-                                    //                               .black
-                                    //                               .withOpacity(
-                                    //                                   0.5),
-                                    //                           fontWeight:
-                                    //                               FontWeight
-                                    //                                   .bold,
-                                    //                         ),
-                                    //                       );
-                                    //                     }
-                                    //                     return Text(
-                                    //                       "00",
-                                    //                       style: TextStyle(
-                                    //                         fontSize: 26,
-                                    //                         color: Colors.black
-                                    //                             .withOpacity(
-                                    //                                 0.5),
-                                    //                         fontWeight:
-                                    //                             FontWeight.bold,
-                                    //                       ),
-                                    //                     );
-                                    //                   },
-                                    //                 ),
-                                    //                 Container(
-                                    //                   padding:
-                                    //                       const EdgeInsets.all(
-                                    //                           4),
-                                    //                   decoration: BoxDecoration(
-                                    //                     color: greenShadeColor,
-                                    //                     borderRadius:
-                                    //                         BorderRadius
-                                    //                             .circular(5),
-                                    //                   ),
-                                    //                   child: Text(
-                                    //                     'Total Users Completed task',
-                                    //                     style: TextStyle(
-                                    //                       color: whiteColor,
-                                    //                       fontWeight:
-                                    //                           FontWeight.bold,
-                                    //                     ),
-                                    //                   ),
-                                    //                 ),
-                                    //               ],
-                                    //             ),
-                                    //             const SizedBox(width: 10),
-                                    //             Column(
-                                    //               crossAxisAlignment:
-                                    //                   CrossAxisAlignment.start,
-                                    //               children: [
-                                    //                 StreamBuilder(
-                                    //                   stream: refferals
-                                    //                       .doc(documentSnapshot
-                                    //                           .id)
-                                    //                       .collection('users')
-                                    //                       .snapshots(),
-                                    //                   builder: (context,
-                                    //                       AsyncSnapshot<
-                                    //                               QuerySnapshot>
-                                    //                           snapshot) {
-                                    //                     if (snapshot.hasData) {
-                                    //                       return Text(
-                                    //                         snapshot.data!.docs
-                                    //                             .length
-                                    //                             .toString(),
-                                    //                         style: TextStyle(
-                                    //                           fontSize: 26,
-                                    //                           color: Colors
-                                    //                               .black
-                                    //                               .withOpacity(
-                                    //                                   0.5),
-                                    //                           fontWeight:
-                                    //                               FontWeight
-                                    //                                   .bold,
-                                    //                         ),
-                                    //                       );
-                                    //                     }
-                                    //                     return Text(
-                                    //                       "00",
-                                    //                       style: TextStyle(
-                                    //                         fontSize: 26,
-                                    //                         color: Colors.black
-                                    //                             .withOpacity(
-                                    //                                 0.5),
-                                    //                         fontWeight:
-                                    //                             FontWeight.bold,
-                                    //                       ),
-                                    //                     );
-                                    //                   },
-                                    //                 ),
-                                    //                 Container(
-                                    //                   padding:
-                                    //                       const EdgeInsets.all(
-                                    //                           4),
-                                    //                   decoration: BoxDecoration(
-                                    //                     color: purpleColor,
-                                    //                     borderRadius:
-                                    //                         BorderRadius
-                                    //                             .circular(5),
-                                    //                   ),
-                                    //                   child: Text(
-                                    //                     'Total Users Participated',
-                                    //                     style: TextStyle(
-                                    //                       color: whiteColor,
-                                    //                       fontWeight:
-                                    //                           FontWeight.bold,
-                                    //                     ),
-                                    //                   ),
-                                    //                 ),
-                                    //               ],
-                                    //             ),
-                                    //             const SizedBox(width: 30),
-                                    //             InkWell(
-                                    //               onTap: () {},
-                                    //               child: Container(
-                                    //                 padding:
-                                    //                     const EdgeInsets.all(
-                                    //                         10),
-                                    //                 decoration: BoxDecoration(
-                                    //                   color: mainColor,
-                                    //                   borderRadius:
-                                    //                       BorderRadius.circular(
-                                    //                           5),
-                                    //                 ),
-                                    //                 child: Text(
-                                    //                   'Export Data In Excel Format',
-                                    //                   style: TextStyle(
-                                    //                     color: whiteColor,
-                                    //                     fontWeight:
-                                    //                         FontWeight.bold,
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //             ),
-                                    //           ],
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return Container();
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
                   },
-                ),
+                );
+              }
+              return Container();
+            },
+          ),
           const SizedBox(height: 10),
           adminTabel(context),
         ],
@@ -588,7 +676,7 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Purchased at",
+                            "Total Downlinks",
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,
@@ -600,7 +688,7 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Course Value",
+                            "Earning By Refferal",
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,
@@ -617,10 +705,8 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
                 ? null
                 : displayHeight(context) / 1.45,
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('courses')
-                    .doc(docId)
-                    .collection('purchased_users')
+                stream: refferals
+                    .where('refferer_id', isEqualTo: docId)
                     .snapshots(),
                 builder:
                     (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {

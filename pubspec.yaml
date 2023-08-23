@@ -55,6 +55,7 @@ dependencies:
   ionicons: null
   lottie: null
   mrx_charts: null
+  path_provider: ^2.1.0
   quill_html_editor: null
   responsive_builder: null
   responsive_grid_list: null
