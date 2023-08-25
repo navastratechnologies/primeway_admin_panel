@@ -86,7 +86,6 @@ class _AffiliateRefferalScreenState extends State<AffiliateRefferalScreen> {
                               padding: const EdgeInsets.all(10),
                               child: InkWell(
                                 onTap: () {
-                                  log('tapped');
                                   try {
                                     setState(() {
                                       showDowlinkPanel = true;
