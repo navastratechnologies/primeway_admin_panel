@@ -8,6 +8,7 @@ import 'package:primeway_admin_panel/view/admin_dashboard/pages/banner_page.dart
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/collaboration_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/creator_programs_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/feedback_page.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/pages/josh_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/other_requests_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/roles_page.dart';
 import 'package:primeway_admin_panel/view/admin_dashboard/pages/user_page.dart';
@@ -31,6 +32,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool showDashboardPanel = true;
+  bool showJoshPanel = false;
   bool showUsersPanel = false;
   bool showWalletPanel = false;
   bool showBannerPanel = false;
@@ -231,7 +233,9 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                                                 ? const CollaborationScreen()
                                                 : showRolesPanel
                                                     ? const RolesScreen()
-                                                    : const AdminPanelBody(),
+                                                    : showJoshPanel
+                                                        ? const JoshScreen()
+                                                        : const AdminPanelBody(),
                   ],
                 ),
               ),
@@ -358,6 +362,7 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = true;
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -389,6 +394,53 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                   const SizedBox(height: 6),
                   MaterialButton(
                     elevation: 0,
+                    color: showJoshPanel ? greenShadeColor : mainColor,
+                    hoverColor: greenShadeColor,
+                    padding: const EdgeInsets.all(20),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (displayWidth(context) < 1200) {
+                          Navigator.pop(context);
+                        }
+                        showDashboardPanel = false;
+                        showJoshPanel = true;
+                        showBannerPanel = false;
+                        showCollaborationPanel = false;
+                        showCreatorProgramPanel = false;
+                        showUsersPanel = false;
+                        showWalletPanel = false;
+                        showFeedbackPanel = false;
+                        showOtherRequestPanel = false;
+                        showRolesPanel = false;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.join_full_rounded,
+                          color: showJoshPanel
+                              ? greenSelectedColor
+                              : mainShadeColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Josh Requests',
+                          style: TextStyle(
+                            color: whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  MaterialButton(
+                    elevation: 0,
                     color: showUsersPanel ? greenShadeColor : mainColor,
                     hoverColor: greenShadeColor,
                     padding: const EdgeInsets.all(20),
@@ -404,6 +456,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -450,6 +504,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -496,6 +552,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = true;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -542,6 +600,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = true;
                         showCreatorProgramPanel = false;
@@ -589,6 +649,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = true;
@@ -635,6 +697,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showRolesPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
@@ -681,6 +745,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;
@@ -727,6 +793,8 @@ class _AdminDashBoardState extends State<AdminDashBoard> {
                           Navigator.pop(context);
                         }
                         showDashboardPanel = false;
+
+                        showJoshPanel = false;
                         showBannerPanel = false;
                         showCollaborationPanel = false;
                         showCreatorProgramPanel = false;

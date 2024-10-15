@@ -308,7 +308,7 @@ class _QuilscreenState extends State<Quilscreen> {
                                     child: QuillHtmlEditor(
                                       hintText: 'Hint text goes here',
                                       controller: controller,
-                                      height:
+                                      minHeight:
                                           MediaQuery.of(context).size.height,
                                       onTextChanged: (text) => debugPrint(
                                           'widget text change $text'),

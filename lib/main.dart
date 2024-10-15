@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:primeway_admin_panel/firebase_options.dart';
-import 'package:primeway_admin_panel/view/affiliate_dashboard/affiliate_dashboard_panel.dart';
+import 'package:primeway_admin_panel/view/admin_dashboard/admin_dashboard_panel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: loggedIn ? const AdminDashBoard() : const LoginPage(),
-      home: AffiliateDashboard(),
+      home: AdminDashBoard(),
     );
   }
 
